@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/top_button.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
+import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/video/player_impl.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +16,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    final loginController = context.read<LoginController>();
+    if (!loginController.isLogged) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
     super.initState();
     final videoController = context.read<PlayerImpl>();
     videoController.init();
@@ -76,6 +81,25 @@ class _HomePageState extends State<HomePage> {
                 selectedStyle: selectedlabelLarge,
                 unselectedStyle: labelLarge,
                 name: item),
+          const SizedBox(
+            width: 570,
+          ),
+          const Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 10),
+          TopButton(
+              selectedStyle: selectedlabelLarge,
+              unselectedStyle: labelLarge,
+              name: 'Infantil'),
+          const SizedBox(
+            width: 10,
+          ),
+          const Icon(
+            Icons.notifications,
+            color: Colors.white,
+          ),
         ]));
 
     return Scaffold(
@@ -131,12 +155,12 @@ class _HomePageState extends State<HomePage> {
                         height: 30,
                       ),
                       Text(
-                          '''     Lorem Ipsum is simply dummy text of the printing and typesetting 
-     Lorem Ipsum has been the industry's standard dummy text ever, 
-     when an unknown printer took a galley of type  ''',
+                          '''     O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. 
+     O Lorem Ipsum tem vindo a ser o texto padrão usado por estas 
+     indústrias desde o ano de 1500 quando misturou caracteres...''',
                           style: headline6),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Padding(
                           padding: const EdgeInsets.only(left: 25),

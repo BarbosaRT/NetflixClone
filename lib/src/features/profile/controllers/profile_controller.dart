@@ -19,13 +19,14 @@ class ProfileController extends ChangeNotifier {
       name: 'sus',
     ));
     _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_1.jpeg',
+      icon: 'assets/images/profiles/image_2.png',
       name: 'test',
     ));
-    _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_1.jpeg',
-      name: 'dog',
-    ));
+    notifyListeners();
+  }
+
+  void select(int index) {
+    selected = index;
     notifyListeners();
   }
 }

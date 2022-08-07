@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 
 class ProfileWidget extends StatefulWidget {
   final TextStyle selectedStyle;
   final TextStyle unselectedStyle;
   final String name;
   final String icon;
+  final int index;
   const ProfileWidget(
       {super.key,
       required this.selectedStyle,
       required this.unselectedStyle,
       required this.name,
-      required this.icon});
+      required this.icon,
+      required this.index});
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
@@ -21,6 +25,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final profileController = context.watch<ProfileController>();
     return ElevatedButton(
       style: ButtonStyle(
         overlayColor: MaterialStateProperty.all(Colors.grey.shade900),
@@ -32,7 +37,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           selected = v;
         });
       },
-      onPressed: () {},
+      onPressed: () {
+        profileController.select(widget.index);
+        Navigator.of(context).pushReplacementNamed('/splash');
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

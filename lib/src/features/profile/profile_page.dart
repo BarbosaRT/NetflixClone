@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:netflix/src/features/profile/components/manager_button.dart';
 import 'package:netflix/src/features/profile/components/profile_widget.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,7 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProfileController>(context, listen: false).start();
+      Modular.get<ProfileController>().start();
     });
     super.initState();
   }
@@ -44,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
         unselectedStyle: labelLarge,
         icon: profileController.profiles[i].icon,
         name: profileController.profiles[i].name,
+        index: i,
       ));
     }
 

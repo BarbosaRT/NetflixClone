@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/login/components/custom_text_field.dart';
+import 'package:netflix/src/features/login/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +23,8 @@ class _LoginPageState extends State<LoginPage> {
     const double textFieldWidth = 315;
 
     final scrollController = ScrollController();
+
+    final loginController = context.watch<LoginController>();
 
     final headline4 = Theme.of(context).textTheme.headline4!.copyWith(
         color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Arial');
@@ -146,10 +150,18 @@ class _LoginPageState extends State<LoginPage> {
                             // Botao Entrar
                             //
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                if (loginController.canLog()) {
+                                  loginController.login();
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('/profile');
+                                }
+                              },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 228, 0, 0)),
+                                    loginController.canLog()
+                                        ? const Color.fromARGB(255, 228, 0, 0)
+                                        : const Color.fromARGB(255, 0, 0, 0)),
                               ),
                               child: SizedBox(
                                 width: textFieldWidth - 35,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -14,15 +14,15 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProfileController>(context, listen: false).start();
-      Provider.of<SplashController>(context, listen: false).startSplash(5);
+      Modular.get<ProfileController>().start();
+      Modular.get<SplashController>().startSplash(5);
     });
 
     var splashNotifier = context.read<SplashController>();
     splashNotifier.addListener(() {
       if (splashNotifier.splashState == SplashState.finished) {
         splashNotifier.waitSplash();
-        Navigator.of(context).pushReplacementNamed('/login');
+        Navigator.of(context).pushReplacementNamed('/');
       }
     });
 

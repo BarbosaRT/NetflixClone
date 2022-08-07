@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/src/features/login/login_controller.dart';
 
 class CustomTextField extends StatefulWidget {
   final double textFieldWidth;
@@ -52,6 +54,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     TextStyle textStyleInput = widget.textStyle.copyWith(color: Colors.white);
 
+    final loginController = context.watch<LoginController>();
+
     return Container(
       width: widget.textFieldWidth,
       height: 50,
@@ -68,6 +72,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
               child: TextField(
                 onTap: (() {
                   isSelected();
+                }),
+                onChanged: ((value) {
+                  widget.isPassword
+                      ? loginController.changeSenha(value)
+                      : loginController.changeEmail(value);
                 }),
                 focusNode: inputFocusNode,
                 controller: widget.controller,
