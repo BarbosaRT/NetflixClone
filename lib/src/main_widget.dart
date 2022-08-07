@@ -6,7 +6,7 @@ import 'package:netflix/src/features/profile/controllers/profile_controller.dart
 import 'package:netflix/src/features/profile/profile_page.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
 import 'package:netflix/src/features/splash/splash_page.dart';
-import 'package:netflix/src/features/video/youtube_impl.dart';
+import 'package:netflix/src/features/video/player_impl.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
@@ -16,7 +16,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          Provider(create: (_) => YoutubeImpl()),
+          Provider(create: (_) => PlayerImpl()),
           ChangeNotifierProvider(create: (_) => ProfileController()),
           ChangeNotifierProvider(create: (_) => SplashController()),
           ChangeNotifierProvider(create: (_) => HomeAppBarController()),

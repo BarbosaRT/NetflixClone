@@ -17,7 +17,7 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   void init() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     play();
   }
 
@@ -53,4 +53,7 @@ class YoutubeImpl implements VideoInterface {
       aspectRatio: 16 / 9,
     );
   }
+
+  @override
+  void dispose() {}
 }

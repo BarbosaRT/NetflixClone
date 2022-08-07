@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/top_button.dart';
-import 'package:netflix/src/features/video/youtube_impl.dart';
+import 'package:netflix/src/features/home/components/home_button.dart';
+import 'package:netflix/src/features/video/player_impl.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import 'package:video_player/video_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,40 +13,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late VideoPlayerController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+    final videoController = context.read<PlayerImpl>();
+    videoController.init();
+    setState(() {});
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    final videoController = context.watch<PlayerImpl>();
+    videoController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
 
     final scrollController = ScrollController();
 
-    final videoController = context.watch<YoutubeImpl>();
-    _controller.play();
+    final videoController = context.watch<PlayerImpl>();
 
     final labelLarge = Theme.of(context).textTheme.labelLarge!.copyWith(
         color: Colors.grey.shade200, fontSize: 14, fontFamily: 'Arial');
 
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
+
+    final headline6 = Theme.of(context)
+        .textTheme
+        .headline6!
+        .copyWith(color: Colors.white, fontSize: 17);
+
+    final blackHeadline6 =
+        headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
 
     final buttonLabels = [
       'Inicio',
@@ -84,13 +85,13 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
+              videoController.isPlaying()
+                  ? videoController.pause()
+                  : videoController.play();
             });
           },
           child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            videoController.isPlaying() ? Icons.pause : Icons.play_arrow,
           ),
         ),
         body: Scrollbar(
@@ -109,19 +110,62 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              // VideoApp(),
-              // Center(
-              //   child: _controller.value.isInitialized
-              //       ? AspectRatio(
-              //           aspectRatio: _controller.value.aspectRatio,
-              //           child: VideoPlayer(_controller),
-              //         )
-              //       : Container(
-              //           width: width,
-              //           height: height,
-              //           color: Colors.red,
-              //         ),
-              // ),
+              //
+              // Film Logo
+              //
+              Padding(
+                padding: const EdgeInsets.only(left: 30, top: 0),
+                child: SizedBox(
+                  width: 1000,
+                  height: 487,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(seconds: 1),
+                        width: videoController.isPlaying() ? 350 : 500,
+                        child: Image.asset('assets/images/Minions-Logo.png'),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                          '''     Lorem Ipsum is simply dummy text of the printing and typesetting 
+     Lorem Ipsum has been the industry's standard dummy text ever, 
+     when an unknown printer took a galley of type  ''',
+                          style: headline6),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: Row(children: [
+                            HomeButton(
+                              textStyle: blackHeadline6,
+                              overlayColor: Colors.grey.shade300,
+                              buttonColor: Colors.white,
+                              icon: Icons.play_arrow,
+                              text: 'Assistir',
+                            ),
+                            const SizedBox(width: 10),
+                            HomeButton(
+                              textStyle: headline6,
+                              overlayColor:
+                                  Colors.grey.shade600.withOpacity(0.1),
+                              buttonColor: Colors.grey.withOpacity(0.2),
+                              icon: Icons.info_outline,
+                              iconSize: 25,
+                              spacing: 10,
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 25, top: 7, bottom: 7),
+                              text: 'Mais Informações',
+                            ),
+                          ])),
+                    ],
+                  ),
+                ),
+              ),
               //
               // Gradient
               //
@@ -133,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.7),
+                        Colors.black.withOpacity(0.75),
                         Colors.black.withOpacity(0)
                       ]),
                 ),

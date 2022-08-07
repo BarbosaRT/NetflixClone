@@ -15,7 +15,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   
   youtube_player_iframe: ^2.3.0
+
   video_player: ^2.4.5
+
+  flutter_modular: ^5.0.3
 
   provider: ^6.0.2
 
@@ -34,6 +37,7 @@ flutter:
   assets:
       - assets/images/
       - assets/images/profiles/
+      - assets/videos/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

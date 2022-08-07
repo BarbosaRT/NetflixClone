@@ -7,5 +7,6 @@ abstract class VideoInterface {
   void pause();
   void stop();
   void load(String id);
+  void dispose();
   Widget frame();
 }

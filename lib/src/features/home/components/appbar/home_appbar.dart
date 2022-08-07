@@ -24,28 +24,28 @@ class _HomeAppBarState extends State<HomeAppBar> {
 
   @override
   void initState() {
-    start();
+    start(context);
 
     super.initState();
   }
 
-  void start() {
+  void start(BuildContext c) {
     if (started) {
       return;
     }
-    final homeAppBarController = context.read<HomeAppBarController>();
+    final homeAppBarController = c.read<HomeAppBarController>();
 
     widget.scrollController.addListener(() {
       homeAppBarController.putAtTop(widget.scrollController.offset < 10);
     });
 
-    started = true;
+    started = false;
   }
 
   @override
   Widget build(BuildContext context) {
     final homeAppBarController = context.watch<HomeAppBarController>();
-    start();
+    start(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
@@ -60,7 +60,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
 }
 
 class HomeAppBarController extends ChangeNotifier {
-  bool _isAtTop = false;
+  bool _isAtTop = true;
   bool get isAtTop => _isAtTop;
 
   void putAtTop(bool value) {
