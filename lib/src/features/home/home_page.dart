@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
@@ -63,6 +64,14 @@ class _HomePageState extends State<HomePage> {
       'Minha lista'
     ];
 
+    const description =
+        '''     O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. 
+     O Lorem Ipsum tem vindo a ser o texto padrão usado por estas 
+     indústrias desde o ano de 1500 quando misturou caracteres...''';
+
+    const textDuration = Duration(milliseconds: 900);
+    const fadeInDuration = Duration(milliseconds: 600);
+
     final homeAppBar = HomeAppBar(
         scrollController: scrollController,
         height: 70,
@@ -81,8 +90,8 @@ class _HomePageState extends State<HomePage> {
                 selectedStyle: selectedlabelLarge,
                 unselectedStyle: labelLarge,
                 name: item),
-          const SizedBox(
-            width: 570,
+          SizedBox(
+            width: (width - 790),
           ),
           const Icon(
             Icons.search,
@@ -95,10 +104,6 @@ class _HomePageState extends State<HomePage> {
               name: 'Infantil'),
           const SizedBox(
             width: 10,
-          ),
-          const Icon(
-            Icons.notifications,
-            color: Colors.white,
           ),
         ]));
 
@@ -137,32 +142,55 @@ class _HomePageState extends State<HomePage> {
               //
               // Film Logo
               //
-              Padding(
-                padding: const EdgeInsets.only(left: 30, top: 0),
-                child: SizedBox(
-                  width: 1000,
-                  height: 487,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(seconds: 1),
+              SizedBox(
+                width: 1000,
+                height: 600,
+                child: Stack(
+                  children: [
+                    AnimatedPositioned(
+                      top: videoController.isPlaying() ? 390 : 310,
+                      left: videoController.isPlaying() ? 37 : 32,
+                      duration: textDuration,
+                      child: AnimatedContainer(
+                        duration: textDuration,
                         width: videoController.isPlaying() ? 350 : 500,
-                        child: Image.asset('assets/images/Minions-Logo.png'),
+                        child: Image.asset('assets/images/Minions-Logo-2D.png'),
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Text(
-                          '''     O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. 
-     O Lorem Ipsum tem vindo a ser o texto padrão usado por estas 
-     indústrias desde o ano de 1500 quando misturou caracteres...''',
-                          style: headline6),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    AnimatedPositioned(
+                      top: videoController.isPlaying() ? 500 : 410,
+                      left: 32,
+                      duration: textDuration,
+                      child: videoController.isPlaying()
+                          ? AnimatedTextKit(
+                              animatedTexts: [
+                                FadeAnimatedText(
+                                  description,
+                                  textStyle: headline6,
+                                  duration: fadeInDuration,
+                                ),
+                              ],
+                              totalRepeatCount: 1,
+                              pause: const Duration(milliseconds: 0),
+                              displayFullTextOnTap: true,
+                              stopPauseOnTap: true,
+                              repeatForever: false,
+                            )
+                          : SizedBox(
+                              height: 70,
+                              child: Text(
+                                description,
+                                style: headline6,
+                              ),
+                            ),
+                    ),
+                    Positioned(
+                      top: 485,
+                      left: 30,
+                      child: Padding(
                           padding: const EdgeInsets.only(left: 25),
                           child: Row(children: [
                             HomeButton(
@@ -186,8 +214,8 @@ class _HomePageState extends State<HomePage> {
                               text: 'Mais Informações',
                             ),
                           ])),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               //
