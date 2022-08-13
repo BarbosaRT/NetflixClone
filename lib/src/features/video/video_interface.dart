@@ -8,5 +8,6 @@ abstract class VideoInterface {
   void stop();
   void load(String id);
   void dispose();
+  void defineThumbnail(String path);
   Widget frame();
 }

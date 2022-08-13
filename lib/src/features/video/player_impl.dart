@@ -3,8 +3,11 @@ import 'package:netflix/src/features/video/video_interface.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerImpl implements VideoInterface {
+  String _thumbnail = '';
+
   late VideoPlayerController _controller;
   VideoPlayerController get controller => _controller;
+
   @override
   Widget frame() {
     return _controller.value.isInitialized
@@ -12,11 +15,9 @@ class PlayerImpl implements VideoInterface {
             aspectRatio: _controller.value.aspectRatio,
             child: VideoPlayer(_controller),
           )
-        : Container(
-            width: 5,
-            height: 5,
-            color: Colors.red,
-          );
+        : _thumbnail.isEmpty
+            ? Container(width: 5, height: 5, color: Colors.red)
+            : Image.asset(_thumbnail);
   }
 
   @override
@@ -57,5 +58,10 @@ class PlayerImpl implements VideoInterface {
 
   bool isPlaying() {
     return _controller.value.isPlaying;
+  }
+
+  @override
+  void defineThumbnail(String path) {
+    _thumbnail = path;
   }
 }

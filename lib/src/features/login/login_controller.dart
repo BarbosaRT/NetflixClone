@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class LoginController extends ChangeNotifier {
-  bool _isLogged = true;
+  bool _isLogged = false;
   bool get isLogged => _isLogged;
 
   String _email = '';

@@ -3,6 +3,8 @@ import 'package:netflix/src/features/video/video_interface.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeImpl implements VideoInterface {
+  String _thumbnail = '';
+
   final YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: '65yL42CwR8Q',
     params: const YoutubePlayerParams(
@@ -48,12 +50,21 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   Widget frame() {
-    return YoutubePlayerIFrame(
-      controller: _controller,
-      aspectRatio: 16 / 9,
-    );
+    return _controller.value.hasPlayed
+        ? YoutubePlayerIFrame(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+          )
+        : _thumbnail.isEmpty
+            ? Image.asset(_thumbnail)
+            : Container(width: 5, height: 5, color: Colors.red);
   }
 
   @override
   void dispose() {}
+
+  @override
+  void defineThumbnail(String path) {
+    _thumbnail = path;
+  }
 }

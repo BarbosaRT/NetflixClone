@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final videoController = context.read<PlayerImpl>();
     videoController.init();
+    videoController.defineThumbnail('assets/images/Minions-Background.png');
     setState(() {});
   }
 
@@ -40,18 +41,22 @@ class _HomePageState extends State<HomePage> {
 
     final scrollController = ScrollController();
 
-    final videoController = context.watch<PlayerImpl>();
+    final videoController = Modular.get<PlayerImpl>();
 
     final labelLarge = Theme.of(context).textTheme.labelLarge!.copyWith(
-        color: Colors.grey.shade200, fontSize: 14, fontFamily: 'Arial');
+          color: Colors.grey.shade200,
+          fontSize: 14,
+          fontFamily: 'Roboto-Medium',
+        );
 
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
 
-    final headline6 = Theme.of(context)
-        .textTheme
-        .headline6!
-        .copyWith(color: Colors.white, fontSize: 17);
+    final headline6 = Theme.of(context).textTheme.headline6!.copyWith(
+          color: Colors.white,
+          fontSize: 17,
+          fontFamily: 'Roboto-Medium',
+        );
 
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
@@ -70,7 +75,7 @@ class _HomePageState extends State<HomePage> {
      indústrias desde o ano de 1500 quando misturou caracteres...''';
 
     const textDuration = Duration(milliseconds: 900);
-    const fadeInDuration = Duration(milliseconds: 600);
+    const fadeInDuration = Duration(milliseconds: 700);
 
     final homeAppBar = HomeAppBar(
         scrollController: scrollController,
@@ -124,44 +129,66 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Scrollbar(
+          trackVisibility: true,
+          thumbVisibility: true,
           controller: scrollController,
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: const PageScrollPhysics(),
             controller: scrollController,
             child: Stack(children: [
               //
               // Background Video
               //
               SingleChildScrollView(
-                child: Column(
+                child: Stack(
                   children: [
                     videoController.frame(),
+                    Container(
+                      height: 768,
+                      width: 1360,
+                      color: Colors.black.withOpacity(0.2),
+                    ),
                   ],
+                ),
+              ),
+              //
+              // Gradient
+              //
+              Container(
+                width: width,
+                height: 70,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.75),
+                        Colors.black.withOpacity(0)
+                      ]),
                 ),
               ),
               //
               // Film Logo
               //
               SizedBox(
-                width: 1000,
+                width: 1360,
                 height: 600,
                 child: Stack(
                   children: [
                     AnimatedPositioned(
                       top: videoController.isPlaying() ? 390 : 310,
-                      left: videoController.isPlaying() ? 37 : 32,
+                      left: 55,
                       duration: textDuration,
                       child: AnimatedContainer(
                         duration: textDuration,
                         width: videoController.isPlaying() ? 350 : 500,
-                        child: Image.asset('assets/images/Minions-Logo-2D.png'),
+                        child: Image.asset(
+                          'assets/images/Minions-Logo-2D.png',
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
                     AnimatedPositioned(
-                      top: videoController.isPlaying() ? 500 : 410,
+                      top: videoController.isPlaying() ? 480 : 410,
                       left: 32,
                       duration: textDuration,
                       child: videoController.isPlaying()
@@ -215,25 +242,48 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ])),
                     ),
+                    Positioned(
+                      top: 465,
+                      left: 1255,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.volume_up_outlined)),
+                          Container(
+                              height: 30,
+                              width: 190,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade900.withOpacity(0.5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    width: 3,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Image.asset('assets/images/L.png'),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-              //
-              // Gradient
-              //
-              Container(
-                width: width,
-                height: 70,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.75),
-                        Colors.black.withOpacity(0)
-                      ]),
+              Positioned(
+                left: 1348,
+                child: Container(
+                  width: 15,
+                  height: 2000,
+                  color: Colors.white,
                 ),
-              ),
+              )
             ]),
           ),
         ));
