@@ -4,20 +4,22 @@ import 'package:video_player/video_player.dart';
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
-
+  bool _enableFrame = true;
   late VideoPlayerController _controller;
   VideoPlayerController get controller => _controller;
 
   @override
   Widget frame() {
-    return _controller.value.isInitialized
-        ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-        : _thumbnail.isEmpty
-            ? Container(width: 5, height: 5, color: Colors.red)
-            : Image.asset(_thumbnail);
+    if (_controller.value.isInitialized && _enableFrame) {
+      return AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: VideoPlayer(_controller),
+      );
+    } else {
+      return _thumbnail.isEmpty
+          ? Container(width: 5, height: 5, color: Colors.red)
+          : Image.asset(_thumbnail);
+    }
   }
 
   @override
@@ -60,8 +62,22 @@ class PlayerImpl implements VideoInterface {
     return _controller.value.isPlaying;
   }
 
+  void enableFrame(bool enable) {
+    _enableFrame = enable;
+  }
+
   @override
   void defineThumbnail(String path) {
     _thumbnail = path;
+  }
+
+  @override
+  double getVolume() {
+    return _controller.value.volume;
+  }
+
+  @override
+  void setVolume(double volume) {
+    _controller.setVolume(volume);
   }
 }

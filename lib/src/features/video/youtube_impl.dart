@@ -67,4 +67,12 @@ class YoutubeImpl implements VideoInterface {
   void defineThumbnail(String path) {
     _thumbnail = path;
   }
+
+  @override
+  double getVolume() {
+    return -1;
+  }
+
+  @override
+  void setVolume(double volume) {}
 }

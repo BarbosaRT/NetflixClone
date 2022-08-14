@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:netflix/src/features/profile/controllers/profile_model.dart';
 
 class ProfileController extends ChangeNotifier {
-  final List<ProfileModel> _profiles = [];
+  List<ProfileModel> _profiles = [];
   List<ProfileModel> get profiles => _profiles;
   int selected = 0;
 
@@ -10,6 +10,7 @@ class ProfileController extends ChangeNotifier {
     if (_profiles == []) {
       return;
     }
+    _profiles = [];
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_1.jpeg',
       name: 'amog us',

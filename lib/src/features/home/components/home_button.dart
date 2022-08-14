@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HomeButton extends StatelessWidget {
+class HomeButton extends StatefulWidget {
   final TextStyle textStyle;
   final Color overlayColor;
   final Color buttonColor;
@@ -21,29 +21,41 @@ class HomeButton extends StatelessWidget {
       this.padding = const EdgeInsets.only(left: 10, right: 25)});
 
   @override
+  State<HomeButton> createState() => _HomeButtonState();
+}
+
+class _HomeButtonState extends State<HomeButton> {
+  bool hovered = false;
+  @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            padding: MaterialStateProperty.all(EdgeInsets.zero),
-            overlayColor: MaterialStateProperty.all(overlayColor),
-            backgroundColor: MaterialStateProperty.all(buttonColor)),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          overlayColor: MaterialStateProperty.all(Colors.transparent),
+          backgroundColor: MaterialStateProperty.all(
+              hovered ? widget.overlayColor : widget.buttonColor),
+          elevation: MaterialStateProperty.all(0),
+        ),
+        onHover: (value) => setState(() {
+              hovered = value;
+            }),
         onPressed: () {},
         child: Padding(
-          padding: padding,
+          padding: widget.padding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(
-                icon,
-                color: textStyle.color,
-                size: iconSize,
+                widget.icon,
+                color: widget.textStyle.color,
+                size: widget.iconSize,
               ),
               SizedBox(
-                width: spacing,
+                width: widget.spacing,
               ),
               Text(
-                text,
-                style: textStyle,
+                widget.text,
+                style: widget.textStyle,
               ),
             ],
           ),

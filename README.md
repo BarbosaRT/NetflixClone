@@ -1,6 +1,6 @@
 # netflix
 
-A new Flutter project.
+4 days
 
 ## Getting Started
 
