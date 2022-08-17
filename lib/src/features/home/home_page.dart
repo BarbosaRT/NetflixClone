@@ -6,7 +6,7 @@ import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/top_button.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
-import 'package:netflix/src/features/home/components/list_widget.dart';
+import 'package:netflix/src/features/home/components/movie_list/list_widget.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/video/player_impl.dart';
 
@@ -333,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Positioned(
-                  top: 538,
+                  top: 500,
                   child: ListWidget(),
                 ),
                 Positioned(

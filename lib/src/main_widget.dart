@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
+import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
 import 'package:netflix/src/features/home/home_page.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/login/login_page.dart';
@@ -17,6 +18,8 @@ class AppModule extends Module {
         Bind((i) => ProfileController()),
         Bind((i) => SplashController()),
         Bind((i) => HomeAppBarController()),
+        Bind((i) => MovieListController()),
+        Bind((i) => CurrentMovie(0)),
         Bind((i) => LoginController()),
       ];
 

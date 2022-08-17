@@ -1,6 +1,6 @@
 # netflix
 
-4 days
+7 days
 
 ## Getting Started
 
