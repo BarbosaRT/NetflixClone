@@ -14,18 +14,20 @@ class MovieListController extends ChangeNotifier {
   List<Widget> test = [];
 
   bool _initialized = false;
-  bool _canChange = false;
-  bool get canChange => _canChange;
+  //bool _isLeft = false;
+  //bool get isLeft => _isLeft;
 
   MovieContainerAnchor getAnchor(int i) {
-    MovieContainerAnchor anchor = MovieContainerAnchor.center;
-    if (i % 4 == 0) {
-      anchor = MovieContainerAnchor.right;
-    }
-    if (i % 5 == 0) {
-      anchor = MovieContainerAnchor.left;
-    }
-    return anchor;
+    int v = i >= 5 ? i - 5 * (i ~/ 5) : i;
+
+    List<MovieContainerAnchor> anchors = [
+      MovieContainerAnchor.left,
+      MovieContainerAnchor.center,
+      MovieContainerAnchor.center,
+      MovieContainerAnchor.center,
+      MovieContainerAnchor.right,
+    ];
+    return anchors[v];
   }
 
   void init() {
@@ -41,38 +43,17 @@ class MovieListController extends ChangeNotifier {
         child: MovieContainer(
           index: i,
           anchor: anchor,
-          elevation: i == 1 ? 10 : 0,
         ),
       ));
-      test = _widgets.toList();
     }
+
+    test = _widgets.toList();
 
     notifyListeners();
   }
 
-  void disableChange() {
-    Future.delayed(const Duration(milliseconds: 100)).then((value) {
-      _canChange = true;
-      notifyListeners();
-    });
-  }
-
   void changeCurrent(int index) {
-    if (!_canChange) {
-      return;
-    }
-    print('test: $index');
     _current = index;
     notifyListeners();
-  }
-}
-
-class CurrentMovie extends ValueNotifier<int> {
-  CurrentMovie(super.value);
-  void changeCurrent(int index) {
-    Future.delayed(const Duration(milliseconds: 50)).then((v) {
-      value = index;
-      notifyListeners();
-    });
   }
 }

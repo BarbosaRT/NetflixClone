@@ -12,12 +12,7 @@ enum MovieContainerAnchor { left, center, right }
 class MovieContainer extends StatefulWidget {
   final MovieContainerAnchor anchor;
   final int index;
-  final double elevation;
-  const MovieContainer(
-      {super.key,
-      required this.anchor,
-      required this.index,
-      this.elevation = 0});
+  const MovieContainer({super.key, required this.anchor, required this.index});
 
   @override
   State<MovieContainer> createState() => _MovieContainerState();
@@ -27,18 +22,19 @@ class _MovieContainerState extends State<MovieContainer> {
   bool isHover = false;
   bool hover = false;
 
+  var random = Random(69);
   int recomentationValue = 0;
   int temps = 0;
+
   @override
   void initState() {
-    final random = Random(69 * widget.index * 2);
+    super.initState();
+    random = Random(69 * widget.index * 2);
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
-    super.initState();
   }
 
   //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos é claro
-  //TODO: Centralizar o widget e fazer ele para o canto esquerdo a cada 5 widgets
   //TODO: Terminar Barra de cima
 
   static const duration = Duration(milliseconds: 200);
@@ -47,8 +43,12 @@ class _MovieContainerState extends State<MovieContainer> {
   static const double width = 260;
   static const double height = 140;
   static const double factor = 1.45;
-  static const double infoHeight = width * factor - height * factor;
   static const double padding = 100;
+
+  static const double infoHeight = width * factor - height * factor;
+
+  //static const double outWidth = width * factor;
+  //static const double outHeight = height * factor;
 
   double getValueFromAnchor(double left, double center, double right) {
     switch (widget.anchor) {
@@ -59,13 +59,6 @@ class _MovieContainerState extends State<MovieContainer> {
       case MovieContainerAnchor.right:
         return right;
     }
-  }
-
-  void onEnter() {
-    //final movieProvider = MovieProvider.of(context);
-    //movieProvider!.index = widget.index;
-    final controller = context.watch<CurrentMovie>();
-    controller.changeCurrent(widget.index);
   }
 
   @override
@@ -79,9 +72,19 @@ class _MovieContainerState extends State<MovieContainer> {
 
     const backgroundColor = Color.fromRGBO(40, 40, 40, 1);
 
-    if (isHover) {
-      controller.changeCurrent(widget.index);
+    if (widget.index == 2 || widget.index == 3) {
+      print(
+          '${widget.index} -> hover: $hover, isHover: $isHover ${random.nextInt(5000)}');
     }
+
+    Future.delayed(delay).then((value) {
+      if (!isHover) {
+        return;
+      }
+      setState(() {
+        hover = true;
+      });
+    });
 
     return AnimatedContainer(
       curve: curve,
@@ -105,21 +108,14 @@ class _MovieContainerState extends State<MovieContainer> {
         //
         onHover: (v) {
           isHover = true;
-          Future.delayed(delay).then((value) {
-            if (!isHover) {
-              return;
-            }
-            setState(() {
-              hover = true;
-            });
-          });
+          controller.changeCurrent(widget.index);
         },
         //
         //
         onExit: (event) {
           isHover = false;
-          controller.disableChange();
           setState(() {
+            isHover = false;
             hover = false;
           });
         },

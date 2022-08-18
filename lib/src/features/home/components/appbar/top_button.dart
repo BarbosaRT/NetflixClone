@@ -31,17 +31,20 @@ class _TopButtonState extends State<TopButton> {
         });
       },
       onPressed: () {},
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            widget.name,
-            style: selected ? widget.selectedStyle : widget.unselectedStyle,
-          ),
-          const SizedBox(
-            height: 2,
-          )
-        ],
+      child: SizedBox(
+        height: 50,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              widget.name,
+              style: selected ? widget.selectedStyle : widget.unselectedStyle,
+            ),
+            const SizedBox(
+              height: 2,
+            )
+          ],
+        ),
       ),
     );
   }

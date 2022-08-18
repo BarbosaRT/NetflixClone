@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
     Future.delayed(const Duration(seconds: 2)).then(((value) {
       setState(() {
-        videoController.play();
+        //videoController.play();
       });
     }));
 
@@ -65,15 +65,6 @@ class _HomePageState extends State<HomePage> {
 
     final backgroundColor = Colors.grey.shade900;
 
-    final labelLarge = Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: Colors.grey.shade200,
-          fontSize: 14,
-          fontFamily: 'Roboto-Medium',
-        );
-
-    final selectedlabelLarge =
-        labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
-
     final headline6 = GoogleFonts.roboto(
         textStyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: Colors.white,
@@ -83,14 +74,6 @@ class _HomePageState extends State<HomePage> {
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
 
-    final buttonLabels = [
-      'Inicio',
-      'Séries',
-      'Filmes',
-      'Bombando',
-      'Minha lista'
-    ];
-
     const description =
         '''     O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. 
      O Lorem Ipsum tem vindo a ser o texto padrão usado por estas 
@@ -99,40 +82,8 @@ class _HomePageState extends State<HomePage> {
     const textDuration = Duration(milliseconds: 900);
     const fadeInDuration = Duration(milliseconds: 700);
 
-    final homeAppBar = HomeAppBar(
-        scrollController: scrollController,
-        height: 70,
-        child: Row(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 55),
-            child: SizedBox(
-                width: width * 0.07,
-                child: Image.asset('assets/images/logo.png')),
-          ),
-          const SizedBox(
-            width: 30,
-          ),
-          for (var item in buttonLabels)
-            TopButton(
-                selectedStyle: selectedlabelLarge,
-                unselectedStyle: labelLarge,
-                name: item),
-          SizedBox(
-            width: (width - 790),
-          ),
-          const Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 10),
-          TopButton(
-              selectedStyle: selectedlabelLarge,
-              unselectedStyle: labelLarge,
-              name: 'Infantil'),
-          const SizedBox(
-            width: 10,
-          ),
-        ]));
+    final homeAppBar =
+        HomeAppBar(scrollController: scrollController, height: 170);
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -180,6 +131,9 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                //
+                // Video Gradient
+                //
                 Positioned(
                     top: 500,
                     child: Container(

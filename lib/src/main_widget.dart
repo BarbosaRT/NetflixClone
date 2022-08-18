@@ -19,7 +19,6 @@ class AppModule extends Module {
         Bind((i) => SplashController()),
         Bind((i) => HomeAppBarController()),
         Bind((i) => MovieListController()),
-        Bind((i) => CurrentMovie(0)),
         Bind((i) => LoginController()),
       ];
 
