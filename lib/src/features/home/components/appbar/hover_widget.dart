@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class HoverWidget extends StatefulWidget {
   final icon;
@@ -16,26 +14,50 @@ class _HoverWidgetState extends State<HoverWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-        onExit: (event) {
-          setState(() {
-            hover = false;
-          });
-        },
-        //
-        //
-        onHover: (v) {
-          setState(() {
-            hover = true;
-          });
-        },
-        child: Stack(children: [
-          widget.icon,
+    print(hover);
+
+    return SizedBox(
+      height: 1000,
+      width: 500,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 420,
+            child: MouseRegion(
+              opaque: false,
+              onExit: (event) {
+                setState(() {
+                  hover = false;
+                });
+              },
+              onHover: (v) {
+                setState(() {
+                  hover = true;
+                });
+              },
+              child: widget.icon,
+            ),
+          ),
           hover
               ? Positioned(
                   top: 50,
-                  child: Container(width: 50, height: 200, color: Colors.blue))
+                  child: MouseRegion(
+                      onExit: (event) {
+                        setState(() {
+                          hover = false;
+                        });
+                      },
+                      onHover: (v) {
+                        setState(() {
+                          hover = true;
+                        });
+                      },
+                      child: Container(
+                          width: 450, height: 300, color: Colors.blue)),
+                )
               : Container(),
-        ]));
+        ],
+      ),
+    );
   }
 }

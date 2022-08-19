@@ -72,11 +72,6 @@ class _MovieContainerState extends State<MovieContainer> {
 
     const backgroundColor = Color.fromRGBO(40, 40, 40, 1);
 
-    if (widget.index == 2 || widget.index == 3) {
-      print(
-          '${widget.index} -> hover: $hover, isHover: $isHover ${random.nextInt(5000)}');
-    }
-
     Future.delayed(delay).then((value) {
       if (!isHover) {
         return;

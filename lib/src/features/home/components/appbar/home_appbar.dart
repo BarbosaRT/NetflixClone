@@ -66,58 +66,75 @@ class _HomeAppBarState extends State<HomeAppBar> {
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
 
-    final child = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 50, top: 10),
-        child: SizedBox(
-            width: width * 0.075, child: Image.asset('assets/images/logo.png')),
+    final child = Stack(children: [
+      Positioned(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 50, top: 10),
+            child: SizedBox(
+                width: width * 0.075,
+                child: Image.asset('assets/images/logo.png')),
+          ),
+          const SizedBox(
+            width: 27,
+          ),
+          for (var item in buttonLabels)
+            TopButton(
+                selectedStyle: selectedlabelLarge,
+                unselectedStyle: labelLarge,
+                name: item),
+        ]),
       ),
-      const SizedBox(
-        width: 30,
-      ),
-      for (var item in buttonLabels)
-        TopButton(
-            selectedStyle: selectedlabelLarge,
-            unselectedStyle: labelLarge,
-            name: item),
-      SizedBox(
-        width: (width - 940),
-      ),
-      const Padding(
-        padding: EdgeInsets.only(top: 10),
-        child: Icon(
+      Positioned(
+        top: 10,
+        left: width * 0.8,
+        child: const Icon(
           Icons.search,
           color: Colors.white,
         ),
       ),
-      const SizedBox(width: 10),
-      TopButton(
-          selectedStyle: selectedlabelLarge,
-          unselectedStyle: labelLarge,
-          name: 'Infantil'),
-      const SizedBox(
-        width: 10,
+      Positioned(
+        left: width * 0.826,
+        child: TopButton(
+            selectedStyle: selectedlabelLarge,
+            unselectedStyle: labelLarge,
+            name: 'Infantil'),
       ),
-      const HoverWidget(
-        icon: Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Icon(
-            Icons.notifications,
-            color: Colors.white,
+      Positioned(
+        left: width * 0.569,
+        child: const HoverWidget(
+          icon: Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Icon(
+              Icons.notifications,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
     ]);
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
+    return SizedBox(
+      width: width,
       height: widget.preferredSize.height,
-      color: homeAppBarController.isAtTop
-          ? Colors.transparent
-          : Colors.grey.shade900,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: child,
+      child: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            height: 70,
+            color: homeAppBarController.isAtTop
+                ? Colors.transparent
+                : Colors.grey.shade900,
+          ),
+          SizedBox(
+            width: width,
+            height: 500,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: child,
+            ),
+          ),
+        ],
       ),
     );
   }
