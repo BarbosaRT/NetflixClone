@@ -1,59 +1,82 @@
 import 'package:flutter/material.dart';
 
 class HoverWidget extends StatefulWidget {
-  final icon;
-  final child;
-  const HoverWidget({super.key, this.child, this.icon});
+  final Widget? icon;
+  final Widget? child;
+  final double maxWidth;
+  final double rightPadding;
+  const HoverWidget(
+      {super.key,
+      this.child,
+      this.icon,
+      this.maxWidth = 400,
+      this.rightPadding = 30});
 
   @override
   State<HoverWidget> createState() => _HoverWidgetState();
 }
 
 class _HoverWidgetState extends State<HoverWidget> {
-  bool hover = false;
+  bool _hover = false;
+  bool _isHover = false;
+
+  void onExit() {
+    _isHover = false;
+    Future.delayed(const Duration(milliseconds: 50)).then(
+      (value) {
+        if (_isHover) {
+          return;
+        }
+        setState(() {
+          _hover = false;
+        });
+      },
+    );
+  }
+
+  void onHover() {
+    _isHover = true;
+    setState(() {
+      _hover = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(hover);
-
     return SizedBox(
       height: 1000,
-      width: 500,
+      width: widget.maxWidth,
       child: Stack(
+        alignment: Alignment.topRight,
         children: [
           Positioned(
-            left: 420,
+            left: widget.maxWidth - widget.rightPadding,
             child: MouseRegion(
               opaque: false,
               onExit: (event) {
-                setState(() {
-                  hover = false;
-                });
+                onExit();
               },
               onHover: (v) {
-                setState(() {
-                  hover = true;
-                });
+                onHover();
               },
               child: widget.icon,
             ),
           ),
-          hover
+          _hover
               ? Positioned(
-                  top: 50,
+                  top: 40,
                   child: MouseRegion(
-                      onExit: (event) {
-                        setState(() {
-                          hover = false;
-                        });
-                      },
-                      onHover: (v) {
-                        setState(() {
-                          hover = true;
-                        });
-                      },
-                      child: Container(
-                          width: 450, height: 300, color: Colors.blue)),
+                    onExit: (event) {
+                      onExit();
+                    },
+                    onHover: (v) {
+                      onHover();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: widget.child,
+                    ),
+                  ),
                 )
               : Container(),
         ],
