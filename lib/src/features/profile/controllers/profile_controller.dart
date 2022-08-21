@@ -4,7 +4,7 @@ import 'package:netflix/src/features/profile/controllers/profile_model.dart';
 class ProfileController extends ChangeNotifier {
   List<ProfileModel> _profiles = [];
   List<ProfileModel> get profiles => _profiles;
-  int selected = 0;
+  int selected = 1;
 
   void start() {
     if (_profiles == []) {
@@ -12,16 +12,24 @@ class ProfileController extends ChangeNotifier {
     }
     _profiles = [];
     _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_1.jpeg',
+      icon: 'assets/images/profiles/image_5.png',
+      name: 'papai',
+    ));
+    _profiles.add(ProfileModel(
+      icon: 'assets/images/profiles/image_6.png',
       name: 'amog us',
     ));
     _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_1.jpeg',
-      name: 'sus',
+      icon: 'assets/images/profiles/image_3.png',
+      name: 'mamae',
     ));
     _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_2.png',
-      name: 'test',
+      icon: 'assets/images/profiles/image_1.jpeg',
+      name: 'dog',
+    ));
+    _profiles.add(ProfileModel(
+      icon: 'assets/images/profiles/image_4.png',
+      name: 'infantil',
     ));
     notifyListeners();
   }

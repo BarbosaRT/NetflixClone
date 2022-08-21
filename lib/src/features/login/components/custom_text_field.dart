@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -55,13 +56,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
     TextStyle textStyleInput = widget.textStyle.copyWith(color: Colors.white);
 
     final loginController = context.watch<LoginController>();
+    final colorController = Modular.get<ColorController>();
+    final Color textFieldColor =
+        colorController.currentScheme.loginTextFieldColor;
 
     return Container(
       width: widget.textFieldWidth,
       height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(3),
-        color: Colors.grey.shade800,
+        color: textFieldColor,
       ),
       child: Padding(
         padding: EdgeInsets.only(top: selected ? 15 : 0, left: 13),
@@ -84,7 +88,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 style: textStyleInput,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.grey.shade800,
+                  fillColor: textFieldColor,
                   border: const OutlineInputBorder(borderSide: BorderSide.none),
                   label: Text(
                     widget.text,

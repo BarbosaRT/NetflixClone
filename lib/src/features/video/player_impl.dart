@@ -10,7 +10,7 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
-    if (_controller.value.isInitialized && _enableFrame) {
+    if (_controller.value.isInitialized && _enableFrame && isPlaying()) {
       return AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
         child: VideoPlayer(_controller),

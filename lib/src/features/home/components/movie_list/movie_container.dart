@@ -25,15 +25,23 @@ class _MovieContainerState extends State<MovieContainer> {
   var random = Random(69);
   int recomentationValue = 0;
   int temps = 0;
+  Color? color;
 
   @override
   void initState() {
     super.initState();
     random = Random(69 * widget.index * 2);
+    color = Color.fromRGBO(
+      min(255, 10 * widget.index),
+      min(255, 5 * widget.index),
+      min(255, 7 * widget.index),
+      1,
+    );
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
   }
 
+  //TODO: Refatorar, colocar os icones, e as cores
   //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos é claro
   //TODO: Terminar Barra de cima
 
@@ -46,7 +54,8 @@ class _MovieContainerState extends State<MovieContainer> {
   static const double padding = 100;
 
   static const double infoHeight = width * factor - height * factor;
-
+  static const double border = 5;
+  static const double hoverBorder = 10;
   //static const double outWidth = width * factor;
   //static const double outHeight = height * factor;
 
@@ -61,17 +70,10 @@ class _MovieContainerState extends State<MovieContainer> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void onHover() {
+    isHover = true;
     final controller = Modular.get<MovieListController>();
-    final headline6 = GoogleFonts.roboto(
-        textStyle: Theme.of(context).textTheme.headline6!.copyWith(
-              color: Colors.white,
-              fontSize: 17,
-            ));
-
-    const backgroundColor = Color.fromRGBO(40, 40, 40, 1);
-
+    controller.changeCurrent(widget.index);
     Future.delayed(delay).then((value) {
       if (!isHover) {
         return;
@@ -80,8 +82,32 @@ class _MovieContainerState extends State<MovieContainer> {
         hover = true;
       });
     });
+  }
 
-    return AnimatedContainer(
+  @override
+  Widget build(BuildContext context) {
+    final headline6 = GoogleFonts.roboto(
+        textStyle: Theme.of(context).textTheme.headline6!.copyWith(
+              color: Colors.white,
+              fontSize: 17,
+            ));
+
+    const backgroundColor = Color.fromRGBO(40, 40, 40, 1);
+    const decoration =
+        BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(border)));
+
+    const movieDecoraion = BoxDecoration(
+        borderRadius: BorderRadius.only(
+      topRight: Radius.circular(hoverBorder),
+      topLeft: Radius.circular(hoverBorder),
+    ));
+    const infoContainer = BoxDecoration(
+        borderRadius: BorderRadius.only(
+      bottomRight: Radius.circular(hoverBorder),
+      bottomLeft: Radius.circular(hoverBorder),
+    ));
+
+    final output = AnimatedContainer(
       curve: curve,
       duration: duration,
       //
@@ -97,20 +123,18 @@ class _MovieContainerState extends State<MovieContainer> {
       ),
       child: MouseRegion(
         onEnter: (event) {
-          controller.changeCurrent(widget.index);
+          onHover();
         },
         //
         //
         onHover: (v) {
-          isHover = true;
-          controller.changeCurrent(widget.index);
+          onHover();
         },
         //
         //
         onExit: (event) {
           isHover = false;
           setState(() {
-            isHover = false;
             hover = false;
           });
         },
@@ -123,7 +147,13 @@ class _MovieContainerState extends State<MovieContainer> {
                 duration: duration,
                 width: hover ? width * factor : width,
                 height: hover ? height * factor : height,
-                color: Colors.red,
+                decoration: hover
+                    ? movieDecoraion.copyWith(
+                        color: color,
+                      )
+                    : decoration.copyWith(
+                        color: color,
+                      ),
                 child: Center(
                     child: Text(
                   widget.index.toString(),
@@ -137,7 +167,13 @@ class _MovieContainerState extends State<MovieContainer> {
                 duration: duration,
                 height: hover ? infoHeight : 0,
                 width: hover ? width * factor : width,
-                color: backgroundColor,
+                decoration: hover
+                    ? infoContainer.copyWith(
+                        color: backgroundColor,
+                      )
+                    : const BoxDecoration(
+                        color: backgroundColor,
+                      ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(0),
                   physics: const NeverScrollableScrollPhysics(),
@@ -239,7 +275,9 @@ class _MovieContainerState extends State<MovieContainer> {
                           ),
                         ),
                       ),
+                      //
                       // Tags
+                      //
                       Padding(
                         padding: const EdgeInsets.only(left: 15, top: 20),
                         child: SingleChildScrollView(
@@ -293,5 +331,6 @@ class _MovieContainerState extends State<MovieContainer> {
         ),
       ),
     );
+    return output;
   }
 }

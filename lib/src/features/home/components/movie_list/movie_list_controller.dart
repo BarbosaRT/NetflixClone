@@ -36,14 +36,15 @@ class MovieListController extends ChangeNotifier {
     }
     _initialized = true;
     _widgets = [];
-    for (int i = 45; i >= 0; i--) {
+    for (int i = 25; i >= 0; i--) {
       MovieContainerAnchor anchor = getAnchor(i);
+      final container = MovieContainer(
+        index: i,
+        anchor: anchor,
+      );
       _widgets.add(Positioned(
         left: spacing * i,
-        child: MovieContainer(
-          index: i,
-          anchor: anchor,
-        ),
+        child: container,
       ));
     }
 

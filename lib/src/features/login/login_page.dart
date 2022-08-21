@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/login/components/custom_text_field.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
@@ -26,14 +28,11 @@ class _LoginPageState extends State<LoginPage> {
     final scrollController = ScrollController();
 
     final loginController = context.watch<LoginController>();
+    final colorController = Modular.get<ColorController>();
 
-    final headline4 = Theme.of(context).textTheme.headline4!.copyWith(
-        color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Arial');
+    final headline4 = AppFonts().headline4;
 
-    final headline6 = Theme.of(context)
-        .textTheme
-        .headline6!
-        .copyWith(color: Colors.white, fontSize: 17);
+    final headline6 = AppFonts().headline6;
 
     final labelLarge = Theme.of(context)
         .textTheme
@@ -48,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
 
     final labelMedium =
         Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey);
+
+    final Color buttonColor = colorController.currentScheme.loginButtonColor;
 
     return Scaffold(
         body: Scrollbar(
@@ -157,13 +158,11 @@ class _LoginPageState extends State<LoginPage> {
                               //
                               loginController.isLogged
                                   ? Container(
-                                      width: 313,
+                                      width: 320,
                                       height: 48,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(2),
-                                        color:
-                                            const Color.fromARGB(255, 228, 0, 0)
-                                                .withOpacity(0.5),
+                                        color: buttonColor.withOpacity(0.5),
                                       ),
                                       child: Center(
                                           child: SizedBox(
@@ -191,13 +190,12 @@ class _LoginPageState extends State<LoginPage> {
                                         backgroundColor:
                                             MaterialStateProperty.all(
                                                 loginController.canLog()
-                                                    ? const Color.fromARGB(
-                                                        255, 228, 0, 0)
+                                                    ? buttonColor
                                                     : const Color.fromARGB(
                                                         255, 190, 0, 0)),
                                       ),
                                       child: SizedBox(
-                                        width: textFieldWidth - 35,
+                                        width: textFieldWidth - 32,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 13),
@@ -270,11 +268,11 @@ class _LoginPageState extends State<LoginPage> {
                                   children: const <TextSpan>[
                                     TextSpan(text: '''Assine agora.
       
-      ''', style: TextStyle(color: Colors.white)),
+''', style: TextStyle(color: Colors.white)),
                                     TextSpan(
                                         text:
                                             '''Esta página é protegida pelo Google reCAPTCHA 
-      para garantir que você não é um robô. ''',
+para garantir que você não é um robô. ''',
                                         style: TextStyle(fontSize: 13)),
                                     TextSpan(
                                         text: 'Saiba mais.',

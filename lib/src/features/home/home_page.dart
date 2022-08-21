@@ -37,11 +37,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    Future.delayed(const Duration(seconds: 2)).then(((value) {
+    Future.delayed(const Duration(seconds: 10)).then((value) {
       setState(() {
-        //videoController.play();
+        videoController.play();
       });
-    }));
+    });
 
     setState(() {});
     super.initState();
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     const fadeInDuration = Duration(milliseconds: 700);
 
     final homeAppBar =
-        HomeAppBar(scrollController: scrollController, height: 400);
+        HomeAppBar(scrollController: scrollController, height: 500);
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -313,7 +313,7 @@ class VolumeButton extends StatefulWidget {
 
 class _VolumeButtonState extends State<VolumeButton> {
   bool pressed = false;
-
+  bool hover = false;
   @override
   void initState() {
     final videoController = Modular.get<PlayerImpl>();
@@ -330,25 +330,39 @@ class _VolumeButtonState extends State<VolumeButton> {
 
     return Padding(
       padding: const EdgeInsets.only(right: 16, top: 2),
-      child: Container(
-          width: 35,
-          height: 35,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, width: pressed ? 2 : 1),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-              onPressed: () {
-                setState(() {
-                  pressed = !(videoController.getVolume() == 0);
-                  videoController.setVolume(pressed ? 0 : 1);
-                });
-              },
-              icon: Icon(
-                pressed ? Icons.volume_off_outlined : Icons.volume_up_outlined,
-                color: Colors.white,
-                size: pressed ? 16 : 17,
-              ))),
+      child: MouseRegion(
+        onExit: (event) {
+          setState(() {
+            hover = false;
+          });
+        },
+        onHover: (event) {
+          setState(() {
+            hover = true;
+          });
+        },
+        child: Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: pressed ? 2 : 1),
+                shape: BoxShape.circle,
+                color: Colors.grey.withOpacity(hover ? 0.1 : 0.0)),
+            child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    pressed = !(videoController.getVolume() == 0);
+                    videoController.setVolume(pressed ? 0 : 1);
+                  });
+                },
+                icon: Icon(
+                  pressed
+                      ? Icons.volume_off_outlined
+                      : Icons.volume_up_outlined,
+                  color: Colors.white,
+                  size: pressed ? 16 : 17,
+                ))),
+      ),
     );
   }
 }
