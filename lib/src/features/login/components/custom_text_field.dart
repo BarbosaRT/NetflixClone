@@ -68,7 +68,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         color: textFieldColor,
       ),
       child: Padding(
-        padding: EdgeInsets.only(top: selected ? 15 : 0, left: 13),
+        padding: EdgeInsets.only(top: selected ? 15 : 0, left: 7),
         child: Row(
           children: [
             SizedBox(

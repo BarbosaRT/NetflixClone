@@ -21,49 +21,62 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  bool selected = false;
+  bool _hover = false;
+
+  void onExit() {
+    setState(() {
+      _hover = false;
+    });
+  }
+
+  void onHover() {
+    setState(() {
+      _hover = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
-    return ElevatedButton(
-      style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(Colors.grey.shade900),
-        backgroundColor: MaterialStateProperty.all(Colors.grey.shade900),
-        elevation: MaterialStateProperty.all(0),
-      ),
-      onHover: (v) {
-        setState(() {
-          selected = v;
-        });
-      },
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         profileController.select(widget.index);
         Navigator.of(context).pushReplacementNamed('/splash');
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                border:
-                    selected ? Border.all(width: 3, color: Colors.white) : null,
-                color: Colors.red),
-            child: Image.asset(
-              widget.icon,
+      child: MouseRegion(
+        onHover: (v) {
+          onHover();
+        },
+        onExit: (v) {
+          onExit();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 135,
+              height: 135,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: _hover
+                    ? Border.all(width: 3, color: Colors.white)
+                    : Border.all(width: 3, color: Colors.transparent),
+                image: DecorationImage(
+                  image: AssetImage(
+                    widget.icon,
+                  ),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            widget.name,
-            style: selected ? widget.selectedStyle : widget.unselectedStyle,
-          )
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              widget.name,
+              style: _hover ? widget.selectedStyle : widget.unselectedStyle,
+            )
+          ],
+        ),
       ),
     );
   }

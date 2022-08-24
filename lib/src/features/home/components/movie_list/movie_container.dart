@@ -32,11 +32,12 @@ class _MovieContainerState extends State<MovieContainer> {
     super.initState();
     random = Random(69 * widget.index * 2);
     color = Color.fromRGBO(
-      min(255, 10 * widget.index),
-      min(255, 5 * widget.index),
       min(255, 7 * widget.index),
+      min(255, 5 * widget.index),
+      min(255, 10 * widget.index),
       1,
     );
+    print('(${color!.red} ${color!.green}, ${color!.blue}), $widget.index');
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
   }
@@ -56,8 +57,6 @@ class _MovieContainerState extends State<MovieContainer> {
   static const double infoHeight = width * factor - height * factor;
   static const double border = 5;
   static const double hoverBorder = 10;
-  //static const double outWidth = width * factor;
-  //static const double outHeight = height * factor;
 
   double getValueFromAnchor(double left, double center, double right) {
     switch (widget.anchor) {

@@ -9,6 +9,16 @@ import 'package:netflix/src/features/home/components/movie_list/list_widget.dart
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/video/player_impl.dart';
 
+MyGlobals myGlobals = MyGlobals();
+
+class MyGlobals {
+  late GlobalKey _scaffoldKey;
+  MyGlobals() {
+    _scaffoldKey = GlobalKey();
+  }
+  GlobalKey get scaffoldKey => _scaffoldKey;
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -19,9 +29,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    super.initState();
     final loginController = context.read<LoginController>();
     if (!loginController.isLogged) {
       Navigator.pushReplacementNamed(context, '/login');
+      return;
     }
 
     final videoController = context.read<PlayerImpl>();
@@ -36,15 +48,14 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
-
-    Future.delayed(const Duration(seconds: 10)).then((value) {
-      setState(() {
-        videoController.play();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+      Future.delayed(const Duration(seconds: 10)).then((value) {
+        setState(() {
+          videoController.play();
+        });
       });
     });
-
-    setState(() {});
-    super.initState();
   }
 
   @override
@@ -88,6 +99,7 @@ class _HomePageState extends State<HomePage> {
         extendBodyBehindAppBar: true,
         backgroundColor: backgroundColor,
         appBar: homeAppBar,
+        key: myGlobals.scaffoldKey,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {

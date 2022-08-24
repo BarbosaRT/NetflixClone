@@ -441,16 +441,16 @@ class _ProfileButtonState extends State<ProfileButton> {
 
   void onExit() {
     _isHover = false;
-    Future.delayed(delayOut).then(
-      (value) {
-        if (_isHover) {
-          return;
-        }
+    Future.delayed(delayOut).then((value) {
+      if (_isHover) {
+        return;
+      }
+      if (mounted) {
         setState(() {
           _hover = false;
         });
-      },
-    );
+      }
+    });
   }
 
   void onHover() {

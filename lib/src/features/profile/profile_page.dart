@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/profile/components/manager_button.dart';
 import 'package:netflix/src/features/profile/components/profile_widget.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
@@ -23,80 +25,88 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
+    final colorController = context.watch<ColorController>();
+
+    final backgroundColor = colorController.currentScheme.darkBackgroundColor;
 
     double width = MediaQuery.of(context).size.width;
 
-    final headline3 = Theme.of(context).textTheme.headline3!.copyWith(
-        color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Arial');
+    final headline3 = AppFonts().headline3;
 
-    final labelLarge = Theme.of(context)
-        .textTheme
-        .labelLarge!
-        .copyWith(color: Colors.grey, fontSize: 16, fontFamily: 'Arial');
+    final labelLarge = AppFonts().labelLarge;
 
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
 
     List<Widget> profiles = [];
     for (int i = 0; i < profileController.profiles.length; i++) {
-      profiles.add(ProfileWidget(
-        selectedStyle: selectedlabelLarge,
-        unselectedStyle: labelLarge,
-        icon: profileController.profiles[i].icon,
-        name: profileController.profiles[i].name,
-        index: i,
+      profiles.add(Padding(
+        padding: const EdgeInsets.only(left: 14, right: 14),
+        child: ProfileWidget(
+          selectedStyle: selectedlabelLarge,
+          unselectedStyle: labelLarge,
+          icon: profileController.profiles[i].icon,
+          name: profileController.profiles[i].name,
+          index: i,
+        ),
       ));
     }
 
-    return Stack(children: [
-      // Background
-      Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.grey.shade900,
-      ),
-      //
-      // Logo
-      //
-      Padding(
-        padding: const EdgeInsets.only(left: 55, top: 21),
-        child: SizedBox(
-            width: width * 0.07, child: Image.asset('assets/images/logo.png')),
-      ),
-      //
-      // Center Part
-      //
-      Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 130,
-            ),
-            Text(
-              'Quem está assistindo?',
-              style: headline3,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: profiles,
-            ),
-            const SizedBox(
-              height: 70,
-            ),
-            //
-            // Gerenciar Perfis
-            //
-            ManagerButton(
-              selectedStyle:
-                  selectedlabelLarge.copyWith(fontWeight: FontWeight.normal),
-              unselectedStyle: labelLarge,
-            )
-          ],
+    return Scaffold(
+      body: Stack(children: [
+        // Background
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: backgroundColor,
         ),
-      )
-    ]);
+        //
+        // Logo
+        //
+        Padding(
+          padding: const EdgeInsets.only(left: 55, top: 21),
+          child: SizedBox(
+              width: width * 0.07,
+              child: Image.asset('assets/images/logo.png')),
+        ),
+        //
+        // Center Part
+        //
+        SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                'Quem está assistindo?',
+                style: headline3,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: profiles,
+              ),
+              const SizedBox(
+                height: 80,
+              ),
+              //
+              // Gerenciar Perfis
+              //
+              ManagerButton(
+                selectedStyle:
+                    selectedlabelLarge.copyWith(fontWeight: FontWeight.normal),
+                unselectedStyle: labelLarge,
+              )
+            ],
+          ),
+        )
+      ]),
+    );
   }
 }

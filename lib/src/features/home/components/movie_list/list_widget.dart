@@ -28,6 +28,7 @@ class _ListWidgetState extends State<ListWidget> {
 
   static const double distanceToTop = 90;
 
+  static const Duration duration = Duration(milliseconds: 300);
   @override
   void initState() {
     super.initState();
@@ -35,12 +36,14 @@ class _ListWidgetState extends State<ListWidget> {
     final controller = Modular.get<MovieListController>();
 
     controller.init();
-    controller.addListener(() {
-      widgetController();
-    });
-
-    setState(() {
-      widgets = controller.test.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        widgets = controller.test.toList();
+      });
+      controller.addListener(() {
+        widgetController();
+      });
+      // Add Your Code here.
     });
   }
 
@@ -50,32 +53,37 @@ class _ListWidgetState extends State<ListWidget> {
     _scrollController.dispose();
   }
 
-  void widgetController() {
+  void changeWidget(int v, Duration d) {
     final controller = Modular.get<MovieListController>();
-    if (value == controller.current) {
-      return;
-    }
-    value = controller.current;
+    value = v;
     widgets = controller.test.toList();
-    Duration duration = const Duration(milliseconds: 300);
     if (controller.getAnchor(value) == MovieContainerAnchor.center) {
       //
-      Future.delayed(duration).then((v) {
+      Future.delayed(d).then((v) {
         widgets.insert(0, widgets[widgets.length - value]);
         widgets.removeAt(widgets.length - value);
         setState(() {});
       });
       //
     } else if (controller.getAnchor(value) == MovieContainerAnchor.right) {
-      Future.delayed(duration).then((v) {
+      Future.delayed(d).then((v) {
         widgets = widgets.reversed.toList();
         setState(() {});
       });
     } else {
-      Future.delayed(duration).then((v) {
+      Future.delayed(d).then((v) {
         setState(() {});
       });
     }
+  }
+
+  void widgetController() {
+    final controller = Modular.get<MovieListController>();
+    if (value == controller.current) {
+      return;
+    }
+    //TODO: Tente mudar na lista direto
+    changeWidget(controller.current, duration);
   }
 
   @override

@@ -13,23 +13,23 @@ class ProfileController extends ChangeNotifier {
     _profiles = [];
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_5.png',
-      name: 'papai',
+      name: 'Papai',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_6.png',
-      name: 'amog us',
+      name: 'Amog us',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_3.png',
-      name: 'mamae',
+      name: 'Mamae',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_1.jpeg',
-      name: 'dog',
+      name: 'Dog',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_4.png',
-      name: 'infantil',
+      name: 'Infantil',
     ));
     notifyListeners();
   }

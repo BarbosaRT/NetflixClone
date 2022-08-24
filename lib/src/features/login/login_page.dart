@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    double totalHeight = height > 720 ? height * 1.35 : height * 1.7;
 
     const double textFieldWidth = 315;
 
@@ -34,24 +35,19 @@ class _LoginPageState extends State<LoginPage> {
 
     final headline6 = AppFonts().headline6;
 
-    final labelLarge = Theme.of(context)
-        .textTheme
-        .labelLarge!
-        .copyWith(color: Colors.grey, fontSize: 16, fontFamily: 'Arial');
+    final labelLarge = AppFonts().labelLarge;
 
-    final labelBig =
-        labelLarge.copyWith(fontSize: 17, fontWeight: FontWeight.normal);
+    final labelBig = AppFonts().labelBig;
 
-    final labelIntermedium =
-        labelLarge.copyWith(fontSize: 13, fontWeight: FontWeight.normal);
+    final labelIntermedium = AppFonts().labelIntermedium;
 
-    final labelMedium =
-        Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey);
+    final labelMedium = AppFonts().labelMedium;
 
     final Color buttonColor = colorController.currentScheme.loginButtonColor;
 
     return Scaffold(
         body: Scrollbar(
+      thumbVisibility: true,
       controller: scrollController,
       child: SmoothScroll(
         scrollSpeed: 90,
@@ -61,120 +57,134 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
           controller: scrollController,
-          child: Stack(
-            children: [
-              // Background
-              Padding(
-                padding: const EdgeInsets.all(0),
-                child: Image.asset('assets/images/login_background.jpg',
-                    width: width * 0.991,
-                    fit: BoxFit.contain,
+          child: SizedBox(
+            width: 1360,
+            height: totalHeight,
+            child: Stack(
+              children: [
+                // Background
+                Image.asset('assets/images/login_background.jpg',
+                    width: 1360,
+                    height: totalHeight,
+                    fit: BoxFit.none,
                     color: Colors.black.withOpacity(0.5),
                     colorBlendMode: BlendMode.darken),
-              ),
-              //
-              // Gradient
-              //
-              Container(
-                width: width,
-                height: 90,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.5),
-                        Colors.black.withOpacity(0)
-                      ]),
+                //
+                // Gradient
+                //
+                Container(
+                  width: width,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.5),
+                          Colors.black.withOpacity(0)
+                        ]),
+                  ),
                 ),
-              ),
-              //
-              // Logo
-              //
-              Padding(
-                padding: const EdgeInsets.only(left: 35, top: 21),
-                child: SizedBox(
-                    width: width * 0.13,
-                    child: Image.asset('assets/images/logo.png')),
-              ),
-              //
-              // Login Card
-              //
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 90,
-                      ),
-                      Container(
-                        width: 450,
-                        height: height * 1.08,
-                        color: Colors.black.withOpacity(0.75),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 60, left: 70),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //
-                              // Texto Entrar
-                              //
-                              Text(
-                                'Entrar',
-                                style: headline4,
-                                textAlign: TextAlign.start,
-                              ),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              //
-                              // Textfield Email
-                              //
-                              CustomTextField(
-                                textFieldWidth: textFieldWidth,
-                                textStyle: labelLarge,
-                                text: 'Email ou número de telefone',
-                                controller: email,
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              //
-                              // Textfield Senha
-                              //
-                              CustomTextField(
-                                textFieldWidth: textFieldWidth,
-                                textStyle: labelLarge,
-                                text: 'Senha',
-                                controller: senha,
-                                isPassword: true,
-                              ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              //
-                              // Botao Entrar
-                              //
-                              loginController.isLogged
-                                  ? Container(
-                                      width: 320,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(2),
-                                        color: buttonColor.withOpacity(0.5),
+                //
+                // Logo
+                //
+                Padding(
+                  padding: const EdgeInsets.only(left: 35, top: 21),
+                  child: SizedBox(
+                      width: width * 0.13,
+                      child: Image.asset('assets/images/logo.png')),
+                ),
+                //
+                // Login Card
+                //
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const SizedBox(
+                          height: 90,
+                        ),
+                        Container(
+                          width: 450,
+                          height: 600,
+                          color: Colors.black.withOpacity(0.75),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 60, left: 65),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //
+                                // Texto Entrar
+                                //
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    'Entrar',
+                                    style: headline4,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                //
+                                // Textfield Email
+                                //
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: CustomTextField(
+                                    textFieldWidth: textFieldWidth,
+                                    textStyle: labelLarge,
+                                    text: 'Email ou número de telefone',
+                                    controller: email,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                //
+                                // Textfield Senha
+                                //
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: CustomTextField(
+                                    textFieldWidth: textFieldWidth,
+                                    textStyle: labelLarge,
+                                    text: 'Senha',
+                                    controller: senha,
+                                    isPassword: true,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                //
+                                // Botao Entrar
+                                //
+                                if (loginController.isLogged)
+                                  Container(
+                                    width: 316,
+                                    height: 48,
+                                    margin: const EdgeInsets.only(left: 5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                      color: buttonColor.withOpacity(0.5),
+                                    ),
+                                    child: Center(
+                                        child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                        color: Colors.white.withOpacity(0.8),
                                       ),
-                                      child: Center(
-                                          child: SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.0,
-                                          color: Colors.white.withOpacity(0.8),
-                                        ),
-                                      )),
-                                    )
-                                  : ElevatedButton(
+                                    )),
+                                  )
+                                else
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: ElevatedButton(
                                       onPressed: () async {
                                         if (loginController.canLog()) {
                                           loginController.login();
@@ -207,198 +217,217 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       ),
                                     ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              //
-                              // Lembre-se
-                              //
-                              SizedBox(
-                                width: textFieldWidth,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 25,
-                                          child: IconButton(
-                                            iconSize: 20,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              setState(() {
-                                                _lembrar = !_lembrar;
-                                              });
-                                            },
-                                            icon: Icon(
-                                              _lembrar
-                                                  ? Icons.check_box
-                                                  : Icons
-                                                      .check_box_outline_blank,
-                                              color: Colors.grey.shade700,
+                                  ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                //
+                                // Lembre-se
+                                //
+                                SizedBox(
+                                  width: textFieldWidth,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 25,
+                                            child: IconButton(
+                                              iconSize: 22,
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _lembrar = !_lembrar;
+                                                });
+                                              },
+                                              icon: Icon(
+                                                _lembrar
+                                                    ? Icons.check_box
+                                                    : Icons
+                                                        .check_box_outline_blank,
+                                                color: Colors.grey.shade700,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          'Lembre-se de mim',
-                                          style: labelMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      'Precisa de ajuda?',
-                                      style: labelMedium,
-                                    ),
-                                  ],
+                                          Text(
+                                            'Lembre-se de mim',
+                                            style: labelMedium,
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        'Precisa de ajuda?',
+                                        style: labelMedium,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 80,
-                              ),
-                              //
-                              // Textos
-                              //
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Novo por aqui? ',
-                                  style: labelLarge,
-                                  children: const <TextSpan>[
-                                    TextSpan(text: '''Assine agora.
+                                const SizedBox(
+                                  height: 80,
+                                ),
+                                //
+                                // Textos
+                                //
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: labelLarge,
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: 'Novo por aqui? ',
+                                            style: TextStyle(
+                                                color: Colors.grey.shade700)),
+                                        const TextSpan(text: '''Assine agora.
       
 ''', style: TextStyle(color: Colors.white)),
-                                    TextSpan(
-                                        text:
-                                            '''Esta página é protegida pelo Google reCAPTCHA 
+                                        const TextSpan(
+                                            text:
+                                                '''Esta página é protegida pelo Google reCAPTCHA 
 para garantir que você não é um robô. ''',
-                                        style: TextStyle(fontSize: 13)),
-                                    TextSpan(
-                                        text: 'Saiba mais.',
-                                        style: TextStyle(
-                                            fontSize: 13, color: Colors.blue))
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: height,
-                    width: 20,
-                  ),
-                ],
-              ),
-              //
-              // Infos
-              //
-              Positioned(
-                top: height * 1.37,
-                child: Container(
-                  color: Colors.black.withOpacity(0.75),
-                  width: width * 0.99,
-                  height: 500,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30, left: 170),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Dúvidas? Ligue 0800 591 8942',
-                            style: labelBig,
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          SizedBox(
-                            width: width * 0.6,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Perguntas frequentes',
-                                  style: labelIntermedium,
-                                ),
-                                Text(
-                                  'Central de Ajuda',
-                                  style: labelIntermedium,
-                                ),
-                                Text(
-                                  'Termos de Uso',
-                                  style: labelIntermedium,
-                                ),
-                                Text(
-                                  'Privacidade',
-                                  style: labelIntermedium,
+                                            style: TextStyle(fontSize: 12)),
+                                        const TextSpan(
+                                            text: 'Saiba mais.',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blue))
+                                      ],
+                                    ),
+                                  ),
                                 )
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          SizedBox(
-                            width: width * 0.5,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Preferências de cookies',
-                                  style: labelIntermedium,
-                                ),
-                                SizedBox(
-                                  width: width * 0.098,
-                                ),
-                                Text(
-                                  'Informações corporativas',
-                                  style: labelIntermedium,
-                                ),
-                              ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: height,
+                      width: 20,
+                    ),
+                  ],
+                ),
+                //
+                // Infos
+                //
+                Positioned(
+                  top: 780,
+                  child: Container(
+                    color: Colors.black.withOpacity(0.75),
+                    width: width * 0.99,
+                    height: 500,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30, left: 170),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Dúvidas? Ligue 0800 591 8942',
+                              style: labelBig,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Container(
-                              width: 140,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(2),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.grey.shade800,
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            SizedBox(
+                              width: width * 0.6,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Perguntas frequentes',
+                                    style: labelIntermedium,
                                   ),
-                                  color: Colors.black),
-                              child: Row(children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 12, top: 1),
-                                  child: Icon(
-                                    Icons.language,
-                                    color: Colors.grey,
-                                    size: 20,
+                                  Text(
+                                    'Central de Ajuda',
+                                    style: labelIntermedium,
                                   ),
-                                ),
-                                const SizedBox(width: 20),
-                                DropdownButton<Text>(
-                                    underline: Container(),
-                                    items: [
-                                      DropdownMenuItem<Text>(
-                                          child: Text(
-                                        'Portugues',
-                                        style: labelMedium,
-                                      ))
-                                    ],
-                                    onChanged: (v) {})
-                              ]))
-                        ]),
+                                  Text(
+                                    'Termos de Uso',
+                                    style: labelIntermedium,
+                                  ),
+                                  Text(
+                                    'Privacidade',
+                                    style: labelIntermedium,
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: width * 0.5,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Preferências de cookies',
+                                    style: labelIntermedium,
+                                  ),
+                                  SizedBox(
+                                    width: width * 0.098,
+                                  ),
+                                  Text(
+                                    'Informações corporativas',
+                                    style: labelIntermedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                                width: 140,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    color: Colors.black),
+                                child: Row(children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 12, top: 1),
+                                    child: Icon(
+                                      Icons.language,
+                                      color: Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  DropdownButton<Text>(
+                                      icon: const Icon(
+                                        Icons.expand_more,
+                                      ),
+                                      underline: Container(),
+                                      items: [
+                                        DropdownMenuItem<Text>(
+                                            child: Text(
+                                          'Portugues',
+                                          style: labelMedium,
+                                        ))
+                                      ],
+                                      onChanged: (v) {})
+                                ]))
+                          ]),
+                    ),
                   ),
                 ),
-              )
-            ],
+                Container(
+                  margin: EdgeInsets.only(left: width - 12),
+                  width: 12,
+                  height: totalHeight,
+                  color: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
       ),

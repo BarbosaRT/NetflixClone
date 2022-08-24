@@ -18,8 +18,8 @@ class _ManagerButtonState extends State<ManagerButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(Colors.grey.shade900),
-            backgroundColor: MaterialStateProperty.all(Colors.grey.shade900),
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
+            backgroundColor: MaterialStateProperty.all(Colors.transparent),
             elevation: MaterialStateProperty.all(0),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
@@ -34,7 +34,7 @@ class _ManagerButtonState extends State<ManagerButton> {
         },
         onPressed: () {},
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(11),
           child: Text(
             'Gerenciar perfis',
             style: selected ? widget.selectedStyle : widget.unselectedStyle,

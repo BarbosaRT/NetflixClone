@@ -16,9 +16,10 @@ class SplashController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startSplash(int seconds) async {
+  void startSplash(int seconds) {
     waitSplash();
-    await Future.delayed(Duration(seconds: seconds));
-    finishSplash();
+    Future.delayed(Duration(seconds: seconds)).then((value) {
+      finishSplash();
+    });
   }
 }
