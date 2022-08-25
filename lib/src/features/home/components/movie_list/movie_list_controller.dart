@@ -14,8 +14,7 @@ class MovieListController extends ChangeNotifier {
   List<Widget> test = [];
 
   bool _initialized = false;
-  //bool _isLeft = false;
-  //bool get isLeft => _isLeft;
+  static const Duration duration = Duration(milliseconds: 300);
 
   MovieContainerAnchor getAnchor(int i) {
     int v = i >= 5 ? i - 5 * (i ~/ 5) : i;
@@ -53,8 +52,38 @@ class MovieListController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void changeOrder() {
+    if (getAnchor(_current) == MovieContainerAnchor.center) {
+      //
+      Future.delayed(duration).then((v) {
+        Widget widget = test[widgets.length - _current];
+        int index = _widgets.indexOf(widget);
+
+        _widgets = test.toList();
+        _widgets.removeAt(index);
+        _widgets.insert(_widgets.length - _current, widget);
+
+        notifyListeners();
+      });
+      //
+    } else if (getAnchor(_current) == MovieContainerAnchor.right) {
+      Future.delayed(duration).then((v) {
+        _widgets = test.reversed.toList();
+        notifyListeners();
+      });
+    } else {
+      Future.delayed(duration).then((v) {
+        _widgets = test.toList();
+        notifyListeners();
+      });
+    }
+  }
+
   void changeCurrent(int index) {
+    if (index == _current) {
+      return;
+    }
     _current = index;
-    notifyListeners();
+    changeOrder();
   }
 }

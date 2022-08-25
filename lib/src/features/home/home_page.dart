@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
     final scrollController = ScrollController();
 
     final videoController = Modular.get<PlayerImpl>();
-    final homeController = context.watch<HoverNotification>();
 
     final backgroundColor = Colors.grey.shade900;
 

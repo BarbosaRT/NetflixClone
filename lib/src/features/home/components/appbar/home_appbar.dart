@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/components/appbar/profile_icon.dart';
 import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
-import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height;

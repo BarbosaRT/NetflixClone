@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:netflix/src/features/home/components/movie_list/movie_container.dart';
 import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
 
 class ListWidget extends StatefulWidget {
@@ -16,8 +15,6 @@ class _ListWidgetState extends State<ListWidget> {
   bool textSelected = false;
   bool listSelected = false;
 
-  int value = 0;
-
   double movingValue = 1350;
   final ScrollController _scrollController = ScrollController();
   // A movie list is divided in 5 parts (when showing) this is an Index that shows the current part
@@ -28,7 +25,6 @@ class _ListWidgetState extends State<ListWidget> {
 
   static const double distanceToTop = 90;
 
-  static const Duration duration = Duration(milliseconds: 300);
   @override
   void initState() {
     super.initState();
@@ -53,37 +49,12 @@ class _ListWidgetState extends State<ListWidget> {
     _scrollController.dispose();
   }
 
-  void changeWidget(int v, Duration d) {
-    final controller = Modular.get<MovieListController>();
-    value = v;
-    widgets = controller.test.toList();
-    if (controller.getAnchor(value) == MovieContainerAnchor.center) {
-      //
-      Future.delayed(d).then((v) {
-        widgets.insert(0, widgets[widgets.length - value]);
-        widgets.removeAt(widgets.length - value);
-        setState(() {});
-      });
-      //
-    } else if (controller.getAnchor(value) == MovieContainerAnchor.right) {
-      Future.delayed(d).then((v) {
-        widgets = widgets.reversed.toList();
-        setState(() {});
-      });
-    } else {
-      Future.delayed(d).then((v) {
-        setState(() {});
-      });
-    }
-  }
-
   void widgetController() {
     final controller = Modular.get<MovieListController>();
-    if (value == controller.current) {
-      return;
-    }
-    //TODO: Tente mudar na lista direto
-    changeWidget(controller.current, duration);
+    setState(() {
+      widgets = controller.widgets.toList();
+    });
+    // changeWidget(controller.current, duration);
   }
 
   @override

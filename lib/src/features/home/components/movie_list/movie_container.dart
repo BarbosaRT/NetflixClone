@@ -43,7 +43,6 @@ class _MovieContainerState extends State<MovieContainer> {
 
   //TODO: Refatorar, colocar os icones, e as cores
   //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos é claro
-  //TODO: Terminar Barra de cima
 
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeIn;

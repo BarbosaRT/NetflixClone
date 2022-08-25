@@ -16,7 +16,6 @@ class HoverNotification extends ChangeNotifier {
     if (_hoverOff[index] == value) {
       return;
     }
-    print(hoverOff);
     _hoverOff[index] = value;
     notifyListeners();
   }
