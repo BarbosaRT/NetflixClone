@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
+import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/home/components/movie_list/list_widget.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
@@ -72,6 +73,7 @@ class _HomePageState extends State<HomePage> {
     final scrollController = ScrollController();
 
     final videoController = Modular.get<PlayerImpl>();
+    final homeController = context.watch<HoverNotification>();
 
     final backgroundColor = Colors.grey.shade900;
 

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/appbar/top_button.dart';
+import 'package:netflix/src/features/home/components/appbar/profile_icon.dart';
+import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -25,35 +26,10 @@ class _HomeAppBarState extends State<HomeAppBar> {
   bool started = false;
   int currentOn = 0;
 
-  HoverNotification? hoverNotification;
-  NotificationBar? notificationBar;
-  ProfileIcon? profileIcon;
-
   @override
   void initState() {
     start(context);
-    hoverNotification = Modular.get<HoverNotification>();
-    notificationBar = NotificationBar(onHover: () {
-      onHover(0);
-    });
-    profileIcon = ProfileIcon(onHover: () {
-      onHover(1);
-    });
     super.initState();
-  }
-
-  void onHover(int c) {
-    if (c != currentOn) {
-      switch (currentOn) {
-        case 1:
-          hoverNotification!.notify(true, 0);
-          break;
-        case 0:
-          hoverNotification!.notify(true, 1);
-          break;
-      }
-      currentOn = c;
-    }
   }
 
   void start(BuildContext c) {
@@ -143,15 +119,15 @@ class _HomeAppBarState extends State<HomeAppBar> {
       // Notifications
       //
       Positioned(
-        left: width * 0.605,
-        child: notificationBar!,
+        left: width * 0.606,
+        child: const NotificationBar(),
       ),
       //
       // Profiles
       //
       Positioned(
-        left: width * 0.639,
-        child: profileIcon!,
+        left: width * 0.649,
+        child: const ProfileIcon(),
       ),
     ]);
 
@@ -191,329 +167,8 @@ class HomeAppBarController extends ChangeNotifier {
   }
 }
 
-class ProfileIcon extends StatefulWidget {
-  final void Function() onHover;
-
-  const ProfileIcon({super.key, required this.onHover});
-
-  @override
-  State<ProfileIcon> createState() => _ProfileIconState();
-}
-
-class _ProfileIconState extends State<ProfileIcon> {
-  bool _hover = false;
-  bool _isHover = false;
-
-  static const duration = Duration(milliseconds: 400);
-  static const durationOut = Duration(milliseconds: 300);
-  Duration currentfadeDuration = const Duration(milliseconds: 50);
-  static const fadeDuration = Duration(milliseconds: 50);
-  static const width = 215.0;
-  static const height = 340.0;
-
-  HoverNotification? hoverNotification;
-
-  @override
-  void initState() {
-    super.initState();
-    hoverNotification = Modular.get<HoverNotification>();
-    hoverNotification!.addListener(() {
-      if (hoverNotification!.hoverOff[0]) {
-        hoverOff();
-      }
-    });
-  }
-
-  void hoverOff() {
-    currentfadeDuration = const Duration(seconds: 0);
-    _isHover = false;
-    setState(() {
-      _hover = false;
-    });
-    hoverNotification!.notify(false, 0);
-  }
-
-  void onExit() {
-    _isHover = false;
-    Future.delayed(durationOut).then(
-      (value) {
-        if (_isHover) {
-          return;
-        }
-        setState(() {
-          _hover = false;
-        });
-      },
-    );
-  }
-
-  void onHover() {
-    widget.onHover();
-    currentfadeDuration = Duration(milliseconds: fadeDuration.inMilliseconds);
-    _isHover = true;
-    setState(() {
-      _hover = true;
-    });
-  }
-
-  Widget iconWidget(BuildContext context) {
-    final profileController = Modular.get<ProfileController>();
-    profileController.start();
-    return MouseRegion(
-        onExit: (v) {
-          onExit();
-        },
-        onHover: (v) {
-          onHover();
-        },
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 30,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-              ),
-              child: Image.asset(
-                  profileController.profiles[profileController.selected].icon,
-                  fit: BoxFit.fill),
-            ),
-            AnimatedRotation(
-              turns: _hover ? 0 : 0.5,
-              duration: duration,
-              child: const Icon(Icons.arrow_drop_up,
-                  size: 25, color: Colors.white),
-            ),
-          ],
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final profileController = Modular.get<ProfileController>();
-
-    final options = ['Gerenciar Perfis', 'Conta', 'Central de Ajuda'];
-    const optionsWidgets = [
-      Icon(Icons.edit, color: Colors.white),
-      Icon(Icons.person_off_outlined, color: Colors.white),
-      Icon(Icons.help_center_outlined, color: Colors.white),
-    ];
-
-    final List<Widget> items = [];
-    for (int i = 0; i < profileController.profiles.length; i++) {
-      if (i == profileController.selected) {
-        continue;
-      }
-      items.add(ProfileButton(
-        width: width,
-        picture: Image.asset(
-          profileController.profiles[i].icon,
-          fit: BoxFit.fill,
-        ),
-        text: profileController.profiles[i].name,
-      ));
-    }
-    for (int i = 0; i < options.length; i++) {
-      items.add(ProfileButton(
-        width: width,
-        picture: optionsWidgets[i],
-        text: options[i],
-      ));
-    }
-
-    final icon = Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: iconWidget(context),
-    );
-
-    final child = Stack(children: [
-      Container(
-        alignment: Alignment.bottomRight,
-        width: width - 20,
-        height: 20,
-        child: const Icon(Icons.arrow_drop_up, size: 30, color: Colors.white),
-      ),
-      Container(
-          margin: const EdgeInsets.only(top: 17),
-          width: width + 1,
-          height: height,
-          decoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          child: Stack(
-            alignment: Alignment.topRight,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 40),
-                child: SizedBox(
-                  height: height,
-                  child: Column(
-                    children: items,
-                  ),
-                ),
-              ),
-              Positioned(
-                  top: 300,
-                  child: Container(
-                      height: 4,
-                      width: width,
-                      color: Colors.grey.withOpacity(0.2))),
-              const Positioned(
-                top: 300,
-                child: ProfileButton(
-                  showPicture: false,
-                  width: width,
-                  picture: null,
-                  text: 'Sair da Netflix',
-                ),
-              )
-            ],
-          )),
-    ]);
-
-    final widget = SizedBox(
-      height: 1000,
-      width: 420,
-      child: Stack(alignment: Alignment.topRight, children: [
-        Positioned(
-          left: 420 - 50,
-          child: MouseRegion(
-            opaque: false,
-            onExit: (event) {
-              onExit();
-            },
-            onHover: (v) {
-              onHover();
-            },
-            child: icon,
-          ),
-        ),
-        _hover
-            ? Positioned(
-                top: 30,
-                child: MouseRegion(
-                  onExit: (event) {
-                    onExit();
-                  },
-                  onHover: (v) {
-                    onHover();
-                  },
-                  child: AnimatedOpacity(
-                    opacity: _hover ? 1 : 0,
-                    duration: currentfadeDuration,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: child,
-                    ),
-                  ),
-                ),
-              )
-            : Container(),
-      ]),
-    );
-    return widget;
-  }
-}
-
-class ProfileButton extends StatefulWidget {
-  final bool showPicture;
-  final double width;
-  final Widget? picture;
-  final String text;
-  const ProfileButton(
-      {super.key,
-      this.showPicture = true,
-      required this.width,
-      required this.picture,
-      required this.text});
-
-  @override
-  State<ProfileButton> createState() => _ProfileButtonState();
-}
-
-class _ProfileButtonState extends State<ProfileButton> {
-  bool _hover = false;
-  bool _isHover = false;
-
-  static const delayOut = Duration(milliseconds: 50);
-
-  void onExit() {
-    _isHover = false;
-    Future.delayed(delayOut).then((value) {
-      if (_isHover) {
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _hover = false;
-        });
-      }
-    });
-  }
-
-  void onHover() {
-    _isHover = true;
-    setState(() {
-      _hover = true;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Text(widget.text,
-        style: GoogleFonts.robotoFlex(
-          textStyle: TextStyle(
-            decoration: _hover ? TextDecoration.underline : TextDecoration.none,
-            decorationThickness: 1,
-            color: Colors.white,
-          ),
-        ));
-
-    return MouseRegion(
-      opaque: false,
-      onExit: (event) {
-        onExit();
-      },
-      onHover: (v) {
-        onHover();
-      },
-      child: SizedBox(
-        height: 40,
-        width: widget.width,
-        child: widget.showPicture
-            ? Padding(
-                padding: const EdgeInsets.only(left: 10, bottom: 9),
-                child: Row(
-                  children: [
-                    Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5),
-                          ),
-                        ),
-                        child: widget.picture),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    text,
-                  ],
-                ),
-              )
-            : Center(
-                child: text,
-              ),
-      ),
-    );
-  }
-}
-
 class NotificationBar extends StatelessWidget {
-  final void Function() onHover;
-  const NotificationBar({super.key, required this.onHover});
+  const NotificationBar({super.key});
 
   static const double containerHeight = 330;
   static final _scrollController = ScrollController();
@@ -521,7 +176,6 @@ class NotificationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HoverWidget(
-      onHover: onHover,
       icon: const Padding(
         padding: EdgeInsets.only(top: 10),
         child: Icon(

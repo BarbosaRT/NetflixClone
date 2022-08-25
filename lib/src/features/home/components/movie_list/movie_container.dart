@@ -37,7 +37,6 @@ class _MovieContainerState extends State<MovieContainer> {
       min(255, 10 * widget.index),
       1,
     );
-    print('(${color!.red} ${color!.green}, ${color!.blue}), $widget.index');
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
   }
