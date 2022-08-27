@@ -1,7 +1,8 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
@@ -48,14 +49,13 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-      Future.delayed(const Duration(seconds: 10)).then((value) {
-        setState(() {
-          videoController.play();
-        });
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Future.delayed(const Duration(seconds: 10)).then((value) {
+    //     setState(() {
+    //       videoController.play();
+    //     });
+    //   });
+    // });
   }
 
   @override
@@ -72,14 +72,11 @@ class _HomePageState extends State<HomePage> {
     final scrollController = ScrollController();
 
     final videoController = Modular.get<PlayerImpl>();
+    final colorController = Modular.get<ColorController>();
 
-    final backgroundColor = Colors.grey.shade900;
+    final backgroundColor = colorController.currentScheme.lightBackgroundColor;
 
-    final headline6 = GoogleFonts.roboto(
-        textStyle: Theme.of(context).textTheme.headline6!.copyWith(
-              color: Colors.white,
-              fontSize: 17,
-            ));
+    final headline6 = AppFonts().headline6;
 
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);

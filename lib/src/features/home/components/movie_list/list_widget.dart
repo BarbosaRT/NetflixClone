@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
 
 class ListWidget extends StatefulWidget {
@@ -15,11 +15,12 @@ class _ListWidgetState extends State<ListWidget> {
   bool textSelected = false;
   bool listSelected = false;
 
-  double movingValue = 1350;
+  double movingValue = 1254;
   final ScrollController _scrollController = ScrollController();
   // A movie list is divided in 5 parts (when showing) this is an Index that shows the current part
-  double selectedIndex = 0;
-  bool allowLeft = false;
+  double selectedIndex = 1;
+
+  static const duration = Duration(milliseconds: 500);
 
   List<Widget> widgets = [];
 
@@ -34,13 +35,76 @@ class _ListWidgetState extends State<ListWidget> {
     controller.init();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        widgets = controller.test.toList();
+        widgets = controller.widgets.toList();
+        _scrollController.jumpTo(movingValue);
       });
       controller.addListener(() {
         widgetController();
       });
-      // Add Your Code here.
     });
+  }
+
+  void move() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+          movingValue * selectedIndex + 5 * selectedIndex,
+          duration: duration,
+          curve: Curves.easeInOut);
+    });
+  }
+
+  void moveForward() {
+    final controller = Modular.get<MovieListController>();
+    if (selectedIndex >= controller.movies ~/ 5) {
+      final secondDuration =
+          Duration(milliseconds: duration.inMilliseconds + 200);
+      move();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(secondDuration).then(
+          (value) => {
+            setState(
+              () {
+                selectedIndex = 1;
+                _scrollController.jumpTo(
+                  movingValue * selectedIndex,
+                );
+              },
+            ),
+          },
+        );
+      });
+    } else {
+      move();
+    }
+
+    selectedIndex += 1;
+    controller.enableLeft();
+  }
+
+  void moveBackward() {
+    final controller = Modular.get<MovieListController>();
+    if (selectedIndex <= 0) {
+      selectedIndex = (controller.movies ~/ 5).toDouble();
+
+      final secondDuration =
+          Duration(milliseconds: duration.inMilliseconds + 100);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(0,
+            duration: duration, curve: Curves.easeInOut);
+
+        Future.delayed(secondDuration).then((value) {
+          setState(() {
+            _scrollController.jumpTo(
+              movingValue * selectedIndex,
+            );
+          });
+        });
+      });
+    } else {
+      move();
+      selectedIndex -= 1;
+    }
   }
 
   @override
@@ -54,18 +118,13 @@ class _ListWidgetState extends State<ListWidget> {
     setState(() {
       widgets = controller.widgets.toList();
     });
-    // changeWidget(controller.current, duration);
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = Modular.get<MovieListController>();
     final width = MediaQuery.of(context).size.width;
-    final headline6 = GoogleFonts.roboto(
-        textStyle: Theme.of(context).textTheme.headline6!.copyWith(
-              color: Colors.white,
-              fontSize: 18,
-            ));
+    final headline6 = AppFonts().headline6;
 
     return SizedBox(
       width: 1360,
@@ -77,7 +136,7 @@ class _ListWidgetState extends State<ListWidget> {
           child: Row(
             children: [
               Text(
-                'Porque você viu Meu Malvado Favorito 2 ${controller.current}',
+                'Porque você viu Meu Malvado Favorito 2',
                 style: headline6,
               ),
               textSelected
@@ -95,14 +154,14 @@ class _ListWidgetState extends State<ListWidget> {
                 left: width * 0.9,
                 child: Row(
                   children: [
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < (controller.movies) ~/ 5; i++)
                       Container(
                         width: 13,
                         height: 2,
-                        color: i == selectedIndex
+                        color: i == selectedIndex - 1
                             ? Colors.grey
                             : Colors.grey.shade800,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        margin: const EdgeInsets.symmetric(horizontal: 1),
                       ),
                   ],
                 ),
@@ -127,26 +186,19 @@ class _ListWidgetState extends State<ListWidget> {
         Positioned(
           top: 120,
           child: SizedBox(
-              width: 1360,
+              width: width,
               height: 140,
               child: Row(
                 children: [
-                  allowLeft
+                  controller.enabledLeft
                       ? Container(
                           height: 140,
                           width: 50,
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withOpacity(0.3),
                           child: listSelected
                               ? IconButton(
                                   onPressed: () {
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                      _scrollController.animateTo(
-                                          movingValue * selectedIndex,
-                                          duration: const Duration(seconds: 2),
-                                          curve: Curves.linear);
-                                    });
-                                    selectedIndex -= 1;
+                                    moveBackward();
                                   },
                                   icon: const Icon(Icons.arrow_back_ios,
                                       color: Colors.white),
@@ -158,20 +210,11 @@ class _ListWidgetState extends State<ListWidget> {
                   Container(
                     height: 140,
                     width: 50,
-                    color: Colors.black.withOpacity(0.4),
+                    color: Colors.black.withOpacity(0.3),
                     child: listSelected
                         ? IconButton(
                             onPressed: () {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                _scrollController.animateTo(
-                                    movingValue * selectedIndex,
-                                    duration: const Duration(seconds: 2),
-                                    curve: Curves.linear);
-                              });
-                              selectedIndex += 1;
-                              setState(() {
-                                allowLeft = true;
-                              });
+                              moveForward();
                             },
                             icon: const Icon(Icons.arrow_forward_ios,
                                 color: Colors.white),

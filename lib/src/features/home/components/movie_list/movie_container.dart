@@ -2,9 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 enum MovieContainerAnchor { left, center, right }
@@ -31,27 +32,22 @@ class _MovieContainerState extends State<MovieContainer> {
   void initState() {
     super.initState();
     random = Random(69 * widget.index * 2);
-    color = Color.fromRGBO(
-      min(255, 7 * widget.index),
-      min(255, 5 * widget.index),
-      min(255, 10 * widget.index),
-      1,
-    );
+    color = Color.fromARGB(255, min(255, random.nextInt(255)), 46, 226);
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
   }
 
-  //TODO: Refatorar, colocar os icones, e as cores
-  //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos é claro
-  //TODO: Colocar as fonts e as cores
+  //TODO: Colocar as fontes, colocar os icones, e as cores
+  //TODO: Melhorar MouseRegion da lista e fazer ela mostrar o lado esquerdo
+  //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos
 
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeIn;
   static const delay = Duration(milliseconds: 400);
-  static const double width = 260;
+  static const double width = 250;
   static const double height = 140;
-  static const double factor = 1.45;
-  static const double padding = 100;
+  static const double factor = 1.5;
+  static const double padding = 140;
 
   static const double infoHeight = width * factor - height * factor;
   static const double border = 5;
@@ -84,13 +80,11 @@ class _MovieContainerState extends State<MovieContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final headline6 = GoogleFonts.roboto(
-        textStyle: Theme.of(context).textTheme.headline6!.copyWith(
-              color: Colors.white,
-              fontSize: 17,
-            ));
+    final headline = AppFonts().headline7;
 
-    const backgroundColor = Color.fromRGBO(40, 40, 40, 1);
+    final colorController = Modular.get<ColorController>();
+    final backgroundColor = colorController.currentScheme.darkBackgroundColor;
+
     const decoration =
         BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(border)));
 
@@ -99,6 +93,7 @@ class _MovieContainerState extends State<MovieContainer> {
       topRight: Radius.circular(hoverBorder),
       topLeft: Radius.circular(hoverBorder),
     ));
+
     const infoContainer = BoxDecoration(
         borderRadius: BorderRadius.only(
       bottomRight: Radius.circular(hoverBorder),
@@ -115,7 +110,7 @@ class _MovieContainerState extends State<MovieContainer> {
       //
       transform: Matrix4.translation(
         vector.Vector3(
-            hover ? getValueFromAnchor(0, -padding / 2, -padding - 20) : 0,
+            hover ? getValueFromAnchor(0, -padding / 2, -padding + 15) : 0,
             hover ? 0 : 120,
             0),
       ),
@@ -155,7 +150,7 @@ class _MovieContainerState extends State<MovieContainer> {
                 child: Center(
                     child: Text(
                   widget.index.toString(),
-                  style: headline6,
+                  style: headline,
                 ))),
             AnimatedContainer(
                 margin: EdgeInsets.only(
@@ -169,7 +164,7 @@ class _MovieContainerState extends State<MovieContainer> {
                     ? infoContainer.copyWith(
                         color: backgroundColor,
                       )
-                    : const BoxDecoration(
+                    : BoxDecoration(
                         color: backgroundColor,
                       ),
                 child: SingleChildScrollView(
@@ -187,34 +182,66 @@ class _MovieContainerState extends State<MovieContainer> {
                           child: SizedBox(
                             width: width * factor,
                             child: Row(
-                              children: const [
-                                Icon(
+                              children: [
+                                const Icon(
                                   Icons.play_circle,
                                   size: 40,
                                   color: Colors.white,
                                 ),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 //
-                                Icon(
-                                  Icons.add_circle,
-                                  size: 40,
-                                  color: Colors.white,
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.withOpacity(0.1),
+                                  ),
+                                  child: const Icon(
+                                    Icons.add,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 //
-                                Icon(
-                                  Icons.recommend,
-                                  size: 40,
-                                  color: Colors.white,
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  padding: EdgeInsets.zero,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.withOpacity(0.1),
+                                  ),
+                                  child: const FaIcon(
+                                    FontAwesomeIcons.thumbsUp,
+                                    size: 17,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                SizedBox(
-                                  width: 180,
+                                const SizedBox(
+                                  width: width * 0.7,
                                 ),
                                 //
-                                Icon(
-                                  Icons.expand_more,
-                                  size: 40,
-                                  color: Colors.white,
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.withOpacity(0.1),
+                                  ),
+                                  child: const Icon(
+                                    Icons.expand_more_rounded,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -234,10 +261,9 @@ class _MovieContainerState extends State<MovieContainer> {
                               children: [
                                 Text(
                                   '$recomentationValue% relevante',
-                                  style:
-                                      headline6.copyWith(color: Colors.green),
+                                  style: headline.copyWith(color: Colors.green),
                                 ),
-                                const SizedBox(width: 10),
+                                const SizedBox(width: 8),
                                 //
                                 Image.asset(
                                   'assets/images/L.png',
@@ -247,9 +273,9 @@ class _MovieContainerState extends State<MovieContainer> {
                                 const SizedBox(width: 10),
                                 Text(
                                   '$temps temporadas',
-                                  style: headline6,
+                                  style: headline,
                                 ),
-                                const SizedBox(width: 10),
+                                const SizedBox(width: 5),
                                 Container(
                                   height: 25,
                                   width: 40,
@@ -264,7 +290,7 @@ class _MovieContainerState extends State<MovieContainer> {
                                   child: Center(
                                     child: Text(
                                       'HD',
-                                      style: headline6.copyWith(fontSize: 10),
+                                      style: headline.copyWith(fontSize: 10),
                                     ),
                                   ),
                                 ),
@@ -288,7 +314,7 @@ class _MovieContainerState extends State<MovieContainer> {
                               children: [
                                 Text(
                                   'Besteirol',
-                                  style: headline6,
+                                  style: headline,
                                 ),
                                 const SizedBox(width: 5),
                                 const Icon(
@@ -301,7 +327,7 @@ class _MovieContainerState extends State<MovieContainer> {
                                 //
                                 Text(
                                   'Comedia',
-                                  style: headline6,
+                                  style: headline,
                                 ),
                                 const SizedBox(width: 5),
                                 const Icon(
@@ -314,7 +340,7 @@ class _MovieContainerState extends State<MovieContainer> {
                                 //
                                 Text(
                                   'Muito Sexo',
-                                  style: headline6,
+                                  style: headline,
                                 ),
                                 const SizedBox(width: 5),
                               ],

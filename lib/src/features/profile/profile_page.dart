@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final headline3 = AppFonts().headline3;
 
-    final labelLarge = AppFonts().labelLarge;
+    final labelLarge = AppFonts().loginLabelLarge;
 
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);

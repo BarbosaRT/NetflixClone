@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final headline6 = AppFonts().headline6;
 
-    final labelLarge = AppFonts().labelLarge;
+    final labelLarge = AppFonts().loginLabelLarge;
 
     final labelBig = AppFonts().labelBig;
 

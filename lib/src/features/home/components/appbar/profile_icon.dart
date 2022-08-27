@@ -38,14 +38,14 @@ class _ProfileIconState extends State<ProfileIcon> {
         Container(
           width: 32,
           height: 30,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            image: DecorationImage(
+              image: AssetImage(
+                profileController.profiles[profileController.selected].icon,
+              ),
             ),
           ),
-          child: Image.asset(
-              profileController.profiles[profileController.selected].icon,
-              fit: BoxFit.fill),
         ),
         AnimatedRotation(
           turns: _hover ? 0 : 0.5,

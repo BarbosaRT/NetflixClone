@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/components/appbar/profile_icon.dart';
 import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
@@ -57,11 +58,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
       'Navegar Por Idiomas'
     ];
 
-    final labelLarge = Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: Colors.grey.shade200,
-          fontSize: 14,
-          fontFamily: 'Roboto-Medium',
-        );
+    final labelLarge = AppFonts().labelLarge;
 
     double width = MediaQuery.of(context).size.width;
     final selectedlabelLarge =
@@ -124,7 +121,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
       // Profiles
       //
       Positioned(
-        left: width * 0.649,
+        left: width * 0.653,
         child: const ProfileIcon(),
       ),
     ]);
@@ -137,6 +134,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
           AnimatedContainer(
             duration: const Duration(milliseconds: 500),
             height: 70,
+            width: width - 12,
             color: homeAppBarController.isAtTop
                 ? Colors.transparent
                 : Colors.grey.shade900,

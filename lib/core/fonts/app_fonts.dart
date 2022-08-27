@@ -23,11 +23,25 @@ class AppFonts {
     fontSize: 17,
   );
 
+  TextStyle headline7 = GoogleFonts.roboto(
+    letterSpacing: 0.5,
+    wordSpacing: 0.5,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+    fontSize: 15,
+  );
+
   // Infos in the login screen
-  TextStyle labelLarge = GoogleFonts.arimo(
+  TextStyle loginLabelLarge = GoogleFonts.arimo(
     letterSpacing: 0.5,
     fontWeight: FontWeight.w100,
     color: const Color.fromRGBO(129, 129, 129, 1),
+    fontSize: 15,
+  );
+  TextStyle labelLarge = GoogleFonts.arimo(
+    letterSpacing: 0.5,
+    fontWeight: FontWeight.w100,
+    color: Colors.white,
     fontSize: 15,
   );
 
