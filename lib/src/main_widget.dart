@@ -3,7 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
+import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
 import 'package:netflix/src/features/home/home_page.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/login/login_page.dart';
@@ -11,7 +11,7 @@ import 'package:netflix/src/features/profile/controllers/profile_controller.dart
 import 'package:netflix/src/features/profile/profile_page.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
 import 'package:netflix/src/features/splash/splash_page.dart';
-import 'package:netflix/src/features/video/player_impl.dart';
+import 'package:netflix/core/video/player_impl.dart';
 
 class AppModule extends Module {
   @override
@@ -20,7 +20,7 @@ class AppModule extends Module {
         Bind((i) => ProfileController()),
         Bind((i) => SplashController()),
         Bind((i) => HomeAppBarController()),
-        Bind((i) => MovieListController()),
+        Bind((i) => ContentListController()),
         Bind((i) => HoverNotification()),
         Bind((i) => ColorController()),
         Bind((i) => LoginController()),

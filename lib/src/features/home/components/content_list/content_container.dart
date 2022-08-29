@@ -4,22 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
+import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
-enum MovieContainerAnchor { left, center, right }
+enum ContentContainerAnchor { left, center, right }
 
-class MovieContainer extends StatefulWidget {
-  final MovieContainerAnchor anchor;
+class ContentContainer extends StatefulWidget {
+  final ContentContainerAnchor anchor;
   final int index;
-  const MovieContainer({super.key, required this.anchor, required this.index});
+  const ContentContainer(
+      {super.key, required this.anchor, required this.index});
 
   @override
-  State<MovieContainer> createState() => _MovieContainerState();
+  State<ContentContainer> createState() => _ContentContainerState();
 }
 
-class _MovieContainerState extends State<MovieContainer> {
+class _ContentContainerState extends State<ContentContainer> {
   bool isHover = false;
   bool hover = false;
 
@@ -42,7 +43,7 @@ class _MovieContainerState extends State<MovieContainer> {
   //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos
 
   static const duration = Duration(milliseconds: 200);
-  static const curve = Curves.easeIn;
+  static const curve = Curves.easeInOut;
   static const delay = Duration(milliseconds: 400);
   static const double width = 250;
   static const double height = 140;
@@ -55,18 +56,18 @@ class _MovieContainerState extends State<MovieContainer> {
 
   double getValueFromAnchor(double left, double center, double right) {
     switch (widget.anchor) {
-      case MovieContainerAnchor.left:
+      case ContentContainerAnchor.left:
         return left;
-      case MovieContainerAnchor.center:
+      case ContentContainerAnchor.center:
         return center;
-      case MovieContainerAnchor.right:
+      case ContentContainerAnchor.right:
         return right;
     }
   }
 
   void onHover() {
     isHover = true;
-    final controller = Modular.get<MovieListController>();
+    final controller = Modular.get<ContentListController>();
     controller.changeCurrent(widget.index);
     Future.delayed(delay).then((value) {
       if (!isHover) {

@@ -2,24 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/movie_list/movie_list_controller.dart';
+import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
 
-class ListWidget extends StatefulWidget {
-  const ListWidget({super.key});
+class ContentListWidget extends StatefulWidget {
+  final int index;
+  final String title;
+  const ContentListWidget(
+      {super.key, required this.index, required this.title});
 
   @override
-  State<ListWidget> createState() => _ListWidgetState();
+  State<ContentListWidget> createState() => _ContentListWidgetState();
 }
 
-class _ListWidgetState extends State<ListWidget> {
+class _ContentListWidgetState extends State<ContentListWidget> {
   bool textSelected = false;
   bool listSelected = false;
 
   double movingValue = 1254;
   final ScrollController _scrollController = ScrollController();
-  // A movie list is divided in 5 parts (when showing) this is an Index that shows the current part
-  double selectedIndex = 1;
-
   static const duration = Duration(milliseconds: 500);
 
   List<Widget> widgets = [];
@@ -30,7 +30,7 @@ class _ListWidgetState extends State<ListWidget> {
   void initState() {
     super.initState();
 
-    final controller = Modular.get<MovieListController>();
+    final controller = Modular.get<ContentListController>();
 
     controller.init();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -45,65 +45,58 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
   void move() {
+    final controller = Modular.get<ContentListController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
-          movingValue * selectedIndex + 5 * selectedIndex,
+          movingValue * controller.selectedIndex + 5 * controller.selectedIndex,
           duration: duration,
           curve: Curves.easeInOut);
     });
   }
 
   void moveForward() {
-    final controller = Modular.get<MovieListController>();
-    if (selectedIndex >= controller.movies ~/ 5) {
+    final controller = Modular.get<ContentListController>();
+    if (controller.selectedIndex >= controller.movies ~/ 5) {
       final secondDuration =
           Duration(milliseconds: duration.inMilliseconds + 200);
       move();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(secondDuration).then(
-          (value) => {
-            setState(
-              () {
-                selectedIndex = 1;
-                _scrollController.jumpTo(
-                  movingValue * selectedIndex,
-                );
-              },
-            ),
-          },
-        );
-      });
+      Future.delayed(secondDuration).then(
+        (value) {
+          controller.changeIndex(1);
+          _scrollController.jumpTo(
+            movingValue,
+          );
+        },
+      );
     } else {
       move();
     }
-
-    selectedIndex += 1;
+    controller.changeIndex(controller.selectedIndex + 1);
     controller.enableLeft();
   }
 
   void moveBackward() {
-    final controller = Modular.get<MovieListController>();
-    if (selectedIndex <= 0) {
-      selectedIndex = (controller.movies ~/ 5).toDouble();
+    final controller = Modular.get<ContentListController>();
+    if (controller.selectedIndex <= 1) {
+      controller.changeIndex(controller.movies ~/ 5);
 
       final secondDuration =
           Duration(milliseconds: duration.inMilliseconds + 100);
-
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(0,
+        _scrollController.animateTo(10,
             duration: duration, curve: Curves.easeInOut);
 
         Future.delayed(secondDuration).then((value) {
-          setState(() {
-            _scrollController.jumpTo(
-              movingValue * selectedIndex,
-            );
-          });
+          _scrollController.jumpTo(
+            movingValue * controller.selectedIndex +
+                5 * controller.selectedIndex,
+          );
         });
       });
     } else {
       move();
-      selectedIndex -= 1;
+
+      controller.changeIndex(controller.selectedIndex - 1);
     }
   }
 
@@ -114,7 +107,7 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
   void widgetController() {
-    final controller = Modular.get<MovieListController>();
+    final controller = Modular.get<ContentListController>();
     setState(() {
       widgets = controller.widgets.toList();
     });
@@ -122,7 +115,7 @@ class _ListWidgetState extends State<ListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Modular.get<MovieListController>();
+    final controller = Modular.get<ContentListController>();
     final width = MediaQuery.of(context).size.width;
     final headline6 = AppFonts().headline6;
 
@@ -136,7 +129,7 @@ class _ListWidgetState extends State<ListWidget> {
           child: Row(
             children: [
               Text(
-                'Porque você viu Meu Malvado Favorito 2',
+                widget.title,
                 style: headline6,
               ),
               textSelected
@@ -158,7 +151,7 @@ class _ListWidgetState extends State<ListWidget> {
                       Container(
                         width: 13,
                         height: 2,
-                        color: i == selectedIndex - 1
+                        color: i == controller.selectedIndex - 1
                             ? Colors.grey
                             : Colors.grey.shade800,
                         margin: const EdgeInsets.symmetric(horizontal: 1),

@@ -12,23 +12,25 @@ dependencies:
   flutter:
     sdk: flutter
   
-  cupertino_icons: ^1.0.5
-  
+  cupertino_icons: ^1.0.5  
   google_fonts: ^3.0.1
+  font_awesome_flutter: ^10.1.0
   
   youtube_player_iframe: ^2.3.0
-
   video_player: ^2.4.5
 
   flutter_modular: ^5.0.3
 
   animated_text_kit: ^4.2.2
 
-  vector_math: ^2.1.2
-  
+  vector_math: ^2.1.2  
   path_drawing: ^1.0.1
 
-  font_awesome_flutter: ^10.1.0
+  dartz: ^0.10.1
+  dio: ^4.0.6
+  intl: ^0.17.0
+
+  http: ^0.13.5
   
 dev_dependencies:
   flutter_test:
