@@ -7,7 +7,7 @@ import 'production_company_model.dart';
 import 'production_country_model.dart';
 import 'spoken_language_model.dart';
 
-class MovieDetailModel {
+class ContentDetailModel {
   final bool adult;
   final String backdropPath;
   final dynamic belongsToCollection;
@@ -34,7 +34,7 @@ class MovieDetailModel {
   final double voteAverage;
   final int voteCount;
 
-  const MovieDetailModel({
+  const ContentDetailModel({
     required this.adult,
     required this.backdropPath,
     required this.belongsToCollection,
@@ -62,11 +62,11 @@ class MovieDetailModel {
     required this.voteCount,
   });
 
-  factory MovieDetailModel.fromJson(String str) =>
-      MovieDetailModel.fromMap(json.decode(str));
+  factory ContentDetailModel.fromJson(String str) =>
+      ContentDetailModel.fromMap(json.decode(str));
 
-  factory MovieDetailModel.fromMap(Map<String, dynamic> json) =>
-      MovieDetailModel(
+  factory ContentDetailModel.fromMap(Map<String, dynamic> json) =>
+      ContentDetailModel(
         adult: json["adult"],
         backdropPath: json["backdrop_path"],
         belongsToCollection: json["belongs_to_collection"],

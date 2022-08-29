@@ -32,10 +32,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
 
     final controller = Modular.get<ContentListController>();
 
-    controller.init();
+    controller.init(0);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        widgets = controller.widgets.toList();
+        widgets = controller.widgets[widget.index]!.toList();
         _scrollController.jumpTo(movingValue);
       });
       controller.addListener(() {
@@ -48,7 +48,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     final controller = Modular.get<ContentListController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
-          movingValue * controller.selectedIndex + 5 * controller.selectedIndex,
+          movingValue * controller.selectedIndexes[widget.index] +
+              5 * controller.selectedIndexes[widget.index],
           duration: duration,
           curve: Curves.easeInOut);
     });
@@ -56,13 +57,14 @@ class _ContentListWidgetState extends State<ContentListWidget> {
 
   void moveForward() {
     final controller = Modular.get<ContentListController>();
-    if (controller.selectedIndex >= controller.movies ~/ 5) {
+    if (controller.selectedIndexes[widget.index] >=
+        controller.contentLengths[widget.index] ~/ 5) {
       final secondDuration =
           Duration(milliseconds: duration.inMilliseconds + 200);
       move();
       Future.delayed(secondDuration).then(
         (value) {
-          controller.changeIndex(1);
+          controller.changeIndex(1, widget.index);
           _scrollController.jumpTo(
             movingValue,
           );
@@ -71,14 +73,16 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     } else {
       move();
     }
-    controller.changeIndex(controller.selectedIndex + 1);
-    controller.enableLeft();
+    controller.changeIndex(
+        controller.selectedIndexes[widget.index] + 1, widget.index);
+    controller.enableLeft(widget.index);
   }
 
   void moveBackward() {
     final controller = Modular.get<ContentListController>();
-    if (controller.selectedIndex <= 1) {
-      controller.changeIndex(controller.movies ~/ 5);
+    if (controller.selectedIndexes[widget.index] <= 1) {
+      controller.changeIndex(
+          controller.contentLengths[widget.index] ~/ 5, widget.index);
 
       final secondDuration =
           Duration(milliseconds: duration.inMilliseconds + 100);
@@ -88,15 +92,16 @@ class _ContentListWidgetState extends State<ContentListWidget> {
 
         Future.delayed(secondDuration).then((value) {
           _scrollController.jumpTo(
-            movingValue * controller.selectedIndex +
-                5 * controller.selectedIndex,
+            movingValue * controller.selectedIndexes[widget.index] +
+                5 * controller.selectedIndexes[widget.index],
           );
         });
       });
     } else {
       move();
 
-      controller.changeIndex(controller.selectedIndex - 1);
+      controller.changeIndex(
+          controller.selectedIndexes[widget.index] - 1, widget.index);
     }
   }
 
@@ -109,7 +114,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   void widgetController() {
     final controller = Modular.get<ContentListController>();
     setState(() {
-      widgets = controller.widgets.toList();
+      widgets = controller.widgets[widget.index]!.toList();
     });
   }
 
@@ -147,11 +152,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 left: width * 0.9,
                 child: Row(
                   children: [
-                    for (int i = 0; i < (controller.movies) ~/ 5; i++)
+                    for (int i = 0;
+                        i < (controller.contentLengths[widget.index]) ~/ 5;
+                        i++)
                       Container(
                         width: 13,
                         height: 2,
-                        color: i == controller.selectedIndex - 1
+                        color: i == controller.selectedIndexes[widget.index] - 1
                             ? Colors.grey
                             : Colors.grey.shade800,
                         margin: const EdgeInsets.symmetric(horizontal: 1),
@@ -183,7 +190,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               height: 140,
               child: Row(
                 children: [
-                  controller.enabledLeft
+                  controller.enabledLefts[widget.index]
                       ? Container(
                           height: 140,
                           width: 50,

@@ -4,11 +4,11 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
+import 'package:netflix/core/video/player_impl.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
-import 'package:netflix/src/features/video/player_impl.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -309,7 +309,7 @@ class _HomePageState extends State<HomePage> {
                         Positioned(
                           top: 220,
                           child: ContentListWidget(
-                            index: 1,
+                            index: 0,
                             title: 'Para continuar assistindo',
                           ),
                         ),

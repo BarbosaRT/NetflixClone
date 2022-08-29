@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:netflix/core/api.dart';
 
 abstract class HttpInterface {
   Future<dynamic> get(String url);
@@ -24,6 +25,9 @@ class HttpImpl implements HttpInterface {
 
   @override
   Future<dynamic> get(String url) async {
-    return await client.get(Uri.parse(url), headers: headers);
+    return (await client.get(
+            Uri.parse('$kBaseUrl$url?api_key=456a2c767a26c3bd89a076ab4ec8f89b'),
+            headers: headers))
+        .body;
   }
 }

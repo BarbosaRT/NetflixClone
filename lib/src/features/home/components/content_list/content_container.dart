@@ -13,8 +13,13 @@ enum ContentContainerAnchor { left, center, right }
 class ContentContainer extends StatefulWidget {
   final ContentContainerAnchor anchor;
   final int index;
-  const ContentContainer(
-      {super.key, required this.anchor, required this.index});
+  final String posterPath;
+  const ContentContainer({
+    super.key,
+    required this.anchor,
+    required this.index,
+    required this.posterPath,
+  });
 
   @override
   State<ContentContainer> createState() => _ContentContainerState();
@@ -23,17 +28,14 @@ class ContentContainer extends StatefulWidget {
 class _ContentContainerState extends State<ContentContainer> {
   bool isHover = false;
   bool hover = false;
-
   var random = Random(69);
   int recomentationValue = 0;
   int temps = 0;
-  Color? color;
 
   @override
   void initState() {
     super.initState();
     random = Random(69 * widget.index * 2);
-    color = Color.fromARGB(255, min(255, random.nextInt(255)), 46, 226);
     recomentationValue = random.nextInt(20) + 80;
     temps = random.nextInt(5) + 5;
   }
@@ -68,7 +70,7 @@ class _ContentContainerState extends State<ContentContainer> {
   void onHover() {
     isHover = true;
     final controller = Modular.get<ContentListController>();
-    controller.changeCurrent(widget.index);
+    controller.changeCurrent(widget.index, 0);
     Future.delayed(delay).then((value) {
       if (!isHover) {
         return;
@@ -86,20 +88,35 @@ class _ContentContainerState extends State<ContentContainer> {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
 
-    const decoration =
-        BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(border)));
+    final decoration = BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(border)),
+      color: Colors.red,
+      image: DecorationImage(
+        image:
+            NetworkImage('https://image.tmdb.org/t/p/w400${widget.posterPath}'),
+        fit: BoxFit.cover,
+      ),
+    );
 
-    const movieDecoraion = BoxDecoration(
-        borderRadius: BorderRadius.only(
-      topRight: Radius.circular(hoverBorder),
-      topLeft: Radius.circular(hoverBorder),
-    ));
+    final movieDecoraion = BoxDecoration(
+      borderRadius: const BorderRadius.only(
+        topRight: Radius.circular(hoverBorder),
+        topLeft: Radius.circular(hoverBorder),
+      ),
+      color: Colors.blue,
+      image: DecorationImage(
+        image:
+            NetworkImage('https://image.tmdb.org/t/p/w500${widget.posterPath}'),
+        fit: BoxFit.cover,
+      ),
+    );
 
     const infoContainer = BoxDecoration(
-        borderRadius: BorderRadius.only(
-      bottomRight: Radius.circular(hoverBorder),
-      bottomLeft: Radius.circular(hoverBorder),
-    ));
+      borderRadius: BorderRadius.only(
+        bottomRight: Radius.circular(hoverBorder),
+        bottomLeft: Radius.circular(hoverBorder),
+      ),
+    );
 
     final output = AnimatedContainer(
       curve: curve,
@@ -137,22 +154,12 @@ class _ContentContainerState extends State<ContentContainer> {
         child: Stack(
           children: [
             AnimatedContainer(
-                curve: curve,
-                duration: duration,
-                width: hover ? width * factor : width,
-                height: hover ? height * factor : height,
-                decoration: hover
-                    ? movieDecoraion.copyWith(
-                        color: color,
-                      )
-                    : decoration.copyWith(
-                        color: color,
-                      ),
-                child: Center(
-                    child: Text(
-                  widget.index.toString(),
-                  style: headline,
-                ))),
+              curve: curve,
+              duration: duration,
+              width: hover ? width * factor : width,
+              height: hover ? height * factor : height,
+              decoration: hover ? movieDecoraion : decoration,
+            ),
             AnimatedContainer(
                 margin: EdgeInsets.only(
                   top: hover ? height * factor : height,

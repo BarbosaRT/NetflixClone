@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/src/features/home/components/content_list/content_container.dart';
 
 class ContentListController extends ChangeNotifier {
@@ -7,26 +8,28 @@ class ContentListController extends ChangeNotifier {
   double get leftPadding => 30;
   static const Duration duration = Duration(milliseconds: 300);
 
-  List<int> _currents = <int>[];
+  final _controller = ContentController();
+
+  final List<int> _currents = <int>[0];
   List<int> get currents => _currents;
 
-  Map<int, List<Widget>> _widgets = <int, List<Widget>>{};
+  final Map<int, List<Widget>> _widgets = <int, List<Widget>>{0: []};
   Map<int, List<Widget>> get widgets => _widgets;
 
   // Stores an old list of widgets in the list
-  Map<int, List<Widget>> _oldWidgets = <int, List<Widget>>{};
+  final Map<int, List<Widget>> _oldWidgets = <int, List<Widget>>{0: []};
 
   // Stores an "new" list of widgets in the list, the only difference is a widget added before widget 0
-  Map<int, List<Widget>> _newWidgets = <int, List<Widget>>{};
+  final Map<int, List<Widget>> _newWidgets = <int, List<Widget>>{0: []};
 
-  List<bool> _enabledLefts = <bool>[];
+  final List<bool> _enabledLefts = <bool>[false];
   List<bool> get enabledLefts => _enabledLefts;
 
-  List<int> _contentLengths = <int>[];
+  final List<int> _contentLengths = <int>[0];
   List<int> get contentLengths => _contentLengths;
 
   // A movie list is divided in 5 parts (when showing) this is an Index that shows the current part
-  List<int> _selectedIndexes = <int>[];
+  final List<int> _selectedIndexes = <int>[1];
   List<int> get selectedIndexes => _selectedIndexes;
 
   void changeIndex(int newIndex, int index) {
@@ -50,102 +53,127 @@ class ContentListController extends ChangeNotifier {
     return anchors[v];
   }
 
-  void addContent(int index) {}
+  bool _initialized = false;
 
-  void init() {
+  void init(int index) async {
     if (_initialized) {
       return;
     }
-    _initialized = true;
-    _widgets = [];
-    // Widgets after
-    for (int i = movies + 5; i >= movies; i--) {
-      ContentContainerAnchor anchor = getAnchor(i);
-      final container = ContentContainer(
-        index: (i - movies),
-        anchor: anchor,
-      );
-      _widgets.add(Positioned(
-        left: spacing * (i + 5) + leftPadding,
-        child: container,
-      ));
-    }
-    // The Movies itself
-    for (int i = movies - 1; i >= 0; i--) {
-      ContentContainerAnchor anchor = getAnchor(i);
-      final container = ContentContainer(
-        index: i,
-        anchor: anchor,
-      );
-      _widgets.add(Positioned(
-        left: spacing * (i + 5) + leftPadding,
-        child: container,
-      ));
-    }
+    await _controller.fetchAllMovies();
 
-    _oldWidgets = _widgets.toList();
+    //print(_controller.contents);
+    //print(_controller.loading);
+    //print(_controller.contentError);
 
-    _newWidgets = _widgets.toList();
-    // Movies before
-    for (int i = 24; i >= 19; i--) {
-      ContentContainerAnchor anchor = getAnchor(i);
-      final container = ContentContainer(
-        index: i,
-        anchor: anchor,
-      );
-      _newWidgets.add(Positioned(
-        left: spacing * (i - 20) + leftPadding,
-        child: container,
-      ));
+    if (!_controller.loading && _controller.contentError == null) {
+      //
+      _initialized = true;
+      //print(_controller.contents[10].backdropPath);
+      _contentLengths[index] = _controller.contents.length - 10;
+      // Widgets after
+      for (int i = _contentLengths[index] + 5;
+          i >= _contentLengths[index];
+          i--) {
+        ContentContainerAnchor anchor = getAnchor(i);
+        final content = _controller.contents[i];
+        //
+        final container = ContentContainer(
+          index: (i - _contentLengths[index]),
+          anchor: anchor,
+          posterPath: content.backdropPath,
+        );
+        //
+        _widgets[index]!.add(Positioned(
+          left: spacing * (i + 5) + leftPadding,
+          child: container,
+        ));
+      }
+      // The Movies itself
+      for (int i = _contentLengths[index] - 1; i >= 0; i--) {
+        ContentContainerAnchor anchor = getAnchor(i);
+        final content = _controller.contents[i];
+        final container = ContentContainer(
+          index: i,
+          anchor: anchor,
+          posterPath: content.backdropPath,
+        );
+        _widgets[index]!.add(Positioned(
+          left: spacing * (i + 5) + leftPadding,
+          child: container,
+        ));
+      }
+
+      _oldWidgets[index] = _widgets[index]!.toList();
+
+      _newWidgets[index] = _widgets[index]!.toList();
+
+      // Movies before
+      for (int i = _contentLengths[index] - 1;
+          i >= _contentLengths[index] - 5;
+          i--) {
+        ContentContainerAnchor anchor = getAnchor(i);
+        final content = _controller.contents[i];
+        final container = ContentContainer(
+          index: i,
+          anchor: anchor,
+          posterPath: content.backdropPath,
+        );
+        _newWidgets[index]!.add(Positioned(
+          left: spacing * (i - 20) + leftPadding,
+          child: container,
+        ));
+      }
+
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
-  void enableLeft() {
-    if (_enabledLeft) {
+  void enableLeft(int index) {
+    if (_enabledLefts[index]) {
       return;
     }
-    _enabledLeft = true;
-    _oldWidgets = _newWidgets.toList();
-    _widgets = _oldWidgets.toList();
+    _enabledLefts[index] = true;
+    _oldWidgets[index] = _newWidgets[index]!.toList();
+    _widgets[index] = _oldWidgets[index]!.toList();
     notifyListeners();
   }
 
-  void changeOrder() {
-    if (getAnchor(_current) == ContentContainerAnchor.center) {
+  void changeOrder(int index) {
+    if (getAnchor(_currents[index]) == ContentContainerAnchor.center) {
       //
-      print('changing order $_current');
       Future.delayed(duration).then((v) {
         // Error maybe because of new_widget
-        int value = enabledLeft ? 6 : 0;
-        Widget widget = _oldWidgets[widgets.length - _current - value];
+        int value = enabledLefts[index] ? 6 : 0;
+        Widget widget = _oldWidgets[index]![
+            widgets[index]!.length - _currents[index] - value];
 
-        _widgets = _oldWidgets.toList();
-        _widgets.removeAt(_widgets.length - _current - value);
-        _widgets.insert(_widgets.length - _current - value, widget);
+        _widgets[index] = _oldWidgets[index]!.toList();
+        _widgets[index]!
+            .removeAt(_widgets[index]!.length - _currents[index] - value);
+        _widgets[index]!
+            .insert(_widgets[index]!.length - _currents[index] - value, widget);
 
         notifyListeners();
       });
       //
-    } else if (getAnchor(_current) == ContentContainerAnchor.right) {
+    } else if (getAnchor(_currents[index]) == ContentContainerAnchor.right) {
       Future.delayed(duration).then((v) {
-        _widgets = _oldWidgets.reversed.toList();
+        _widgets[index] = _oldWidgets[index]!.reversed.toList();
         notifyListeners();
       });
     } else {
       Future.delayed(duration).then((v) {
-        _widgets = _oldWidgets.toList();
+        _widgets[index] = _oldWidgets[index]!.toList();
         notifyListeners();
       });
     }
   }
 
-  void changeCurrent(int index) {
-    if (index == _current) {
+  void changeCurrent(int newIndex, int index) {
+    if (newIndex == _currents[index]) {
       return;
     }
-    _current = index;
-    changeOrder();
+    _currents[index] = newIndex;
+    changeOrder(index);
   }
 }
