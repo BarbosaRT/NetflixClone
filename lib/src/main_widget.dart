@@ -3,7 +3,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
 import 'package:netflix/src/features/home/home_page.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/login/login_page.dart';
@@ -20,7 +19,6 @@ class AppModule extends Module {
         Bind((i) => ProfileController()),
         Bind((i) => SplashController()),
         Bind((i) => HomeAppBarController()),
-        Bind((i) => ContentListController()),
         Bind((i) => HoverNotification()),
         Bind((i) => ColorController()),
         Bind((i) => LoginController()),

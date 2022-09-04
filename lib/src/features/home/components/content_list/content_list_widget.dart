@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
+import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ContentListWidget extends StatefulWidget {
   final int index;
@@ -15,265 +15,257 @@ class ContentListWidget extends StatefulWidget {
 }
 
 class _ContentListWidgetState extends State<ContentListWidget> {
+  static const double distanceToTop = 90;
+  static const duration = Duration(milliseconds: 500);
   bool textSelected = false;
   bool listSelected = false;
 
-  double movingValue = 1254;
-  final ScrollController _scrollController = ScrollController();
-  static const duration = Duration(milliseconds: 500);
+  final int widgetCount = 5;
+  List<Widget> widgetList = [];
 
-  List<Widget> widgets = [];
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
-  static const double distanceToTop = 90;
+  int currentIndex = 2;
 
   @override
   void initState() {
+    widgetBuilder();
     super.initState();
-
-    final controller = Modular.get<ContentListController>();
-
-    controller.init(0);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        widgets = controller.widgets[widget.index]!.toList();
-        _scrollController.jumpTo(movingValue);
-      });
-      controller.addListener(() {
-        widgetController();
-      });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollToIndex(currentIndex, duration),
+    );
   }
 
-  void move() {
-    final controller = Modular.get<ContentListController>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(
-          movingValue * controller.selectedIndexes[widget.index] +
-              5 * controller.selectedIndexes[widget.index],
-          duration: duration,
-          curve: Curves.easeInOut);
-    });
-  }
-
-  void moveForward() {
-    final controller = Modular.get<ContentListController>();
-    if (controller.selectedIndexes[widget.index] >=
-        controller.contentLengths[widget.index] ~/ 5) {
-      final secondDuration =
-          Duration(milliseconds: duration.inMilliseconds + 200);
-      move();
-      Future.delayed(secondDuration).then(
-        (value) {
-          controller.changeIndex(1, widget.index);
-          _scrollController.jumpTo(
-            movingValue,
-          );
-        },
-      );
+  Future _scrollToIndex(int index, Duration delay) async {
+    if (delay == Duration.zero) {
+      itemScrollController.jumpTo(alignment: 0.04, index: index);
     } else {
-      move();
+      itemScrollController.scrollTo(
+        alignment: 0.04,
+        index: index,
+        duration: delay,
+        curve: Curves.easeInOut,
+      );
     }
-    controller.changeIndex(
-        controller.selectedIndexes[widget.index] + 1, widget.index);
-    controller.enableLeft(widget.index);
+  }
+
+  void widgetBuilder() {
+    // Widget before :)
+    for (int i = 0; i < 2; i++) {
+      widgetList.add(
+        ContentInnerWidget(index: widgetCount - i),
+      );
+    }
+
+    // Widgets itself :)
+    for (int i = 2; i < widgetCount + 2; i++) {
+      widgetList.add(
+        ContentInnerWidget(index: i - 2),
+      );
+    }
+
+    // Widgets after :)
+    for (int i = widgetCount; i < widgetCount + 2; i++) {
+      widgetList.add(
+        ContentInnerWidget(index: i - widgetCount),
+      );
+    }
+  }
+
+  void returnScroll(int index) {
+    final secondDuration =
+        Duration(milliseconds: duration.inMilliseconds + 100);
+    Future.delayed(secondDuration).then((value) {
+      currentIndex = index;
+      _scrollToIndex(currentIndex, Duration.zero);
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void moveBackward() {
-    final controller = Modular.get<ContentListController>();
-    if (controller.selectedIndexes[widget.index] <= 1) {
-      controller.changeIndex(
-          controller.contentLengths[widget.index] ~/ 5, widget.index);
-
-      final secondDuration =
-          Duration(milliseconds: duration.inMilliseconds + 100);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(10,
-            duration: duration, curve: Curves.easeInOut);
-
-        Future.delayed(secondDuration).then((value) {
-          _scrollController.jumpTo(
-            movingValue * controller.selectedIndexes[widget.index] +
-                5 * controller.selectedIndexes[widget.index],
-          );
-        });
-      });
-    } else {
-      move();
-
-      controller.changeIndex(
-          controller.selectedIndexes[widget.index] - 1, widget.index);
+    if (currentIndex <= 2) {
+      returnScroll(widgetCount + 1);
     }
+    currentIndex -= 1;
+    if (mounted) {
+      setState(() {});
+    }
+    _scrollToIndex(currentIndex, duration);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  void widgetController() {
-    final controller = Modular.get<ContentListController>();
-    setState(() {
-      widgets = controller.widgets[widget.index]!.toList();
-    });
+  void moveForward() {
+    if (currentIndex > widgetCount) {
+      returnScroll(2);
+    }
+    currentIndex += 1;
+    if (mounted) {
+      setState(() {});
+    }
+    _scrollToIndex(currentIndex, duration);
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Modular.get<ContentListController>();
     final width = MediaQuery.of(context).size.width;
     final headline6 = AppFonts().headline6;
 
     return SizedBox(
-      width: 1360,
-      height: 450,
-      child: Stack(children: [
-        Positioned(
-          top: distanceToTop,
-          left: 50,
-          child: Row(
-            children: [
-              Text(
-                widget.title,
-                style: headline6,
-              ),
-              textSelected
-                  ? const Icon(CupertinoIcons.forward,
-                      color: Colors.blue, size: 20)
-                  : Container(
-                      height: 20,
-                    ),
-            ],
-          ),
-        ),
-        listSelected
-            ? Positioned(
-                top: distanceToTop + 13,
-                left: width * 0.9,
-                child: Row(
-                  children: [
-                    for (int i = 0;
-                        i < (controller.contentLengths[widget.index]) ~/ 5;
-                        i++)
-                      Container(
-                        width: 13,
-                        height: 2,
-                        color: i == controller.selectedIndexes[widget.index] - 1
-                            ? Colors.grey
-                            : Colors.grey.shade800,
-                        margin: const EdgeInsets.symmetric(horizontal: 1),
-                      ),
-                  ],
-                ),
-              )
-            : Container(),
-        //
-        // List
-        //
-        SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          controller: _scrollController,
-          child: SizedBox(
-            height: 500,
-            width: controller.spacing * 45,
-            child: Stack(children: widgets),
-          ),
-        ),
-        //
-        // Buttons
-        //
-        Positioned(
-          top: 120,
-          child: SizedBox(
-              width: width,
-              height: 140,
+        width: 1360,
+        height: 450,
+        child: Stack(
+          children: [
+            //
+            // Title
+            //
+            Positioned(
+              top: distanceToTop,
+              left: 50,
               child: Row(
                 children: [
-                  controller.enabledLefts[widget.index]
-                      ? Container(
-                          height: 140,
-                          width: 50,
-                          color: Colors.black.withOpacity(0.3),
-                          child: listSelected
-                              ? IconButton(
-                                  onPressed: () {
-                                    moveBackward();
-                                  },
-                                  icon: const Icon(Icons.arrow_back_ios,
-                                      color: Colors.white),
-                                )
-                              : Container(),
-                        )
-                      : Container(),
-                  const Spacer(),
-                  Container(
-                    height: 140,
-                    width: 50,
-                    color: Colors.black.withOpacity(0.3),
-                    child: listSelected
-                        ? IconButton(
-                            onPressed: () {
-                              moveForward();
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios,
-                                color: Colors.white),
-                          )
-                        : Container(),
+                  Text(
+                    widget.title,
+                    style: headline6,
                   ),
+                  textSelected
+                      ? const Icon(CupertinoIcons.forward,
+                          color: Colors.blue, size: 20)
+                      : Container(
+                          height: 20,
+                        ),
                 ],
-              )),
-        ),
-        //
-        // MouseRegion of the text
-        //
-        Positioned(
-          top: distanceToTop,
-          child: MouseRegion(
-            opaque: false,
-            onEnter: (event) {
-              setState(() {
-                textSelected = true;
-              });
-            },
-            onExit: (event) {
-              setState(() {
-                textSelected = false;
-              });
-            },
-            child: const SizedBox(
-              width: 1360,
-              height: 185,
-            ),
-          ),
-        ),
-        //
-        // MouseRegion of the list
-        //
-        Positioned(
-            top: 120,
-            child: MouseRegion(
-              opaque: false,
-              onEnter: (event) {
-                setState(() {
-                  listSelected = true;
-                });
-              },
-              onExit: (event) {
-                Future.delayed(const Duration(seconds: 20)).then(
-                  (value) {
-                    setState(() {
-                      listSelected = false;
-                    });
-                  },
-                );
-              },
-              child: const SizedBox(
-                width: 1500,
-                height: 140,
               ),
-            )),
-      ]),
-    );
+            ),
+            listSelected
+                ? Positioned(
+                    top: distanceToTop + 13,
+                    left: width * 0.9,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < widgetCount; i++)
+                          Container(
+                            width: 13,
+                            height: 2,
+                            color: i == currentIndex - 2
+                                ? Colors.grey
+                                : Colors.grey.shade800,
+                            margin: const EdgeInsets.symmetric(horizontal: 1),
+                          ),
+                      ],
+                    ),
+                  )
+                : Container(),
+            //
+            // List
+            //
+            SizedBox(
+              width: width,
+              height: 500,
+              child: ScrollablePositionedList.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widgetList.length,
+                itemBuilder: (context, index) => widgetList[index],
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
+              ),
+            ),
+            //
+            // Buttons
+            //
+            Positioned(
+              top: 120,
+              child: SizedBox(
+                  width: width,
+                  height: 140,
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 145,
+                        width: 50,
+                        color: Colors.black.withOpacity(0.3),
+                        child: listSelected
+                            ? IconButton(
+                                onPressed: () {
+                                  moveBackward();
+                                },
+                                icon: const Icon(Icons.arrow_back_ios,
+                                    color: Colors.white),
+                              )
+                            : Container(),
+                      ),
+                      const Spacer(),
+                      Container(
+                        height: 145,
+                        width: 50,
+                        color: Colors.black.withOpacity(0.3),
+                        child: listSelected
+                            ? IconButton(
+                                onPressed: () {
+                                  moveForward();
+                                },
+                                icon: const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white),
+                              )
+                            : Container(),
+                      ),
+                    ],
+                  )),
+            ),
+            //
+            // MouseRegion of the text
+            //
+            Positioned(
+              top: distanceToTop,
+              child: MouseRegion(
+                opaque: false,
+                onEnter: (event) {
+                  setState(() {
+                    textSelected = true;
+                  });
+                },
+                onExit: (event) {
+                  setState(() {
+                    textSelected = false;
+                  });
+                },
+                // For Debugging
+                child: Container(
+                    width: 1360,
+                    height: 185,
+                    color: Colors.green.withOpacity(0.0)),
+              ),
+            ),
+            //
+            // MouseRegion of the list
+            //
+            Positioned(
+                top: 120,
+                child: MouseRegion(
+                    opaque: false,
+                    onEnter: (event) {
+                      setState(() {
+                        listSelected = true;
+                      });
+                    },
+                    onExit: (event) {
+                      Future.delayed(const Duration(milliseconds: 200)).then(
+                        (value) {
+                          setState(() {
+                            listSelected = false;
+                          });
+                        },
+                      );
+                    },
+                    // For debugging
+                    child: Container(
+                      width: 1360,
+                      height: 140,
+                      color: Colors.purple.withOpacity(0.0),
+                    ))),
+          ],
+        ));
   }
 }

@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
@@ -12,13 +9,15 @@ enum ContentContainerAnchor { left, center, right }
 
 class ContentContainer extends StatefulWidget {
   final ContentContainerAnchor anchor;
+  final int localIndex;
   final int index;
-  final String posterPath;
+  final Function(int) onHover;
   const ContentContainer({
     super.key,
     required this.anchor,
+    required this.localIndex,
     required this.index,
-    required this.posterPath,
+    required this.onHover,
   });
 
   @override
@@ -28,26 +27,14 @@ class ContentContainer extends StatefulWidget {
 class _ContentContainerState extends State<ContentContainer> {
   bool isHover = false;
   bool hover = false;
-  var random = Random(69);
-  int recomentationValue = 0;
-  int temps = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    random = Random(69 * widget.index * 2);
-    recomentationValue = random.nextInt(20) + 80;
-    temps = random.nextInt(5) + 5;
-  }
-
-  //TODO: Colocar as fontes, colocar os icones, e as cores
-  //TODO: Melhorar MouseRegion da lista e fazer ela mostrar o lado esquerdo
-  //TODO: Melhorar UI do widget e fazer ele passar, alem dos efeitinhos
+  int recomentationValue = 90;
+  int temps = 10;
 
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeInOut;
   static const delay = Duration(milliseconds: 400);
-  static const double width = 250;
+  static const double width = 245;
   static const double height = 140;
   static const double factor = 1.5;
   static const double padding = 140;
@@ -69,15 +56,16 @@ class _ContentContainerState extends State<ContentContainer> {
 
   void onHover() {
     isHover = true;
-    final controller = Modular.get<ContentListController>();
-    controller.changeCurrent(widget.index, 0);
+    widget.onHover(widget.localIndex);
     Future.delayed(delay).then((value) {
       if (!isHover) {
         return;
       }
-      setState(() {
-        hover = true;
-      });
+      if (mounted) {
+        setState(() {
+          hover = true;
+        });
+      }
     });
   }
 
@@ -88,27 +76,17 @@ class _ContentContainerState extends State<ContentContainer> {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
 
-    final decoration = BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(border)),
+    const decoration = BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(border)),
       color: Colors.red,
-      image: DecorationImage(
-        image:
-            NetworkImage('https://image.tmdb.org/t/p/w400${widget.posterPath}'),
-        fit: BoxFit.cover,
-      ),
     );
 
-    final movieDecoraion = BoxDecoration(
-      borderRadius: const BorderRadius.only(
+    const movieDecoraion = BoxDecoration(
+      borderRadius: BorderRadius.only(
         topRight: Radius.circular(hoverBorder),
         topLeft: Radius.circular(hoverBorder),
       ),
       color: Colors.blue,
-      image: DecorationImage(
-        image:
-            NetworkImage('https://image.tmdb.org/t/p/w500${widget.posterPath}'),
-        fit: BoxFit.cover,
-      ),
     );
 
     const infoContainer = BoxDecoration(
@@ -136,8 +114,6 @@ class _ContentContainerState extends State<ContentContainer> {
         onEnter: (event) {
           onHover();
         },
-        //
-        //
         onHover: (v) {
           onHover();
         },
@@ -153,13 +129,19 @@ class _ContentContainerState extends State<ContentContainer> {
         //
         child: Stack(
           children: [
+            //
+            // Content Container
+            //
             AnimatedContainer(
-              curve: curve,
-              duration: duration,
-              width: hover ? width * factor : width,
-              height: hover ? height * factor : height,
-              decoration: hover ? movieDecoraion : decoration,
-            ),
+                curve: curve,
+                duration: duration,
+                width: hover ? width * factor : width,
+                height: hover ? height * factor : height,
+                decoration: hover ? movieDecoraion : decoration,
+                child: Center(child: Text(widget.index.toString()))),
+            //
+            // Info Container
+            //
             AnimatedContainer(
                 margin: EdgeInsets.only(
                   top: hover ? height * factor : height,
@@ -169,12 +151,8 @@ class _ContentContainerState extends State<ContentContainer> {
                 height: hover ? infoHeight : 0,
                 width: hover ? width * factor : width,
                 decoration: hover
-                    ? infoContainer.copyWith(
-                        color: backgroundColor,
-                      )
-                    : BoxDecoration(
-                        color: backgroundColor,
-                      ),
+                    ? infoContainer.copyWith(color: backgroundColor)
+                    : BoxDecoration(color: backgroundColor),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(0),
                   physics: const NeverScrollableScrollPhysics(),

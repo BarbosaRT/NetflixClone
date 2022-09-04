@@ -6,8 +6,8 @@ import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/player_impl.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
-import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
+import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 
 MyGlobals myGlobals = MyGlobals();
@@ -301,24 +301,21 @@ class _HomePageState extends State<HomePage> {
                     height: 1200,
                     child: Stack(
                       children: const [
-                        Positioned(
-                          child: ContentListWidget(
-                              index: 0,
-                              title: 'Porque você viu Meu Malvado Favorito 2'),
-                        ),
-                        Positioned(
-                          top: 220,
-                          child: ContentListWidget(
-                            index: 0,
-                            title: 'Para continuar assistindo',
-                          ),
-                        ),
+                        // Positioned(
+                        //   child: ContentListWidget(
+                        //       index: 0,
+                        //       title: 'Porque você viu Meu Malvado Favorito 2'),
+                        // ),
+                        ContentListWidget(
+                          index: 0,
+                          title: 'Porque você viu Meu Malvado Favorito 2',
+                        )
                       ],
                     ),
                   ),
                 ),
                 Positioned(
-                  left: 1348,
+                  left: width - 13,
                   child: Container(
                     width: 15,
                     height: 2000,

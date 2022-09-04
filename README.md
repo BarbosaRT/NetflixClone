@@ -10,9 +10,9 @@ import 'package:dio/dio.dart';
   
 const kBaseUrl = 'https://api.themoviedb.org/3';  
 const kApiKey = '';  
-const kServerError = '';  
+const kServerError = 'Failed to connect';  
 
-const headers = {'Authorization': 'Beared $kApiKey'};  
+const kHeaders = {'Authorization': 'Beared $kApiKey'};  
   
 final kDioOptions = BaseOptions(  
   baseUrl: kBaseUrl,  

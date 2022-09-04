@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:netflix/models/content_genre.dart';
 
-import 'content_genre.dart';
 import 'production_company_model.dart';
 import 'production_country_model.dart';
 import 'spoken_language_model.dart';
