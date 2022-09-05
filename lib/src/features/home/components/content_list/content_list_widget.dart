@@ -2,13 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
+import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ContentListWidget extends StatefulWidget {
   final int index;
   final String title;
+  final ContentListAnchor anchor;
+  final void Function() onHover;
   const ContentListWidget(
-      {super.key, required this.index, required this.title});
+      {super.key,
+      required this.index,
+      required this.title,
+      required this.anchor,
+      required this.onHover});
 
   @override
   State<ContentListWidget> createState() => _ContentListWidgetState();
@@ -246,6 +253,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 child: MouseRegion(
                     opaque: false,
                     onEnter: (event) {
+                      widget.onHover();
+                      setState(() {
+                        listSelected = true;
+                      });
+                    },
+                    onHover: (event) {
+                      widget.onHover();
                       setState(() {
                         listSelected = true;
                       });

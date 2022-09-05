@@ -60,12 +60,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # # example:
-  # fonts:
-  #   - family: Bebas Neue
-  #     fonts:
-  #       - asset: fonts/F.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Netflix Sans
+      fonts:
+        - asset: assets/fonts/NetflixSans-Regular.otf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/src/features/home/components/content_list/content_container.dart';
+import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 
-enum ContentContainerAnchor { left, center, right }
+enum ContentListAnchor { top, middle, bottom }
 
-class ContentInnerWidget extends StatefulWidget {
-  final int index;
-  const ContentInnerWidget({Key? key, this.index = 0}) : super(key: key);
+class ListContents extends StatefulWidget {
+  const ListContents({super.key});
 
   @override
-  State<ContentInnerWidget> createState() => _ContentInnerWidgetState();
+  State<ListContents> createState() => _ListContentsState();
 }
 
-class _ContentInnerWidgetState extends State<ContentInnerWidget> {
+class _ListContentsState extends State<ListContents> {
   static const Duration duration = Duration(milliseconds: 300);
-  static const double spacing = 252.0;
+  static const double spacing = 220.0;
   int current = 0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
+
+  static const List<String> titles = [
+    'Porque você viu Meu Malvado Favorito 2',
+    'Mais de Comedia',
+    'Top em Alta no Brasil',
+    'Porque você viu Smurfs',
+    'Filmes Coreanos',
+    'Mais de Terror',
+  ];
+  static const listCount = 6;
 
   @override
   void initState() {
@@ -24,16 +33,29 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     super.initState();
   }
 
+  ContentListAnchor getAnchorFromValue(int index) {
+    switch (index) {
+      case 0:
+        return ContentListAnchor.top;
+      case listCount - 1:
+        return ContentListAnchor.bottom;
+      default:
+        return ContentListAnchor.middle;
+    }
+  }
+
   void widgetBuilder() {
-    for (int i = 4; i >= 0; i--) {
+    for (int i = listCount - 1; i >= 0; i--) {
       widgets.add(
         Positioned(
-          left: spacing * i,
-          child: ContentContainer(
-            onHover: onHover,
-            anchor: getAnchor(i),
-            localIndex: i,
-            index: widget.index * 5 + i,
+          top: spacing * i,
+          child: ContentListWidget(
+            index: i,
+            title: titles[i],
+            anchor: getAnchorFromValue(i),
+            onHover: () {
+              onHover(i);
+            },
           ),
         ),
       );
@@ -41,26 +63,13 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     oldWidgets = widgets.toList();
   }
 
-  ContentContainerAnchor getAnchor(int i) {
-    int v = i >= 5 ? i - 5 * (i ~/ 5) : i;
-
-    List<ContentContainerAnchor> anchors = [
-      ContentContainerAnchor.left,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.right
-    ];
-    return anchors[v];
-  }
-
   void onHover(int index) {
     if (current == index) {
       return;
     }
     current = index;
-    switch (getAnchor(index)) {
-      case ContentContainerAnchor.center:
+    switch (getAnchorFromValue(index)) {
+      case ContentListAnchor.middle:
         Future.delayed(duration).then((v) {
           //
           widgets = oldWidgets.toList();
@@ -77,7 +86,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           }
         });
         break;
-      case ContentContainerAnchor.left:
+      case ContentListAnchor.top:
         Future.delayed(duration).then((v) {
           if (mounted) {
             setState(() {
@@ -86,7 +95,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           }
         });
         break;
-      case ContentContainerAnchor.right:
+      case ContentListAnchor.bottom:
         Future.delayed(duration).then((v) {
           if (mounted) {
             setState(() {
@@ -100,9 +109,10 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return SizedBox(
-      width: spacing * 5,
-      height: 500,
+      width: width,
+      height: 4000,
       child: Stack(
         children: widgets,
       ),

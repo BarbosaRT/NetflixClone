@@ -8,6 +8,13 @@ class AppFonts {
     fontWeight: FontWeight.normal,
     fontSize: 45,
   );
+  TextStyle profileHeadline3 = const TextStyle(
+    fontFamily: 'Netflix Sans',
+    letterSpacing: 1,
+    color: Colors.white,
+    fontWeight: FontWeight.normal,
+    fontSize: 45,
+  );
 
   TextStyle headline4 = GoogleFonts.arimo(
     letterSpacing: 1,

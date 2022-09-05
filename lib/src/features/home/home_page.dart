@@ -7,6 +7,7 @@ import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/player_impl.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
+import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 
@@ -28,6 +29,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static const double height = 3000.0;
+
   @override
   void initState() {
     super.initState();
@@ -69,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    final scrollController = ScrollController();
+    final scrollController = ScrollController(initialScrollOffset: 0);
 
     final videoController = Modular.get<PlayerImpl>();
     final colorController = Modular.get<ColorController>();
@@ -110,219 +113,207 @@ class _HomePageState extends State<HomePage> {
             videoController.isPlaying() ? Icons.pause : Icons.play_arrow,
           ),
         ),
-        body: Scrollbar(
-          trackVisibility: true,
-          thumbVisibility: true,
-          controller: scrollController,
-          child: SmoothScroll(
-            scrollSpeed: 90,
-            scrollAnimationLength: 150,
-            curve: Curves.decelerate,
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: Scrollbar(
+            trackVisibility: true,
+            thumbVisibility: true,
             controller: scrollController,
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
+            child: SmoothScroll(
+              scrollSpeed: 90,
+              scrollAnimationLength: 150,
+              curve: Curves.decelerate,
               controller: scrollController,
-              child: Stack(children: [
-                Container(height: 5000),
-                //
-                // Background Video
-                //
-                SingleChildScrollView(
-                  child: Stack(
-                    children: [
-                      videoController.frame(),
-                      Container(
-                        height: 768,
-                        width: 1360,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                    ],
-                  ),
-                ),
-                //
-                // Video Gradient
-                //
-                Positioned(
-                    top: 500,
-                    child: Container(
-                      height: 400,
-                      width: 1360,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          backgroundColor.withOpacity(0),
-                          backgroundColor,
-                          backgroundColor,
-                        ],
-                      )),
-                    )),
-                //
-                // Gradient
-                //
-                Container(
-                  width: width,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withOpacity(0.75),
-                          Colors.black.withOpacity(0)
-                        ]),
-                  ),
-                ),
-                //
-                // Film Logo
-                //
-                SizedBox(
-                  width: 1360,
-                  height: 600,
-                  child: Stack(
-                    children: [
-                      //
-                      // Logo
-                      //
-                      AnimatedPositioned(
-                        top: videoController.isPlaying() ? 390 : 310,
-                        left: 55,
-                        duration: textDuration,
-                        child: AnimatedContainer(
-                          duration: textDuration,
-                          width: videoController.isPlaying() ? 350 : 500,
-                          child: Image.asset(
-                            'assets/images/Minions-Logo-2D.png',
-                          ),
-                        ),
-                      ),
-                      //
-                      // Descrição
-                      //
-                      AnimatedPositioned(
-                        top: videoController.isPlaying() ? 480 : 410,
-                        left: 32,
-                        duration: textDuration,
-                        child: videoController.isPlaying()
-                            ? AnimatedTextKit(
-                                animatedTexts: [
-                                  FadeAnimatedText(
-                                    description,
-                                    textStyle: headline6,
-                                    duration: fadeInDuration,
-                                  ),
-                                ],
-                                totalRepeatCount: 1,
-                                pause: const Duration(milliseconds: 0),
-                                displayFullTextOnTap: true,
-                                stopPauseOnTap: true,
-                                repeatForever: false,
-                              )
-                            : SizedBox(
-                                height: 70,
-                                child: Text(
-                                  description,
-                                  style: headline6,
-                                ),
-                              ),
-                      ),
-                      //
-                      // Botao Mais Informações
-                      //
-                      Positioned(
-                        top: 485,
-                        left: 30,
-                        child: Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Row(children: [
-                              HomeButton(
-                                textStyle: blackHeadline6,
-                                overlayColor: Colors.grey.shade300,
-                                buttonColor: Colors.white,
-                                icon: Icons.play_arrow,
-                                text: 'Assistir',
-                              ),
-                              const SizedBox(width: 10),
-                              HomeButton(
-                                textStyle: headline6,
-                                overlayColor:
-                                    Colors.grey.shade700.withOpacity(0.3),
-                                buttonColor:
-                                    Colors.grey.shade700.withOpacity(0.5),
-                                icon: Icons.info_outline,
-                                iconSize: 25,
-                                spacing: 10,
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, top: 7, bottom: 7),
-                                text: 'Mais Informações',
-                              ),
-                            ])),
-                      ),
-                      //
-                      // Classificação Indicativa
-                      //
-                      Positioned(
-                        top: 460,
-                        left: 1200,
-                        child: Row(
-                          children: [
-                            const VolumeButton(),
-                            Container(
-                                height: 32,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  color: backgroundColor.withOpacity(0.5),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 32,
-                                      width: 3,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Image.asset('assets/images/L.png'),
-                                  ],
-                                )),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 500,
-                  child: SizedBox(
-                    width: width,
-                    height: 1200,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: scrollController,
+                child: Stack(children: [
+                  Container(height: height),
+                  //
+                  // Background Video
+                  //
+                  SingleChildScrollView(
                     child: Stack(
-                      children: const [
-                        // Positioned(
-                        //   child: ContentListWidget(
-                        //       index: 0,
-                        //       title: 'Porque você viu Meu Malvado Favorito 2'),
-                        // ),
-                        ContentListWidget(
-                          index: 0,
-                          title: 'Porque você viu Meu Malvado Favorito 2',
-                        )
+                      children: [
+                        videoController.frame(),
+                        Container(
+                          height: 768,
+                          width: 1360,
+                          color: Colors.black.withOpacity(0.2),
+                        ),
                       ],
                     ),
                   ),
-                ),
-                Positioned(
-                  left: width - 13,
-                  child: Container(
-                    width: 15,
-                    height: 2000,
-                    color: Colors.white,
+                  //
+                  // Video Gradient
+                  //
+                  Positioned(
+                      top: 500,
+                      child: Container(
+                        height: 400,
+                        width: 1360,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            backgroundColor.withOpacity(0),
+                            backgroundColor,
+                            backgroundColor,
+                          ],
+                        )),
+                      )),
+                  //
+                  // Gradient
+                  //
+                  Container(
+                    width: width,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.75),
+                            Colors.black.withOpacity(0)
+                          ]),
+                    ),
                   ),
-                ),
-              ]),
+                  //
+                  // Film Logo
+                  //
+                  SizedBox(
+                    width: 1360,
+                    height: 600,
+                    child: Stack(
+                      children: [
+                        //
+                        // Logo
+                        //
+                        AnimatedPositioned(
+                          top: videoController.isPlaying() ? 390 : 310,
+                          left: 55,
+                          duration: textDuration,
+                          child: AnimatedContainer(
+                            duration: textDuration,
+                            width: videoController.isPlaying() ? 350 : 500,
+                            child: Image.asset(
+                              'assets/images/Minions-Logo-2D.png',
+                            ),
+                          ),
+                        ),
+                        //
+                        // Descrição
+                        //
+                        AnimatedPositioned(
+                          top: videoController.isPlaying() ? 480 : 410,
+                          left: 32,
+                          duration: textDuration,
+                          child: videoController.isPlaying()
+                              ? AnimatedTextKit(
+                                  animatedTexts: [
+                                    FadeAnimatedText(
+                                      description,
+                                      textStyle: headline6,
+                                      duration: fadeInDuration,
+                                    ),
+                                  ],
+                                  totalRepeatCount: 1,
+                                  pause: const Duration(milliseconds: 0),
+                                  displayFullTextOnTap: true,
+                                  stopPauseOnTap: true,
+                                  repeatForever: false,
+                                )
+                              : SizedBox(
+                                  height: 70,
+                                  child: Text(
+                                    description,
+                                    style: headline6,
+                                  ),
+                                ),
+                        ),
+                        //
+                        // Botao Mais Informações
+                        //
+                        Positioned(
+                          top: 485,
+                          left: 30,
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 25),
+                              child: Row(children: [
+                                HomeButton(
+                                  textStyle: blackHeadline6,
+                                  overlayColor: Colors.grey.shade300,
+                                  buttonColor: Colors.white,
+                                  icon: Icons.play_arrow,
+                                  text: 'Assistir',
+                                ),
+                                const SizedBox(width: 10),
+                                HomeButton(
+                                  textStyle: headline6,
+                                  overlayColor:
+                                      Colors.grey.shade700.withOpacity(0.3),
+                                  buttonColor:
+                                      Colors.grey.shade700.withOpacity(0.5),
+                                  icon: Icons.info_outline,
+                                  iconSize: 25,
+                                  spacing: 10,
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 25, top: 7, bottom: 7),
+                                  text: 'Mais Informações',
+                                ),
+                              ])),
+                        ),
+                        //
+                        // Classificação Indicativa
+                        //
+                        Positioned(
+                          top: 460,
+                          left: 1200,
+                          child: Row(
+                            children: [
+                              const VolumeButton(),
+                              Container(
+                                  height: 32,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    color: backgroundColor.withOpacity(0.5),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 32,
+                                        width: 3,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Image.asset('assets/images/L.png'),
+                                    ],
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Positioned(
+                    top: 500,
+                    child: ListContents(),
+                  ),
+                  Positioned(
+                    left: width - 13,
+                    child: Container(
+                      width: 15,
+                      height: height,
+                      color: Colors.white,
+                    ),
+                  ),
+                ]),
+              ),
             ),
           ),
         ));
@@ -356,6 +347,7 @@ class _VolumeButtonState extends State<VolumeButton> {
     return Padding(
       padding: const EdgeInsets.only(right: 16, top: 2),
       child: MouseRegion(
+        opaque: false,
         onExit: (event) {
           setState(() {
             hover = false;

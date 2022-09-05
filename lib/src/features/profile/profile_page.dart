@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     double width = MediaQuery.of(context).size.width;
 
-    final headline3 = AppFonts().headline3;
+    final headline3 = AppFonts().profileHeadline3;
 
     final labelLarge = AppFonts().loginLabelLarge;
 
