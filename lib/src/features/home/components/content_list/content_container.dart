@@ -75,15 +75,15 @@ class _ContentContainerState extends State<ContentContainer> {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
     const image =
-        'https://www.themoviedb.org/t/p/original/6d3ailFfiYN4KzGgAoFlgYbaFyx.jpg';
+        'https://occ-0-2635-778.1.nflxso.net/dnm/api/v6/0DW6CdE4gYtYx8iy3aj8gs9WtXE/AAAABa7drB88__T4L1EqN-1m1xYIf2R7JjPHpzm2A8iMUkj0DFFnhw9HRbYhyeHFTxREgaaZf11Jv5q6QaONhc9oVfoGXypKdNPbEeBLRCMQQbxceC3uURs.jpg?r=0af';
 
     const decoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(border)),
       color: Colors.red,
-      image: DecorationImage(
-        image: NetworkImage(image),
-        fit: BoxFit.cover,
-      ),
+      // image: DecorationImage(
+      //   image: NetworkImage(image),
+      //   fit: BoxFit.cover,
+      // ),
     );
 
     const movieDecoraion = BoxDecoration(
@@ -92,10 +92,10 @@ class _ContentContainerState extends State<ContentContainer> {
         topLeft: Radius.circular(hoverBorder),
       ),
       color: Colors.blue,
-      image: DecorationImage(
-        image: NetworkImage(image),
-        fit: BoxFit.cover,
-      ),
+      // image: DecorationImage(
+      //   image: NetworkImage(image),
+      //   fit: BoxFit.cover,
+      // ),
     );
 
     const infoContainer = BoxDecoration(
@@ -371,6 +371,5 @@ class _ContentContainerState extends State<ContentContainer> {
         ],
       ),
     );
-    ;
   }
 }

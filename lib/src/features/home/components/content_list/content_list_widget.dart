@@ -26,6 +26,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   static const duration = Duration(milliseconds: 500);
   bool textSelected = false;
   bool listSelected = false;
+  bool leftActive = false;
 
   final int widgetCount = 5;
   List<Widget> widgetList = [];
@@ -34,7 +35,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
-  int currentIndex = 2;
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -59,11 +60,20 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void widgetBuilder() {
-    // Widget before :)
-    for (int i = 0; i < 2; i++) {
-      widgetList.add(
-        ContentInnerWidget(index: widgetCount - i),
-      );
+    widgetList = [];
+
+    if (leftActive) {
+      // Widgets before :)
+      for (int i = 0; i < 2; i++) {
+        widgetList.add(
+          ContentInnerWidget(index: widgetCount - i),
+        );
+      }
+    } else {
+      widgetList.add(const SizedBox(
+        width: 50,
+        height: 132,
+      ));
     }
 
     // Widgets itself :)
@@ -104,12 +114,24 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     _scrollToIndex(currentIndex, duration);
   }
 
+  void activeLeft() {
+    if (leftActive) {
+      return;
+    }
+    leftActive = true;
+    widgetBuilder();
+  }
+
   void moveForward() {
+    if (!leftActive) {
+      currentIndex = 1;
+    }
     if (currentIndex > widgetCount) {
       returnScroll(2);
     }
     currentIndex += 1;
     if (mounted) {
+      activeLeft();
       setState(() {});
     }
     _scrollToIndex(currentIndex, duration);
@@ -119,7 +141,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final headline6 = AppFonts().headline6;
-
+    print('build');
     return SizedBox(
         width: 1360,
         height: 450,
@@ -156,7 +178,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                           Container(
                             width: 13,
                             height: 2,
-                            color: i == currentIndex - 2
+                            color: i == currentIndex - (leftActive ? 2 : 0)
                                 ? Colors.grey
                                 : Colors.grey.shade800,
                             margin: const EdgeInsets.symmetric(horizontal: 1),
@@ -182,45 +204,45 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             //
             // Buttons
             //
-            Positioned(
-              top: 120,
-              child: SizedBox(
-                  width: width,
-                  height: 140,
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 145,
-                        width: 50,
-                        color: Colors.black.withOpacity(0.3),
-                        child: listSelected
-                            ? IconButton(
-                                onPressed: () {
-                                  moveBackward();
-                                },
-                                icon: const Icon(Icons.arrow_back_ios,
-                                    color: Colors.white),
-                              )
-                            : Container(),
-                      ),
-                      const Spacer(),
-                      Container(
-                        height: 145,
-                        width: 50,
-                        color: Colors.black.withOpacity(0.3),
-                        child: listSelected
-                            ? IconButton(
+            listSelected
+                ? Positioned(
+                    top: 120,
+                    child: SizedBox(
+                        width: width,
+                        height: 140,
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 145,
+                              width: 50,
+                              color: Colors.black.withOpacity(0.3),
+                              child: leftActive
+                                  ? IconButton(
+                                      onPressed: () {
+                                        moveBackward();
+                                      },
+                                      icon: const Icon(Icons.arrow_back_ios,
+                                          color: Colors.white),
+                                    )
+                                  : Container(),
+                            ),
+                            const Spacer(),
+                            Container(
+                              height: 145,
+                              width: 50,
+                              color: Colors.black.withOpacity(0.3),
+                              child: IconButton(
                                 onPressed: () {
                                   moveForward();
                                 },
                                 icon: const Icon(Icons.arrow_forward_ios,
                                     color: Colors.white),
-                              )
-                            : Container(),
-                      ),
-                    ],
-                  )),
-            ),
+                              ),
+                            ),
+                          ],
+                        )),
+                  )
+                : Container(),
             //
             // MouseRegion of the text
             //

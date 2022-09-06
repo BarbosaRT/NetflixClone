@@ -6,7 +6,6 @@ import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/player_impl.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/login/login_controller.dart';

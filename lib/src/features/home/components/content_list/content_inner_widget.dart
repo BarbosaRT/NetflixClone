@@ -15,6 +15,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   static const Duration duration = Duration(milliseconds: 300);
   static const double spacing = 252.0;
   int current = 0;
+  static const int contentCount = 5;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
 
@@ -25,7 +26,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   }
 
   void widgetBuilder() {
-    for (int i = 4; i >= 0; i--) {
+    for (int i = contentCount - 1; i >= 0; i--) {
       widgets.add(
         Positioned(
           left: spacing * i,
@@ -33,7 +34,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
             onHover: onHover,
             anchor: getAnchor(i),
             localIndex: i,
-            index: widget.index * 5 + i,
+            index: widget.index * contentCount + i,
           ),
         ),
       );
@@ -42,15 +43,15 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   }
 
   ContentContainerAnchor getAnchor(int i) {
-    int v = i >= 5 ? i - 5 * (i ~/ 5) : i;
+    int v = i >= contentCount ? i - contentCount * (i ~/ contentCount) : i;
 
     List<ContentContainerAnchor> anchors = [
       ContentContainerAnchor.left,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.center,
-      ContentContainerAnchor.right
     ];
+    for (int i = 0; i < contentCount - 2; i++) {
+      anchors.add(ContentContainerAnchor.center);
+    }
+    anchors.add(ContentContainerAnchor.right);
     return anchors[v];
   }
 
@@ -101,7 +102,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: spacing * 5,
+      width: spacing * contentCount,
       height: 500,
       child: Stack(
         children: widgets,
