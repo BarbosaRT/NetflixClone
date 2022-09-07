@@ -21,12 +21,18 @@ class HoverNotification extends ChangeNotifier {
   }
 }
 
+enum HoverType { top, bottom }
+
 class HoverWidget extends StatefulWidget {
   final Widget? icon;
   final Widget? child;
   final double maxWidth;
   final double rightPadding;
   final int index;
+  final HoverType type;
+  final bool useNotification;
+  final Duration delayOut;
+  final Duration fadeDuration;
   final void Function()? onHover;
   final void Function()? onExit;
 
@@ -39,6 +45,10 @@ class HoverWidget extends StatefulWidget {
     this.onHover,
     this.onExit,
     this.index = 0,
+    this.useNotification = true,
+    this.delayOut = const Duration(milliseconds: 300),
+    this.fadeDuration = const Duration(milliseconds: 50),
+    this.type = HoverType.bottom,
   });
 
   @override
@@ -50,27 +60,28 @@ class _HoverWidgetState extends State<HoverWidget> {
   bool _isHover = false;
 
   Duration currentdelayOut = const Duration(milliseconds: 300);
-  static const delayOut = Duration(milliseconds: 300);
 
   HoverNotification? hoverNotification;
 
   Duration currentfadeDuration = const Duration(milliseconds: 50);
-  static const fadeDuration = Duration(milliseconds: 50);
 
   final Random random = Random(6941);
 
   @override
   void initState() {
     super.initState();
-    currentdelayOut = Duration(milliseconds: delayOut.inMilliseconds);
-    currentfadeDuration = Duration(milliseconds: fadeDuration.inMilliseconds);
+    currentdelayOut = Duration(milliseconds: widget.delayOut.inMilliseconds);
+    currentfadeDuration =
+        Duration(milliseconds: widget.fadeDuration.inMilliseconds);
 
-    hoverNotification = Modular.get<HoverNotification>();
-    hoverNotification!.addListener(() {
-      if (hoverNotification!.hoverOff[widget.index]) {
-        hoverOff();
-      }
-    });
+    if (widget.useNotification) {
+      hoverNotification = Modular.get<HoverNotification>();
+      hoverNotification!.addListener(() {
+        if (hoverNotification!.hoverOff[widget.index]) {
+          hoverOff();
+        }
+      });
+    }
   }
 
   void hoverOff() {
@@ -85,7 +96,9 @@ class _HoverWidgetState extends State<HoverWidget> {
     setState(() {
       _hover = false;
     });
-    hoverNotification!.notify(false, widget.index);
+    if (widget.useNotification) {
+      hoverNotification!.notify(false, widget.index);
+    }
   }
 
   void onExit() {
@@ -107,14 +120,17 @@ class _HoverWidgetState extends State<HoverWidget> {
   }
 
   void onHover() {
-    hoverNotification!.clear();
-    hoverNotification!.notify(false, widget.index);
+    if (widget.useNotification) {
+      hoverNotification!.clear();
+      hoverNotification!.notify(false, widget.index);
+    }
     if (widget.onHover != null) {
       widget.onHover!();
     }
 
-    currentfadeDuration = Duration(milliseconds: fadeDuration.inMilliseconds);
-    currentdelayOut = Duration(milliseconds: delayOut.inMilliseconds);
+    currentfadeDuration =
+        Duration(milliseconds: widget.fadeDuration.inMilliseconds);
+    currentdelayOut = Duration(milliseconds: widget.delayOut.inMilliseconds);
 
     _isHover = true;
     setState(() {
@@ -128,7 +144,9 @@ class _HoverWidgetState extends State<HoverWidget> {
       height: 1000,
       width: widget.maxWidth,
       child: Stack(
-        alignment: Alignment.topRight,
+        alignment: widget.type == HoverType.bottom
+            ? Alignment.topRight
+            : Alignment.bottomRight,
         children: [
           Positioned(
             left: widget.maxWidth - widget.rightPadding,

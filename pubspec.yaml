@@ -31,7 +31,7 @@ dependencies:
   intl: ^0.17.0
 
   http: ^0.13.5
-  scrollable_positioned_list: ^0.3.2
+  carousel_slider: ^4.1.1
   
 dev_dependencies:
   flutter_test:
@@ -64,7 +64,7 @@ flutter:
     - family: Netflix Sans
       fonts:
         - asset: assets/fonts/NetflixSans-Regular.otf
-        
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 
@@ -24,6 +25,14 @@ class _ListContentsState extends State<ListContents> {
     'Porque você viu Smurfs',
     'Filmes Coreanos',
     'Mais de Terror',
+  ];
+  static List<CarouselController> controllers = [
+    CarouselController(),
+    CarouselController(),
+    CarouselController(),
+    CarouselController(),
+    CarouselController(),
+    CarouselController(),
   ];
   static const listCount = 6;
 
@@ -56,6 +65,7 @@ class _ListContentsState extends State<ListContents> {
             onHover: () {
               onHover(i);
             },
+            controller: controllers[i],
           ),
         ),
       );

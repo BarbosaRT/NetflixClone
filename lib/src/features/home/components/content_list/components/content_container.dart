@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
@@ -156,6 +157,7 @@ class _ContentContainerState extends State<ContentContainer> {
                 padding: const EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
+                  //TODO: Trocar esse column por um stack
                   children: [
                     //
                     // Icons
@@ -168,47 +170,33 @@ class _ContentContainerState extends State<ContentContainer> {
                         scrollDirection: Axis.horizontal,
                         child: SizedBox(
                           width: width * factor,
-                          child: Row(
+                          child: Stack(
                             children: [
                               const Icon(
                                 Icons.play_circle,
                                 size: 40,
                                 color: Colors.white,
                               ),
-                              const SizedBox(width: 5),
                               //
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.white, width: 2),
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey.withOpacity(0.1),
-                                ),
-                                child: const Icon(
-                                  Icons.add,
-                                  size: 25,
-                                  color: Colors.white,
+                              const Positioned(
+                                left: 500,
+                                child: ContentButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 5),
                               //
-                              Container(
-                                width: 40,
-                                height: 40,
-                                padding: EdgeInsets.zero,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.white, width: 2),
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey.withOpacity(0.1),
-                                ),
-                                child: const FaIcon(
-                                  FontAwesomeIcons.thumbsUp,
-                                  size: 17,
-                                  color: Colors.white,
+                              const Positioned(
+                                left: 90,
+                                child: ContentButton(
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.thumbsUp,
+                                    size: 17,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               const SizedBox(
