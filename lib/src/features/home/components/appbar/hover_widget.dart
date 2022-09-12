@@ -27,12 +27,16 @@ class HoverWidget extends StatefulWidget {
   final Widget? icon;
   final Widget? child;
   final double maxWidth;
+  final double maxHeight;
   final double rightPadding;
+  final double distance;
   final int index;
   final HoverType type;
   final bool useNotification;
   final Duration delayOut;
   final Duration fadeDuration;
+  // use the child to detect the hover or not
+  final bool detectChildArea;
   final void Function()? onHover;
   final void Function()? onExit;
 
@@ -49,6 +53,9 @@ class HoverWidget extends StatefulWidget {
     this.delayOut = const Duration(milliseconds: 300),
     this.fadeDuration = const Duration(milliseconds: 50),
     this.type = HoverType.bottom,
+    this.maxHeight = 1000,
+    this.distance = 30,
+    this.detectChildArea = true,
   });
 
   @override
@@ -92,10 +99,11 @@ class _HoverWidgetState extends State<HoverWidget> {
     if (widget.onExit != null) {
       widget.onExit!();
     }
-
-    setState(() {
-      _hover = false;
-    });
+    if (mounted) {
+      setState(() {
+        _hover = false;
+      });
+    }
     if (widget.useNotification) {
       hoverNotification!.notify(false, widget.index);
     }
@@ -112,9 +120,11 @@ class _HoverWidgetState extends State<HoverWidget> {
         if (_isHover) {
           return;
         }
-        setState(() {
-          _hover = false;
-        });
+        if (mounted) {
+          setState(() {
+            _hover = false;
+          });
+        }
       },
     );
   }
@@ -133,22 +143,23 @@ class _HoverWidgetState extends State<HoverWidget> {
     currentdelayOut = Duration(milliseconds: widget.delayOut.inMilliseconds);
 
     _isHover = true;
-    setState(() {
-      _hover = true;
-    });
+    if (mounted) {
+      setState(() {
+        _hover = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 1000,
+      height: widget.maxHeight,
       width: widget.maxWidth,
       child: Stack(
-        alignment: widget.type == HoverType.bottom
-            ? Alignment.topRight
-            : Alignment.bottomRight,
+        alignment: Alignment.topRight,
         children: [
           Positioned(
+            top: widget.type == HoverType.bottom ? 0 : widget.distance,
             left: widget.maxWidth - widget.rightPadding,
             child: MouseRegion(
               opaque: false,
@@ -163,24 +174,27 @@ class _HoverWidgetState extends State<HoverWidget> {
           ),
           _hover
               ? Positioned(
-                  top: 30,
+                  top: widget.type == HoverType.bottom ? widget.distance : 0,
                   child: MouseRegion(
+                    opaque: widget.detectChildArea,
                     onExit: (event) {
-                      onExit();
+                      if (widget.detectChildArea) {
+                        onExit();
+                      }
                     },
                     onHover: (v) {
-                      onHover();
+                      if (widget.detectChildArea) {
+                        onHover();
+                      }
                     },
-                    child: currentfadeDuration != Duration.zero
-                        ? AnimatedOpacity(
-                            opacity: _hover ? 1 : 0,
-                            duration: currentfadeDuration,
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              child: widget.child,
-                            ),
-                          )
-                        : Container(),
+                    child: AnimatedOpacity(
+                      opacity: _hover ? 1 : 0,
+                      duration: currentfadeDuration,
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: widget.child,
+                      ),
+                    ),
                   ),
                 )
               : Container(),

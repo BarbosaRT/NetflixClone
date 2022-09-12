@@ -1,8 +1,31 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 
 enum ContentListAnchor { top, middle, bottom }
+
+class ListContentController extends ChangeNotifier {
+  final int controllerNumber = _ListContentsState.listCount;
+  List<CarouselController> controllers = [];
+  void init() {
+    for (int i = 0; i < controllerNumber; i++) {
+      controllers.add(CarouselController());
+    }
+  }
+
+  void previousPage(int index, Duration duration, Curve curve) {
+    controllers[index].previousPage(duration: duration, curve: curve);
+  }
+
+  void nextPage(int index, Duration duration, Curve curve) {
+    controllers[index].nextPage(duration: duration, curve: curve);
+  }
+
+  CarouselController getController(int index) {
+    return controllers[index];
+  }
+}
 
 class ListContents extends StatefulWidget {
   const ListContents({super.key});
@@ -26,18 +49,12 @@ class _ListContentsState extends State<ListContents> {
     'Filmes Coreanos',
     'Mais de Terror',
   ];
-  static List<CarouselController> controllers = [
-    CarouselController(),
-    CarouselController(),
-    CarouselController(),
-    CarouselController(),
-    CarouselController(),
-    CarouselController(),
-  ];
   static const listCount = 6;
 
   @override
   void initState() {
+    final controller = Modular.get<ListContentController>();
+    controller.init();
     widgetBuilder();
     super.initState();
   }
@@ -65,7 +82,6 @@ class _ListContentsState extends State<ListContents> {
             onHover: () {
               onHover(i);
             },
-            controller: controllers[i],
           ),
         ),
       );

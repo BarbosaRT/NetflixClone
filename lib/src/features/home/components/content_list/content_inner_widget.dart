@@ -3,9 +3,12 @@ import 'package:netflix/src/features/home/components/content_list/components/con
 
 enum ContentContainerAnchor { left, center, right }
 
+// Responsible for putting one widget on top of another
 class ContentInnerWidget extends StatefulWidget {
   final int index;
-  const ContentInnerWidget({Key? key, this.index = 0}) : super(key: key);
+  final void Function(bool value)? onHover;
+  const ContentInnerWidget({Key? key, this.index = 0, this.onHover})
+      : super(key: key);
 
   @override
   State<ContentInnerWidget> createState() => _ContentInnerWidgetState();
@@ -32,6 +35,9 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           left: spacing * i,
           child: ContentContainer(
             onHover: onHover,
+            onExit: () {
+              onChangeValue(false);
+            },
             anchor: getAnchor(i),
             localIndex: i,
             index: widget.index * contentCount + i,
@@ -55,11 +61,18 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     return anchors[v];
   }
 
+  void onChangeValue(bool value) {
+    if (widget.onHover != null) {
+      widget.onHover!(value);
+    }
+  }
+
   void onHover(int index) {
     if (current == index) {
       return;
     }
     current = index;
+    onChangeValue(true);
     switch (getAnchor(index)) {
       case ContentContainerAnchor.center:
         Future.delayed(duration).then((v) {

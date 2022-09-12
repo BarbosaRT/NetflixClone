@@ -1,6 +1,4 @@
-# NetflixClone
-
-15 days  
+# Netflix Clone
 
 ## Instructions 
 create api.dart in lib/core/ with this code

@@ -5,6 +5,7 @@ import 'package:netflix/src/features/splash/components/icon_painter.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'dart:math' as math;
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -93,17 +94,21 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         //
         Padding(
           padding: EdgeInsets.only(left: (width - 130) / 2, top: height * 0.18),
-          child: RotationTransition(
-            turns: turnsTween.animate(_animation),
-            child: CustomPaint(
-              painter: IconPainter(
-                path: splashIcon,
-                color: color,
-              ),
-              child: Container(
-                height: radius,
-                width: radius,
-                color: Colors.transparent,
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(math.pi),
+            child: RotationTransition(
+              turns: turnsTween.animate(_animation),
+              child: CustomPaint(
+                painter: IconPainter(
+                  path: splashIcon,
+                  color: color,
+                ),
+                child: Container(
+                  height: radius,
+                  width: radius,
+                  color: Colors.transparent,
+                ),
               ),
             ),
           ),
