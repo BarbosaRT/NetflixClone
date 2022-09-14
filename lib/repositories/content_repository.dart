@@ -368,8 +368,8 @@ class ContentRepository {
   Future<Either<ContentError, ContentResponseModel>> fetchAllMovies(
       int page) async {
     try {
-      //final response = await httpInterface.get('/movie/popular?page=$page');
-      final model = ContentResponseModel.fromMap(con);
+      final response = await httpInterface.get('/movie/popular?page=$page');
+      final model = ContentResponseModel.fromMap(response);
       return Right(model);
     } on DioError catch (error) {
       if (error.response != null) {

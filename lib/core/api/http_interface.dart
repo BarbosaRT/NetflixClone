@@ -25,6 +25,7 @@ class HttpImpl implements HttpInterface {
 
   @override
   Future<dynamic> get(String url) async {
+    // API KEY deleted
     return (await client.get(
             Uri.parse('$kBaseUrl$url?api_key=456a2c767a26c3bd89a076ab4ec8f89b'),
             headers: headers))

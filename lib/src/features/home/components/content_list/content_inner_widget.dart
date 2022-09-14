@@ -32,6 +32,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     for (int i = contentCount - 1; i >= 0; i--) {
       widgets.add(
         Positioned(
+          key: UniqueKey(),
           left: spacing * i,
           child: ContentContainer(
             onHover: onHover,

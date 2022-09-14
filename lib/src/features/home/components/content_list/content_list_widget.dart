@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
@@ -9,7 +10,6 @@ class ContentListWidget extends StatefulWidget {
   final int index;
   final String title;
   final ContentListAnchor anchor;
-  //TODO: CarouselSlider not working
   final void Function() onHover;
   const ContentListWidget({
     super.key,
@@ -28,7 +28,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   static const duration = Duration(milliseconds: 500);
   static const Curve curve = Curves.easeInOut;
   final ValueNotifier<bool> _listSelected = ValueNotifier(false);
-  bool textSelected = false;
+  final ValueNotifier<bool> _textSelected = ValueNotifier(false);
   bool canDetectList = true;
   bool leftActive = false;
 
@@ -81,9 +81,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         ContentInnerWidget(
           index: i,
           onHover: (value) {
-            Future.delayed(const Duration(milliseconds: 200)).then((v) {
-              onWidgetChanging(value);
-            });
+            onWidgetChanging(value);
           },
         ),
       );
@@ -91,7 +89,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void onWidgetChanging(bool value) {
-    canDetectList = value;
+    //canDetectList = !value;
+    //_listSelected.value = !value;
   }
 
   void moveBackward() {
@@ -104,19 +103,26 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     }
     leftActive = true;
     widgetBuilder();
+    controller.jumpToPage(widgetCount);
+    Future.delayed(duration).then(
+      (value) {
+        moveForward();
+      },
+    );
   }
 
   void moveForward() {
+    controller.nextPage(duration: duration, curve: curve);
     if (!leftActive) {
       activeLeft();
     }
-    controller.nextPage(duration: duration, curve: curve);
   }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final headline6 = AppFonts().headline6;
+    final contentController = Modular.get<ListContentController>();
 
     return MouseRegion(
       opaque: false,
@@ -134,15 +140,20 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 child: Row(
                   children: [
                     Text(
-                      '${widget.title} ${widget.index}',
+                      widget.title,
                       style: headline6,
                     ),
-                    textSelected
-                        ? const Icon(CupertinoIcons.forward,
-                            color: Colors.blue, size: 20)
-                        : Container(
-                            height: 20,
-                          ),
+                    ValueListenableBuilder(
+                      valueListenable: _listSelected,
+                      builder: (BuildContext context, bool val, Widget? child) {
+                        return val
+                            ? const Icon(CupertinoIcons.forward,
+                                color: Colors.blue, size: 20)
+                            : Container(
+                                height: 20,
+                              );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -181,9 +192,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   items: widgetList,
                   carouselController: controller,
                   options: CarouselOptions(
-                      initialPage: 1,
+                      initialPage: contentController.getPage(widget.index),
                       viewportFraction: 0.926,
                       onPageChanged: (index, reason) {
+                        contentController.setPage(widget.index, index);
                         setState(() {
                           currentIndex = index;
                         });
@@ -247,14 +259,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 child: MouseRegion(
                   opaque: false,
                   onEnter: (event) {
-                    setState(() {
-                      textSelected = true;
-                    });
+                    _textSelected.value = true;
                   },
                   onExit: (event) {
-                    setState(() {
-                      textSelected = false;
-                    });
+                    _textSelected.value = false;
                   },
                   // For Debugging
                   child: Container(
