@@ -18,13 +18,16 @@ class PlayerImpl implements VideoInterface {
     } else {
       return _thumbnail.isEmpty
           ? Container(width: 5, height: 5, color: Colors.red)
-          : Image.asset(_thumbnail);
+          : SizedBox(
+              width: 1360,
+              height: 768,
+              child: Image.asset(_thumbnail, fit: BoxFit.cover));
     }
   }
 
   @override
-  void init() {
-    load('assets/videos/Minions.mp4');
+  void init(String video) {
+    load(video);
     // _controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')..initialize();
   }
 

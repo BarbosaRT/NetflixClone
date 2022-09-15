@@ -26,11 +26,6 @@ dependencies:
   vector_math: ^2.1.2  
   path_drawing: ^1.0.1
 
-  dartz: ^0.10.1
-  dio: ^4.0.6
-  intl: ^0.17.0
-
-  http: ^0.13.5
   carousel_slider: ^4.1.1
   
 dev_dependencies:
@@ -49,6 +44,7 @@ flutter:
       - assets/images/
       - assets/images/profiles/
       - assets/videos/
+      - assets/data/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

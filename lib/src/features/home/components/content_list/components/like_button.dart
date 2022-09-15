@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 
 class LikeButton extends StatefulWidget {
@@ -11,27 +14,6 @@ class LikeButton extends StatefulWidget {
 class _LikeButtonState extends State<LikeButton> {
   static const Duration delay = Duration(milliseconds: 200);
 
-  static const likeWidget = ContentButton(
-      icon: Icon(
-        Icons.thumb_up,
-        size: 25,
-        color: Colors.white,
-      ),
-      text: 'Gostei');
-  static const deslikeWidget = ContentButton(
-      icon: Icon(
-        Icons.thumb_down,
-        size: 25,
-        color: Colors.white,
-      ),
-      text: 'Não é para mim');
-  static const loveWidget = ContentButton(
-      icon: Icon(
-        Icons.thumbs_up_down,
-        size: 25,
-        color: Colors.white,
-      ),
-      text: 'Amei!');
   bool hover = false;
 
   void onHover() {
@@ -66,6 +48,50 @@ class _LikeButtonState extends State<LikeButton> {
 
   @override
   Widget build(BuildContext context) {
+    final colorController = Modular.get<ColorController>();
+    final backgroundColor = colorController.currentScheme.likeButtonColor;
+
+    final headline6 = AppFonts().headline6;
+
+    final loveWidget = ContentButton(
+      icon: const Icon(
+        Icons.thumbs_up_down,
+        size: 25,
+        color: Colors.white,
+      ),
+      text: Text(
+        'Amei!',
+        textAlign: TextAlign.center,
+        style: headline6.copyWith(color: Colors.black),
+      ),
+    );
+    //
+    final deslikeWidget = ContentButton(
+      icon: const Icon(
+        Icons.thumb_down,
+        size: 25,
+        color: Colors.white,
+      ),
+      text: Text(
+        'Não é para mim',
+        textAlign: TextAlign.center,
+        style: headline6.copyWith(color: Colors.black),
+      ),
+    );
+    //
+    final likeWidget = ContentButton(
+      icon: const Icon(
+        Icons.thumb_up,
+        size: 25,
+        color: Colors.white,
+      ),
+      text: Text(
+        'Gostei',
+        textAlign: TextAlign.center,
+        style: headline6.copyWith(color: Colors.black),
+      ),
+    );
+
     return AnimatedContainer(
         height: 120,
         duration: delay,
@@ -82,7 +108,7 @@ class _LikeButtonState extends State<LikeButton> {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
-                    color: Colors.grey.shade800,
+                    color: backgroundColor,
                   )
                 : const BoxDecoration(
                     borderRadius: BorderRadius.all(

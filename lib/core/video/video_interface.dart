@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class VideoInterface {
-  void init();
+  void init(String video);
   void play();
   void seek(Duration position);
   void pause();

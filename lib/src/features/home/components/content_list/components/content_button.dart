@@ -4,10 +4,15 @@ import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 
 class ContentButton extends StatefulWidget {
   final Widget icon;
-  final String text;
+  final Widget text;
   final double distance;
+  final void Function()? onClick;
   const ContentButton(
-      {super.key, required this.icon, required this.text, this.distance = 70});
+      {super.key,
+      required this.icon,
+      required this.text,
+      this.distance = 70,
+      this.onClick});
 
   @override
   State<ContentButton> createState() => _ContentButtonState();
@@ -16,10 +21,14 @@ class ContentButton extends StatefulWidget {
 class _ContentButtonState extends State<ContentButton> {
   static const double width = 250;
 
+  void onClick() {
+    if (widget.onClick != null) {
+      widget.onClick!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final headline6 = AppFonts().headline6;
-
     return HoverWidget(
         useNotification: false,
         delayOut: Duration.zero,
@@ -30,17 +39,22 @@ class _ContentButtonState extends State<ContentButton> {
         maxHeight: 200,
         distance: widget.distance,
         detectChildArea: false,
-        icon: Container(
-            width: 40,
-            height: 40,
-            padding: EdgeInsets.zero,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2),
-              shape: BoxShape.circle,
-              color: Colors.grey.withOpacity(0.1),
-            ),
-            child: widget.icon),
+        icon: GestureDetector(
+          onTap: () {
+            onClick();
+          },
+          child: Container(
+              width: 40,
+              height: 40,
+              padding: EdgeInsets.zero,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 1),
+                shape: BoxShape.circle,
+                color: Colors.grey.withOpacity(0.1),
+              ),
+              child: widget.icon),
+        ),
         child: SizedBox(
           height: 100,
           width: width,
@@ -60,11 +74,7 @@ class _ContentButtonState extends State<ContentButton> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          widget.text,
-                          textAlign: TextAlign.center,
-                          style: headline6.copyWith(color: Colors.black),
-                        ),
+                        child: widget.text,
                       ),
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
@@ -24,6 +25,7 @@ class AppModule extends Module {
         Bind((i) => ColorController()),
         Bind((i) => LoginController()),
         Bind((i) => ListContentController()),
+        Bind((i) => ContentController()),
       ];
 
   @override

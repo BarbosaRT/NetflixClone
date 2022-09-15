@@ -1,10 +1,12 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/player_impl.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
@@ -29,6 +31,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const double height = 3000.0;
+  static const textDuration = Duration(milliseconds: 900);
+  static const fadeInDuration = Duration(milliseconds: 700);
+
+  ContentModel content = ContentModel.fromJson("""{
+            "title": "Breaking Bad",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/breaking_bad_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Violentos",
+                "Realistas",
+                "Suspense"
+            ],
+            "age": 18,
+            "detail": "5 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": "      A terminally ill chemistry teacher teams with a former student to..."
+            }""");
 
   @override
   void initState() {
@@ -40,8 +61,17 @@ class _HomePageState extends State<HomePage> {
     }
 
     final videoController = context.read<PlayerImpl>();
-    videoController.init();
-    videoController.defineThumbnail('assets/images/Minions-Background.png');
+    videoController.init(content.trailer);
+
+    final contentController = Modular.get<ContentController>();
+
+    contentController.addListener(() {
+      if (!contentController.loading) {
+        content = contentController.getContent(0);
+        videoController.defineThumbnail(content.backdrop);
+        videoController.init(content.trailer);
+      }
+    });
 
     videoController.controller.addListener(() {
       if (videoController.controller.value.position ==
@@ -83,13 +113,12 @@ class _HomePageState extends State<HomePage> {
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
 
-    const description =
-        '''     O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. 
-     O Lorem Ipsum tem vindo a ser o texto padrão usado por estas 
-     indústrias desde o ano de 1500 quando misturou caracteres...''';
+    // const description =
+    //     '''    O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão.
+    //  O Lorem Ipsum tem vindo a ser o texto padrão usado por estas
+    //  indústrias desde o ano de 1500 quando misturou caracteres...''';
 
-    const textDuration = Duration(milliseconds: 900);
-    const fadeInDuration = Duration(milliseconds: 700);
+    final description = content.overview;
 
     final homeAppBar =
         HomeAppBar(scrollController: scrollController, height: 500);
@@ -191,14 +220,15 @@ class _HomePageState extends State<HomePage> {
                         // Logo
                         //
                         AnimatedPositioned(
-                          top: videoController.isPlaying() ? 390 : 310,
+                          top: videoController.isPlaying() ? 300 : 160,
                           left: 55,
                           duration: textDuration,
                           child: AnimatedContainer(
                             duration: textDuration,
-                            width: videoController.isPlaying() ? 350 : 500,
+                            width: videoController.isPlaying() ? 250 : 400,
                             child: Image.asset(
-                              'assets/images/Minions-Logo-2D.png',
+                              content.logo,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 
 enum ContentListAnchor { top, middle, bottom }
@@ -42,6 +44,8 @@ class _ListContentsState extends State<ListContents> {
 
   @override
   void initState() {
+    final controller = Modular.get<ContentController>();
+    controller.init();
     widgetBuilder();
     super.initState();
   }

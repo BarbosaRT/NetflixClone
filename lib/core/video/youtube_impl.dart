@@ -18,7 +18,7 @@ class YoutubeImpl implements VideoInterface {
   );
 
   @override
-  void init() async {
+  void init(String video) async {
     await Future.delayed(const Duration(seconds: 2));
     play();
   }
