@@ -208,9 +208,14 @@ class _ContentContainerState extends State<ContentContainer> {
                     margin: EdgeInsets.only(top: hover ? 50 : 0),
                     width: hover ? width * factor : width,
                     height: infoHeight,
-                    decoration: infoContainer.copyWith(
-                      color: backgroundColor,
-                    ),
+                    decoration: infoContainer
+                        .copyWith(color: backgroundColor, boxShadow: [
+                      BoxShadow(
+                        color: backgroundColor,
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                      )
+                    ]),
                   ),
                   //
                   // Icons
@@ -412,7 +417,7 @@ class _ContentContainerState extends State<ContentContainer> {
                   //
                   width: hover ? width * factor : width,
                   //
-                  color: Colors.yellow.withOpacity(0.5)),
+                  color: Colors.yellow.withOpacity(0.0)),
             ),
           ),
         ],

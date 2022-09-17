@@ -54,11 +54,7 @@ class _LikeButtonState extends State<LikeButton> {
     final headline6 = AppFonts().headline6;
 
     final loveWidget = ContentButton(
-      icon: const Icon(
-        Icons.thumbs_up_down,
-        size: 25,
-        color: Colors.white,
-      ),
+      icon: Image.asset('images/love.png'),
       text: Text(
         'Amei!',
         textAlign: TextAlign.center,
@@ -67,11 +63,7 @@ class _LikeButtonState extends State<LikeButton> {
     );
     //
     final deslikeWidget = ContentButton(
-      icon: const Icon(
-        Icons.thumb_down,
-        size: 25,
-        color: Colors.white,
-      ),
+      icon: Image.asset('images/deslike.png'),
       text: Text(
         'Não é para mim',
         textAlign: TextAlign.center,
@@ -80,11 +72,7 @@ class _LikeButtonState extends State<LikeButton> {
     );
     //
     final likeWidget = ContentButton(
-      icon: const Icon(
-        Icons.thumb_up,
-        size: 25,
-        color: Colors.white,
-      ),
+      icon: Image.asset('images/like.png'),
       text: Text(
         'Gostei',
         textAlign: TextAlign.center,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 
 class ContentButton extends StatefulWidget {
