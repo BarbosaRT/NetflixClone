@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
+import 'package:netflix/core/video/player_impl.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
@@ -32,6 +34,7 @@ class _ContentContainerState extends State<ContentContainer> {
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeInOut;
   static const delay = Duration(milliseconds: 400);
+  static const trailerDelay = Duration(milliseconds: 3000);
   static const double realWidth = 325;
   static const double width = 245;
   static const double wDifference = 60;
@@ -47,31 +50,33 @@ class _ContentContainerState extends State<ContentContainer> {
   bool hover = false;
   ValueNotifier<bool> added = ValueNotifier(false);
 
-  ContentModel content = ContentModel.fromJson("""{
-            "title": "Breaking Bad",
-            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/breaking_bad_poster.jpg",
-            "rating": 98,
-            "trailer": "assets/data/breaking_bad_trailer.mp4",
-            "tags": [
-                "Violentos",
-                "Realistas",
-                "Suspense"
-            ],
-            "age": 18,
-            "detail": "5 temporadas",
-            "logo": "assets/data/breaking_bad_logo.png",
-            "overview": "When Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime."
-            }""");
+  ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
+  final PlayerImpl videoController = PlayerImpl();
 
+  GestureDetector? button;
   @override
   void initState() {
     super.initState();
+
+    videoController.init(content.trailer,
+        w: width * factor, h: height * factor);
+
     final controller = Modular.get<ContentController>();
+
+    videoController.controller.addListener(() {
+      if (videoController.controller.value.position ==
+          videoController.controller.value.duration) {
+        setState(() {
+          videoController.enableFrame(false);
+        });
+      }
+    });
+
     controller.addListener(() {
-      if (!controller.loading) {
+      if (!controller.loading && mounted) {
         setState(() {
           content = controller.getContent(widget.index);
+          videoController.init(content.trailer, w: width, h: height);
         });
       }
     });
@@ -89,6 +94,9 @@ class _ContentContainerState extends State<ContentContainer> {
   }
 
   void onExit() {
+    videoController.enableFrame(false);
+    videoController.pause();
+    videoController.seek(Duration.zero);
     if (widget.onExit != null) {
       widget.onExit!();
     }
@@ -123,6 +131,22 @@ class _ContentContainerState extends State<ContentContainer> {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
     final image = content.poster;
+
+    button = GestureDetector(
+      onTap: () {
+        setState(() {
+          videoController.enableFrame(true);
+          videoController.isPlaying()
+              ? videoController.pause()
+              : videoController.play();
+        });
+      },
+      child: const Icon(
+        Icons.expand_more_rounded,
+        size: 25,
+        color: Colors.white,
+      ),
+    );
 
     final decoration = BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(border)),
@@ -176,19 +200,25 @@ class _ContentContainerState extends State<ContentContainer> {
           // Content Container
           //
           AnimatedContainer(
-              curve: curve,
-              duration: duration,
-              width: hover ? width * factor : width,
-              height: hover ? height * factor : height,
-              decoration: hover ? movieDecoraion : decoration,
-              child: Center(
-                child: Text(
-                  widget.index.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
+            curve: curve,
+            duration: duration,
+            width: hover ? width * factor : width,
+            height: hover ? height * factor : height,
+            decoration: hover ? movieDecoraion : decoration,
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  videoController.frame(),
+                  AnimatedContainer(
+                    curve: curve,
+                    duration: duration,
+                    height: hover ? height * factor : height,
+                    width: hover ? width * factor : width,
                   ),
-                ),
-              )),
+                ],
+              ),
+            ),
+          ),
           //
           // Info Container
           //
@@ -283,17 +313,13 @@ class _ContentContainerState extends State<ContentContainer> {
                             top: 2,
                             left: 260,
                             child: ContentButton(
-                              text: Text(
-                                'Mais Informações',
-                                textAlign: TextAlign.center,
-                                style: headline6.copyWith(color: Colors.black),
-                              ),
-                              icon: const Icon(
-                                Icons.expand_more_rounded,
-                                size: 25,
-                                color: Colors.white,
-                              ),
-                            ),
+                                text: Text(
+                                  'Mais Informações',
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      headline6.copyWith(color: Colors.black),
+                                ),
+                                icon: button ?? Container()),
                           ),
                         ],
                       ),
@@ -316,7 +342,8 @@ class _ContentContainerState extends State<ContentContainer> {
                           const SizedBox(width: 8),
                           //
                           Image.asset(
-                            'assets/images/L.png',
+                            AppConsts.classifications[content.age] ??
+                                'assets/images/classifications/L.png',
                             width: 30,
                             height: 30,
                           ),

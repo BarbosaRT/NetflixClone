@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     splashNotifier.addListener(() {
       if (splashNotifier.splashState == SplashState.finished) {
         splashNotifier.waitSplash();
-        Navigator.of(context).pushReplacementNamed('/');
+        Modular.to.navigate('/home');
       }
     });
 
@@ -122,11 +122,13 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
               height: 200,
               width: 200,
               child: Center(
-                child: SizedBox(
-                  width: 75,
-                  child: Image.asset(profileController
-                      .profiles[profileController.selected].icon),
-                ),
+                child: profileController.profiles.isNotEmpty
+                    ? SizedBox(
+                        width: 75,
+                        child: Image.asset(profileController
+                            .profiles[profileController.selected].icon),
+                      )
+                    : Container(),
               )),
         ),
       ]),

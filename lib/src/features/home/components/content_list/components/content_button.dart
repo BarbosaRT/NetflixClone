@@ -6,12 +6,23 @@ class ContentButton extends StatefulWidget {
   final Widget text;
   final double distance;
   final void Function()? onClick;
-  const ContentButton(
-      {super.key,
-      required this.icon,
-      required this.text,
-      this.distance = 70,
-      this.onClick});
+  final void Function()? onHover;
+  final void Function()? onExit;
+  final Color circleColor;
+  final double opacity;
+  final Color buttonColor;
+  const ContentButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.circleColor = Colors.grey,
+    this.buttonColor = Colors.grey,
+    this.distance = 70,
+    this.opacity = 0.0,
+    this.onClick,
+    this.onHover,
+    this.onExit,
+  });
 
   @override
   State<ContentButton> createState() => _ContentButtonState();
@@ -23,6 +34,18 @@ class _ContentButtonState extends State<ContentButton> {
   void onClick() {
     if (widget.onClick != null) {
       widget.onClick!();
+    }
+  }
+
+  void onHover() {
+    if (widget.onHover != null) {
+      widget.onHover!();
+    }
+  }
+
+  void onExit() {
+    if (widget.onExit != null) {
+      widget.onExit!();
     }
   }
 
@@ -38,6 +61,8 @@ class _ContentButtonState extends State<ContentButton> {
         maxHeight: 200,
         distance: widget.distance,
         detectChildArea: false,
+        onExit: onExit,
+        onHover: onHover,
         icon: GestureDetector(
           onTap: () {
             onClick();
@@ -48,9 +73,9 @@ class _ContentButtonState extends State<ContentButton> {
               padding: EdgeInsets.zero,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 1),
+                border: Border.all(color: widget.circleColor, width: 1),
                 shape: BoxShape.circle,
-                color: Colors.grey.withOpacity(0.1),
+                color: widget.buttonColor.withOpacity(widget.opacity),
               ),
               child: widget.icon),
         ),

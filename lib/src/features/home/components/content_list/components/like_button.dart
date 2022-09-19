@@ -13,7 +13,9 @@ class LikeButton extends StatefulWidget {
 
 class _LikeButtonState extends State<LikeButton> {
   static const Duration delay = Duration(milliseconds: 200);
-
+  final ValueNotifier<bool> _loveSelected = ValueNotifier(false);
+  final ValueNotifier<bool> _likeSelected = ValueNotifier(false);
+  final ValueNotifier<bool> _deslikeSelected = ValueNotifier(false);
   bool hover = false;
 
   void onHover() {
@@ -53,32 +55,68 @@ class _LikeButtonState extends State<LikeButton> {
 
     final headline6 = AppFonts().headline6;
 
-    final loveWidget = ContentButton(
-      icon: Image.asset('images/love.png'),
-      text: Text(
-        'Amei!',
-        textAlign: TextAlign.center,
-        style: headline6.copyWith(color: Colors.black),
-      ),
-    );
+    final loveWidget = ValueListenableBuilder(
+        valueListenable: _loveSelected,
+        builder: (context, bool value, child) {
+          return ContentButton(
+            icon: Image.asset('images/love.png'),
+            onHover: () {
+              _loveSelected.value = true;
+            },
+            onExit: () {
+              _loveSelected.value = false;
+            },
+            text: Text(
+              'Amei!',
+              textAlign: TextAlign.center,
+              style: headline6.copyWith(color: Colors.black),
+            ),
+            circleColor: hover ? Colors.transparent : Colors.grey,
+            opacity: value ? 0.1 : 0,
+          );
+        });
     //
-    final deslikeWidget = ContentButton(
-      icon: Image.asset('images/deslike.png'),
-      text: Text(
-        'Não é para mim',
-        textAlign: TextAlign.center,
-        style: headline6.copyWith(color: Colors.black),
-      ),
-    );
+    final deslikeWidget = ValueListenableBuilder(
+        valueListenable: _deslikeSelected,
+        builder: (context, bool value, child) {
+          return ContentButton(
+            onHover: () {
+              _deslikeSelected.value = true;
+            },
+            onExit: () {
+              _deslikeSelected.value = false;
+            },
+            icon: Image.asset('images/deslike.png'),
+            text: Text(
+              'Não é para mim',
+              textAlign: TextAlign.center,
+              style: headline6.copyWith(color: Colors.black),
+            ),
+            circleColor: hover ? Colors.transparent : Colors.grey,
+            opacity: value ? 0.1 : 0,
+          );
+        });
     //
-    final likeWidget = ContentButton(
-      icon: Image.asset('images/like.png'),
-      text: Text(
-        'Gostei',
-        textAlign: TextAlign.center,
-        style: headline6.copyWith(color: Colors.black),
-      ),
-    );
+    final likeWidget = ValueListenableBuilder(
+        valueListenable: _likeSelected,
+        builder: (context, bool value, child) {
+          return ContentButton(
+            icon: Image.asset('images/like.png'),
+            onHover: () {
+              _likeSelected.value = true;
+            },
+            onExit: () {
+              _likeSelected.value = false;
+            },
+            text: Text(
+              'Gostei',
+              textAlign: TextAlign.center,
+              style: headline6.copyWith(color: Colors.black),
+            ),
+            circleColor: hover ? Colors.transparent : Colors.grey,
+            opacity: value ? 0.1 : 0,
+          );
+        });
 
     return AnimatedContainer(
         height: 120,

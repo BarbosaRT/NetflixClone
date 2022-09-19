@@ -19,20 +19,26 @@ class _ProfileIconState extends State<ProfileIcon> {
   static const height = 340.0;
 
   void onHover() {
-    setState(() {
-      _hover = true;
-    });
+    if (mounted) {
+      setState(() {
+        _hover = true;
+      });
+    }
   }
 
   void onExit() {
-    setState(() {
-      _hover = false;
-    });
+    if (mounted) {
+      setState(() {
+        _hover = false;
+      });
+    }
   }
 
   Widget iconWidget(BuildContext context) {
     final profileController = Modular.get<ProfileController>();
-    profileController.start();
+    if (mounted) {
+      profileController.start();
+    }
     return Row(
       children: [
         Container(
@@ -40,11 +46,14 @@ class _ProfileIconState extends State<ProfileIcon> {
           height: 30,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            image: DecorationImage(
-              image: AssetImage(
-                profileController.profiles[profileController.selected].icon,
-              ),
-            ),
+            image: profileController.profiles.isNotEmpty
+                ? DecorationImage(
+                    image: AssetImage(
+                      profileController
+                          .profiles[profileController.selected].icon,
+                    ),
+                  )
+                : null,
           ),
         ),
         AnimatedRotation(

@@ -5,7 +5,10 @@ import 'package:video_player/video_player.dart';
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
   bool _enableFrame = true;
+  String path = '';
   late VideoPlayerController _controller;
+  double width = 1360;
+  double height = 768;
   VideoPlayerController get controller => _controller;
 
   @override
@@ -17,17 +20,20 @@ class PlayerImpl implements VideoInterface {
       );
     } else {
       return _thumbnail.isEmpty
-          ? Container(width: 5, height: 5, color: Colors.red)
+          ? Container()
           : SizedBox(
-              width: 1360,
-              height: 768,
+              width: width,
+              height: height,
               child: Image.asset(_thumbnail, fit: BoxFit.cover));
     }
   }
 
   @override
-  void init(String video) {
+  void init(String video, {double w = 1360, double h = 768}) {
     load(video);
+    path = video;
+    width = w;
+    height = h;
     // _controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')..initialize();
   }
 

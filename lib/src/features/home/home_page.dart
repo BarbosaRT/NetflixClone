@@ -2,10 +2,12 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/player_impl.dart';
+import 'package:netflix/core/video/video_interface.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
@@ -34,23 +36,9 @@ class _HomePageState extends State<HomePage> {
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
 
-  ContentModel content = ContentModel.fromJson("""{
-            "title": "Breaking Bad",
-            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/breaking_bad_poster.jpg",
-            "rating": 98,
-            "trailer": "assets/data/breaking_bad_trailer.mp4",
-            "tags": [
-                "Violentos",
-                "Realistas",
-                "Suspense"
-            ],
-            "age": 18,
-            "detail": "5 temporadas",
-            "logo": "assets/data/breaking_bad_logo.png",
-            "overview": "      A terminally ill chemistry teacher teams with a former student to..."
-            }""");
-
+  ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
+  final videoController = PlayerImpl();
+  final scrollController = ScrollController(initialScrollOffset: 0);
   @override
   void initState() {
     super.initState();
@@ -59,9 +47,8 @@ class _HomePageState extends State<HomePage> {
       Navigator.pushReplacementNamed(context, '/login');
       return;
     }
-
-    final videoController = context.read<PlayerImpl>();
     videoController.init(content.trailer);
+    videoController.defineThumbnail(content.backdrop);
 
     final contentController = Modular.get<ContentController>();
 
@@ -92,18 +79,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    super.dispose();
     final videoController = context.watch<PlayerImpl>();
     videoController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    final scrollController = ScrollController(initialScrollOffset: 0);
-
-    final videoController = Modular.get<PlayerImpl>();
     final colorController = Modular.get<ColorController>();
 
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
@@ -112,13 +96,6 @@ class _HomePageState extends State<HomePage> {
 
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
-
-    // const description =
-    //     '''    O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão.
-    //  O Lorem Ipsum tem vindo a ser o texto padrão usado por estas
-    //  indústrias desde o ano de 1500 quando misturou caracteres...''';
-
-    final description = content.overview;
 
     final homeAppBar =
         HomeAppBar(scrollController: scrollController, height: 500);
@@ -243,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                               ? AnimatedTextKit(
                                   animatedTexts: [
                                     FadeAnimatedText(
-                                      description,
+                                      content.overview,
                                       textStyle: headline6,
                                       duration: fadeInDuration,
                                     ),
@@ -257,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                               : SizedBox(
                                   height: 70,
                                   child: Text(
-                                    description,
+                                    content.overview,
                                     style: headline6,
                                   ),
                                 ),
@@ -302,7 +279,9 @@ class _HomePageState extends State<HomePage> {
                           left: 1200,
                           child: Row(
                             children: [
-                              const VolumeButton(),
+                              VolumeButton(
+                                videoController: videoController,
+                              ),
                               Container(
                                   height: 32,
                                   width: 200,
@@ -320,7 +299,9 @@ class _HomePageState extends State<HomePage> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Image.asset('assets/images/L.png'),
+                                      Image.asset(AppConsts
+                                              .classifications[content.age] ??
+                                          'images/classifications/L.png'),
                                     ],
                                   )),
                             ],
@@ -329,9 +310,15 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  const Positioned(
+                  // Contents
+                  Positioned(
                     top: 500,
-                    child: ListContents(),
+                    child: ListContents(
+                      onSeeMore: (String content) {
+                        Modular.to
+                            .pushNamed('/home/seeMore', arguments: content);
+                      },
+                    ),
                   ),
                   Positioned(
                     left: width - 13,
@@ -350,7 +337,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class VolumeButton extends StatefulWidget {
-  const VolumeButton({super.key});
+  final VideoInterface videoController;
+  const VolumeButton({super.key, required this.videoController});
 
   @override
   State<VolumeButton> createState() => _VolumeButtonState();
@@ -361,8 +349,7 @@ class _VolumeButtonState extends State<VolumeButton> {
   bool hover = false;
   @override
   void initState() {
-    final videoController = Modular.get<PlayerImpl>();
-    pressed = !(videoController.getVolume() == 0);
+    pressed = !(widget.videoController.getVolume() == 0);
     super.initState();
     setState(() {
       pressed = false;
@@ -371,8 +358,6 @@ class _VolumeButtonState extends State<VolumeButton> {
 
   @override
   Widget build(BuildContext context) {
-    final videoController = Modular.get<PlayerImpl>();
-
     return Padding(
       padding: const EdgeInsets.only(right: 16, top: 2),
       child: MouseRegion(
@@ -397,8 +382,8 @@ class _VolumeButtonState extends State<VolumeButton> {
             child: IconButton(
                 onPressed: () {
                   setState(() {
-                    pressed = !(videoController.getVolume() == 0);
-                    videoController.setVolume(pressed ? 0 : 1);
+                    pressed = !(widget.videoController.getVolume() == 0);
+                    widget.videoController.setVolume(pressed ? 0 : 1);
                   });
                 },
                 icon: Icon(

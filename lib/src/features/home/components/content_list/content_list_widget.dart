@@ -11,12 +11,14 @@ class ContentListWidget extends StatefulWidget {
   final String title;
   final ContentListAnchor anchor;
   final void Function() onHover;
+  final void Function(String content) onSeeMore;
   const ContentListWidget({
     super.key,
     required this.index,
     required this.title,
     required this.anchor,
     required this.onHover,
+    required this.onSeeMore,
   });
 
   @override
@@ -26,8 +28,10 @@ class ContentListWidget extends StatefulWidget {
 class _ContentListWidgetState extends State<ContentListWidget> {
   static const double distanceToTop = 90;
   static const duration = Duration(milliseconds: 500);
+  static const seeMoreDuration = Duration(milliseconds: 200);
   static const Curve curve = Curves.easeInOut;
   final ValueNotifier<bool> _listSelected = ValueNotifier(false);
+  final ValueNotifier<bool> _seeMoreSelected = ValueNotifier(false);
   final ValueNotifier<bool> _textSelected = ValueNotifier(false);
   bool canDetectList = true;
   bool leftActive = false;
@@ -89,8 +93,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void onWidgetChanging(bool value) {
-    //canDetectList = !value;
-    //_listSelected.value = !value;
+    canDetectList = !value;
+    _listSelected.value = !value;
   }
 
   void moveBackward() {
@@ -122,7 +126,21 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final headline6 = AppFonts().headline6;
+    final seeMoreStyle = headline6.copyWith(
+      fontSize: headline6.fontSize! - 5,
+      color: Colors.blue,
+    );
     final contentController = Modular.get<ListContentController>();
+
+    final textSize = TextPainter(
+        text: TextSpan(text: widget.title, style: headline6),
+        textDirection: TextDirection.ltr);
+    textSize.layout();
+
+    final seeMoreSize = TextPainter(
+        text: TextSpan(text: 'Ver tudo', style: seeMoreStyle),
+        textDirection: TextDirection.ltr);
+    seeMoreSize.layout();
 
     return MouseRegion(
       opaque: false,
@@ -137,24 +155,59 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               Positioned(
                 top: distanceToTop,
                 left: 50,
-                child: Row(
-                  children: [
-                    Text(
-                      widget.title,
-                      style: headline6,
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: _listSelected,
-                      builder: (BuildContext context, bool val, Widget? child) {
-                        return val
-                            ? const Icon(CupertinoIcons.forward,
-                                color: Colors.blue, size: 20)
-                            : Container(
-                                height: 20,
-                              );
-                      },
-                    ),
-                  ],
+                child: SizedBox(
+                  width: 1360,
+                  height: 50,
+                  child: Stack(
+                    children: [
+                      Text(
+                        widget.title,
+                        style: headline6,
+                      ),
+                      ValueListenableBuilder(
+                          valueListenable: _seeMoreSelected,
+                          builder:
+                              (BuildContext context, bool val, Widget? child) {
+                            return AnimatedOpacity(
+                                duration: seeMoreDuration,
+                                opacity: val ? 1 : 0,
+                                //
+                                child: AnimatedContainer(
+                                    margin: EdgeInsets.only(
+                                        top: 3,
+                                        left: val
+                                            ? textSize.width + 15
+                                            : textSize.width),
+                                    duration: seeMoreDuration,
+                                    child: Text(
+                                      'Ver tudo',
+                                      style: seeMoreStyle,
+                                    )));
+                          }),
+                      ValueListenableBuilder(
+                          valueListenable: _seeMoreSelected,
+                          builder:
+                              (BuildContext context, bool val, Widget? child) {
+                            return AnimatedPositioned(
+                              duration: seeMoreDuration,
+                              left: val
+                                  ? textSize.width + seeMoreSize.width + 15
+                                  : textSize.width,
+                              child: ValueListenableBuilder(
+                                valueListenable: _textSelected,
+                                builder: (BuildContext context, bool value,
+                                    Widget? child) {
+                                  return Opacity(
+                                    opacity: value ? 1 : 0,
+                                    child: const Icon(CupertinoIcons.forward,
+                                        color: Colors.blue, size: 20),
+                                  );
+                                },
+                              ),
+                            );
+                          })
+                    ],
+                  ),
                 ),
               ),
               ValueListenableBuilder(
@@ -181,7 +234,6 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                           )
                         : Container();
                   }),
-
               //
               // List
               //
@@ -208,49 +260,47 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               ValueListenableBuilder(
                   valueListenable: _listSelected,
                   builder: (BuildContext context, bool val, Widget? child) {
-                    return val
-                        ? Positioned(
-                            top: 120,
-                            child: SizedBox(
-                                width: width,
-                                height: 140,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      height: 145,
-                                      width: 50,
-                                      color: Colors.black.withOpacity(0.3),
-                                      child: leftActive
-                                          ? IconButton(
-                                              onPressed: () {
-                                                moveBackward();
-                                              },
-                                              icon: const Icon(
-                                                  Icons.arrow_back_ios,
-                                                  color: Colors.white),
-                                            )
-                                          : Container(),
-                                    ),
-                                    const Spacer(),
-                                    Container(
-                                      height: 145,
-                                      width: 50,
-                                      color: Colors.black.withOpacity(0.3),
-                                      child: IconButton(
+                    return Positioned(
+                      top: 120,
+                      child: SizedBox(
+                          width: width,
+                          height: 140,
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 145,
+                                width: 50,
+                                color: Colors.black.withOpacity(0.3),
+                                child: leftActive && val
+                                    ? IconButton(
+                                        onPressed: () {
+                                          moveBackward();
+                                        },
+                                        icon: const Icon(Icons.arrow_back_ios,
+                                            color: Colors.white),
+                                      )
+                                    : Container(),
+                              ),
+                              const Spacer(),
+                              Container(
+                                height: 145,
+                                width: 50,
+                                color: Colors.black.withOpacity(0.3),
+                                child: val
+                                    ? IconButton(
                                         onPressed: () {
                                           moveForward();
                                         },
                                         icon: const Icon(
                                             Icons.arrow_forward_ios,
                                             color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          )
-                        : Container();
+                                      )
+                                    : Container(),
+                              ),
+                            ],
+                          )),
+                    );
                   }),
-
               //
               // MouseRegion of the text
               //
@@ -269,6 +319,32 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                       width: 1360,
                       height: 185,
                       color: Colors.green.withOpacity(0.0)),
+                ),
+              ),
+              //
+              // MouseRegion of the seeMore
+              //
+              Positioned(
+                top: distanceToTop,
+                left: 50,
+                child: MouseRegion(
+                  opaque: false,
+                  onEnter: (event) {
+                    _seeMoreSelected.value = true;
+                  },
+                  onExit: (event) {
+                    _seeMoreSelected.value = false;
+                  },
+                  // For Debugging
+                  child: TextButton(
+                    onPressed: () {
+                      widget.onSeeMore(widget.title);
+                    },
+                    child: Container(
+                        width: textSize.width + 69,
+                        height: 20,
+                        color: Colors.blueGrey.withOpacity(0.5)),
+                  ),
                 ),
               ),
               //

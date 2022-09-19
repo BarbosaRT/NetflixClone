@@ -19,7 +19,8 @@ class ListContentController extends ChangeNotifier {
 }
 
 class ListContents extends StatefulWidget {
-  const ListContents({super.key});
+  final void Function(String content) onSeeMore;
+  const ListContents({super.key, required this.onSeeMore});
 
   @override
   State<ListContents> createState() => _ListContentsState();
@@ -74,6 +75,7 @@ class _ListContentsState extends State<ListContents> {
             onHover: () {
               onHover(i);
             },
+            onSeeMore: widget.onSeeMore,
           ),
         ),
       );

@@ -7,7 +7,7 @@ class ProfileController extends ChangeNotifier {
   int selected = 1;
 
   void start() {
-    if (_profiles == []) {
+    if (_profiles.isNotEmpty) {
       return;
     }
     _profiles = [];
