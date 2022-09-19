@@ -1,5 +1,5 @@
 {
-    "0": [
+    "Herois e Outsiders": [
         {
             "title": "Breaking Bad",
             "backdrop": "assets/data/breaking_bad_backdrop.jpg",
@@ -13,6 +13,24 @@
             ],
             "age": 18,
             "detail": "5 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia."
+        }
+    ],
+    "Em Alta": [
+        {
+            "title": "Better Caul Saul",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/better_call_saul_poster.jpg",
+            "rating": 99,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Excêntricos",
+                "Realistas",
+                "Drama"
+            ],
+            "age": 16,
+            "detail": "6 temporadas",
             "logo": "assets/data/breaking_bad_logo.png",
             "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia."
         }

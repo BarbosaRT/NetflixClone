@@ -34,12 +34,12 @@ class _ListContentsState extends State<ListContents> {
   List<Widget> oldWidgets = [];
 
   static const List<String> titles = [
-    'Porque você viu Meu Malvado Favorito 2',
-    'Mais de Comedia',
-    'Top em Alta no Brasil',
-    'Porque você viu Smurfs',
-    'Filmes Coreanos',
-    'Mais de Terror',
+    'Herois e Outsiders',
+    'Em Alta',
+    'Herois e Outsiders',
+    'Herois e Outsiders',
+    'Herois e Outsiders',
+    'Herois e Outsiders',
   ];
   static const listCount = 6;
 

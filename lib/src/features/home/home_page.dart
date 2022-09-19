@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
     contentController.addListener(() {
       if (!contentController.loading) {
-        content = contentController.getContent(0);
+        content = contentController.getContent('Herois e Outsiders', 0);
         videoController.defineThumbnail(content.backdrop);
         videoController.init(content.trailer);
       }

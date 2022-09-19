@@ -6,8 +6,10 @@ enum ContentContainerAnchor { left, center, right }
 // Responsible for putting one widget on top of another
 class ContentInnerWidget extends StatefulWidget {
   final int index;
+  final String id;
   final void Function(bool value)? onHover;
-  const ContentInnerWidget({Key? key, this.index = 0, this.onHover})
+  const ContentInnerWidget(
+      {Key? key, this.index = 0, this.onHover, required this.id})
       : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           left: spacing * i,
           child: ContentContainer(
             onHover: onHover,
+            id: widget.id,
             onExit: () {
               onChangeValue(false);
             },

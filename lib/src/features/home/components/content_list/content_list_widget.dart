@@ -83,6 +83,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     for (int i = 0; i < widgetCount; i++) {
       widgetList.add(
         ContentInnerWidget(
+          id: widget.title,
           index: i,
           onHover: (value) {
             onWidgetChanging(value);
@@ -93,8 +94,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void onWidgetChanging(bool value) {
-    canDetectList = !value;
-    _listSelected.value = !value;
+    // canDetectList = !value;
+    // _listSelected.value = !value;
   }
 
   void moveBackward() {
@@ -343,7 +344,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                     child: Container(
                         width: textSize.width + 69,
                         height: 20,
-                        color: Colors.blueGrey.withOpacity(0.5)),
+                        color: Colors.blueGrey.withOpacity(0.0)),
                   ),
                 ),
               ),

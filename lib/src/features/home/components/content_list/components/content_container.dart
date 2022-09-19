@@ -13,6 +13,7 @@ import 'package:vector_math/vector_math_64.dart' as vector;
 
 class ContentContainer extends StatefulWidget {
   final ContentContainerAnchor anchor;
+  final String id;
   final int localIndex;
   final int index;
   final Function(int) onHover;
@@ -23,6 +24,7 @@ class ContentContainer extends StatefulWidget {
     required this.localIndex,
     required this.index,
     required this.onHover,
+    required this.id,
     this.onExit,
   });
 
@@ -75,7 +77,7 @@ class _ContentContainerState extends State<ContentContainer> {
     controller.addListener(() {
       if (!controller.loading && mounted) {
         setState(() {
-          content = controller.getContent(widget.index);
+          content = controller.getContent(widget.id, widget.index);
           videoController.init(content.trailer, w: width, h: height);
         });
       }
