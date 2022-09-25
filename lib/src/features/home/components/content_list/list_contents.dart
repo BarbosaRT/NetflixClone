@@ -69,6 +69,7 @@ class _ListContentsState extends State<ListContents> {
           key: UniqueKey(),
           top: spacing * i,
           child: ContentListWidget(
+            key: UniqueKey(),
             index: i,
             title: titles[i],
             anchor: getAnchorFromValue(i),

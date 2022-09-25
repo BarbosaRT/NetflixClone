@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
 abstract class VideoInterface {
-  void init(String video);
+  void init(String video,
+      {double w = 1360, double h = 768, void Function()? callback});
   void play();
   void seek(Duration position);
   void pause();
   void stop();
-  void load(String id);
+  void load(String id, {void Function()? callback});
   void dispose();
   void defineThumbnail(String path);
   double getVolume();
   void setVolume(double volume);
+  void enableFrame(bool enable);
+  bool isPlaying();
   Widget frame();
 }

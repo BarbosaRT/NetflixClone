@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_container.dart';
 
 enum ContentContainerAnchor { left, center, right }
@@ -7,9 +8,14 @@ enum ContentContainerAnchor { left, center, right }
 class ContentInnerWidget extends StatefulWidget {
   final int index;
   final String id;
+  final List<ContentModel> contents;
   final void Function(bool value)? onHover;
   const ContentInnerWidget(
-      {Key? key, this.index = 0, this.onHover, required this.id})
+      {Key? key,
+      this.index = 0,
+      this.onHover,
+      required this.id,
+      required this.contents})
       : super(key: key);
 
   @override
@@ -37,6 +43,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           key: UniqueKey(),
           left: spacing * i,
           child: ContentContainer(
+            key: UniqueKey(),
             onHover: onHover,
             id: widget.id,
             onExit: () {
@@ -45,6 +52,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
             anchor: getAnchor(i),
             localIndex: i,
             index: widget.index * contentCount + i,
+            content: widget.contents[i],
           ),
         ),
       );

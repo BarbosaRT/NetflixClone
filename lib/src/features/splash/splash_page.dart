@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/core/video/player_impl.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 import 'package:netflix/src/features/splash/components/icon_painter.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
@@ -50,8 +54,30 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         Modular.to.navigate('/home');
       }
     });
-
     super.initState();
+
+    final contentController = Modular.get<ContentController>();
+    contentController.init();
+    contentController.addListener(() {
+      if (!contentController.loading) {
+        cacheImages();
+      }
+    });
+
+    final content = ContentModel.fromJson(AppConsts.placeholderJson);
+    final videoController = PlayerImpl();
+    videoController.init(content.trailer);
+  }
+
+  void cacheImages() {
+    final controller = Modular.get<ContentController>();
+    for (var i = 0; i < 2; i++) {
+      final id = controller.getKey(i);
+      for (var j = 0; j < 15; j++) {
+        final ContentModel content = controller.getContent(id, j);
+        precacheImage(AssetImage(content.poster), context);
+      }
+    }
   }
 
   @override

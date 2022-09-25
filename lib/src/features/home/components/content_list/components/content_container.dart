@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/video/player_impl.dart';
+import 'package:netflix/core/video/video_interface.dart';
+import 'package:netflix/core/video/youtube_impl.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
@@ -16,6 +16,7 @@ class ContentContainer extends StatefulWidget {
   final String id;
   final int localIndex;
   final int index;
+  final ContentModel content;
   final Function(int) onHover;
   final Function()? onExit;
   const ContentContainer({
@@ -26,6 +27,7 @@ class ContentContainer extends StatefulWidget {
     required this.onHover,
     required this.id,
     this.onExit,
+    required this.content,
   });
 
   @override
@@ -36,7 +38,7 @@ class _ContentContainerState extends State<ContentContainer> {
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeInOut;
   static const delay = Duration(milliseconds: 400);
-  static const trailerDelay = Duration(milliseconds: 3000);
+  //static const trailerDelay = Duration(milliseconds: 3000);
   static const double realWidth = 325;
   static const double width = 245;
   static const double wDifference = 60;
@@ -52,36 +54,21 @@ class _ContentContainerState extends State<ContentContainer> {
   bool hover = false;
   ValueNotifier<bool> added = ValueNotifier(false);
 
-  ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
-  final PlayerImpl videoController = PlayerImpl();
+  final VideoInterface videoController = YoutubeImpl();
 
   GestureDetector? button;
+
+  void callback() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
-    videoController.init(content.trailer,
-        w: width * factor, h: height * factor);
-
-    final controller = Modular.get<ContentController>();
-
-    videoController.controller.addListener(() {
-      if (videoController.controller.value.position ==
-          videoController.controller.value.duration) {
-        setState(() {
-          videoController.enableFrame(false);
-        });
-      }
-    });
-
-    controller.addListener(() {
-      if (!controller.loading && mounted) {
-        setState(() {
-          content = controller.getContent(widget.id, widget.index);
-          videoController.init(content.trailer, w: width, h: height);
-        });
-      }
-    });
+    videoController.init(widget.content.trailer,
+        w: width * factor, h: height * factor, callback: callback);
   }
 
   double getValueFromAnchor(double left, double center, double right) {
@@ -132,7 +119,6 @@ class _ContentContainerState extends State<ContentContainer> {
 
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
-    final image = content.poster;
 
     button = GestureDetector(
       onTap: () {
@@ -152,9 +138,9 @@ class _ContentContainerState extends State<ContentContainer> {
 
     final decoration = BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(border)),
-      color: Colors.red,
+      //color: Colors.red,
       image: DecorationImage(
-        image: AssetImage(image),
+        image: AssetImage(widget.content.poster),
         fit: BoxFit.cover,
       ),
     );
@@ -164,9 +150,9 @@ class _ContentContainerState extends State<ContentContainer> {
         topRight: Radius.circular(hoverBorder),
         topLeft: Radius.circular(hoverBorder),
       ),
-      color: Colors.blue,
+      //color: Colors.blue,
       image: DecorationImage(
-        image: AssetImage(image),
+        image: AssetImage(widget.content.poster),
         fit: BoxFit.cover,
       ),
     );
@@ -338,20 +324,20 @@ class _ContentContainerState extends State<ContentContainer> {
                       child: Row(
                         children: [
                           Text(
-                            '${content.rating}% relevante',
+                            '${widget.content.rating}% relevante',
                             style: headline.copyWith(color: Colors.green),
                           ),
                           const SizedBox(width: 8),
                           //
                           Image.asset(
-                            AppConsts.classifications[content.age] ??
+                            AppConsts.classifications[widget.content.age] ??
                                 'assets/images/classifications/L.png',
                             width: 30,
                             height: 30,
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            content.detail,
+                            widget.content.detail,
                             style: headline,
                           ),
                           const SizedBox(width: 5),
@@ -387,11 +373,13 @@ class _ContentContainerState extends State<ContentContainer> {
                       width: width * factor,
                       child: Row(
                         children: [
-                          for (int i = 0; i <= content.tags.length - 2; i++)
+                          for (int i = 0;
+                              i <= widget.content.tags.length - 2;
+                              i++)
                             Row(
                               children: [
                                 Text(
-                                  content.tags[i],
+                                  widget.content.tags[i],
                                   style: headline,
                                 ),
                                 const SizedBox(width: 5),
@@ -406,7 +394,7 @@ class _ContentContainerState extends State<ContentContainer> {
                           //
                           //
                           Text(
-                            content.tags[content.tags.length - 1],
+                            widget.content.tags[widget.content.tags.length - 1],
                             style: headline,
                           ),
                           const SizedBox(width: 5),

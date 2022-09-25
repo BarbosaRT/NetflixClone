@@ -1,6 +1,6 @@
 {
-    "Herois e Outsiders": [
-        {
+    "Herois e Outsiders": {
+        "Breaking Bad": {
             "title": "Breaking Bad",
             "backdrop": "assets/data/breaking_bad_backdrop.jpg",
             "poster": "assets/data/breaking_bad_poster.jpg",
@@ -15,10 +15,40 @@
             "detail": "5 temporadas",
             "logo": "assets/data/breaking_bad_logo.png",
             "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia."
-        }
-    ],
-    "Em Alta": [
-        {
+        },
+        "El Camino": {
+            "title": "El Camino",
+            "backdrop": "assets/data/el_camino_backdrop.jpg",
+            "poster": "assets/data/el_camino_poster.jpg",
+            "rating": 92,
+            "trailer": "assets/data/el_camino_trailer.mp4",
+            "tags": [
+                "Crimes",
+                "Ação",
+                "Suspense"
+            ],
+            "age": 16,
+            "detail": "2h 2min",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "La Casa De Papel": {
+            "title": "La Casa De Papel",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/la_casa_de_papel_poster.jpg",
+            "rating": 94,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Suspense No Ar",
+                "Empolgante",
+                "Assalto"
+            ],
+            "age": 16,
+            "detail": "5 Partes",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Better Caul Saul": {
             "title": "Better Caul Saul",
             "backdrop": "assets/data/breaking_bad_backdrop.jpg",
             "poster": "assets/data/better_call_saul_poster.jpg",
@@ -32,7 +62,217 @@
             "age": 16,
             "detail": "6 temporadas",
             "logo": "assets/data/breaking_bad_logo.png",
-            "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia."
+            "overview": " "
+        },
+        "Peaky Blinders": {
+            "title": "Peaky Blinders",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/peaky_blinders_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Policial Vintage",
+                "Obra de época",
+                "Violentos"
+            ],
+            "age": 18,
+            "detail": "6 Temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Stranger Things": {
+            "title": "Stranger Things",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/stranger_things_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Sinistros",
+                "Nostalgicos",
+                "Terror"
+            ],
+            "age": 16,
+            "detail": "5 Temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Como se Tornar Um tirano": {
+            "title": "Como se Tornar Um tirano",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/tirano_poster.jpeg",
+            "rating": 77,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Sombrios",
+                "Séries Documentais",
+                "Guerra"
+            ],
+            "age": 16,
+            "detail": "6 episodios",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Arcane": {
+            "title": "Arcane",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/arcane_poster.jpg",
+            "rating": 93,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Explosivo",
+                "Esperto",
+                "Fantasia"
+            ],
+            "age": 14,
+            "detail": "9 episodios",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Jojo's Bizzare Adventure": {
+            "title": "Jojo's Bizzare Adventure",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/jojos_bizzare_adventure_poster.jpg",
+            "rating": 95,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Empolgante",
+                "Anime De Fantasia",
+                "Vampiros"
+            ],
+            "age": 18,
+            "detail": "4 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "Sandman": {
+            "title": "Sandman",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/sandman_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Sombrios",
+                "Fantasia",
+                "Bruxaria"
+            ],
+            "age": 18,
+            "detail": "11 episodios",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
+        },
+        "The Flash": {
+            "title": "The Flash",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/the_flash_poster.jpg",
+            "rating": 95,
+            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "tags": [
+                "Adrenalina Pura",
+                "Super-herói",
+                "Explosivo"
+            ],
+            "age": 12,
+            "detail": "7 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": ""
         }
-    ]
+    },
+    "Em Alta": {
+        "The Witcher": {
+            "title": "The Witcher",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/the_witcher_poster.jpg",
+            "rating": 93,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Empolgante",
+                "Fantasia",
+                "Impacto visual"
+            ],
+            "age": 18,
+            "detail": "2 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "(Des)encanto": {
+            "title": "(Des)encanto",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/desencanto_poster.png",
+            "rating": 94,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Espirituosos",
+                "Irreverentes",
+                "Fantasia"
+            ],
+            "age": 14,
+            "detail": "4 partes",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Black Mirror": {
+            "title": "Black Mirror",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/black_mirror_poster.jpg",
+            "rating": 95,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Realidade Alternativa",
+                "Distopia",
+                "Cyberpunk"
+            ],
+            "age": 16,
+            "detail": "5 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Sintonia": {
+            "title": "Sintonia",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/sintonia_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Intimista",
+                "Comoventes",
+                "Teen"
+            ],
+            "age": 16,
+            "detail": "3 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Round 6": {
+            "title": "Round 6",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/round_6_poster.jpg",
+            "rating": 96,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Suspense No Ar",
+                "Jogo Mortal",
+                "Coreano"
+            ],
+            "age": 18,
+            "detail": "1 temporada",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Cuphead": {
+            "title": "Cuphead",
+            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/cuphead_poster.jpg",
+            "rating": 90,
+            "trailer": "assets/data/better_call_saul_trailer.mp4",
+            "tags": [
+                "Espirituosos",
+                "Irreverentes",
+                "Infantil"
+            ],
+            "age": 10,
+            "detail": "2 temporadas",
+            "logo": "assets/data/breaking_bad_logo.png",
+            "overview": " "
+        }
+    }
 }

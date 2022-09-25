@@ -4,7 +4,8 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeImpl implements VideoInterface {
   String _thumbnail = '';
-
+  double width = 1360;
+  double height = 768;
   final YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: '65yL42CwR8Q',
     params: const YoutubePlayerParams(
@@ -18,13 +19,16 @@ class YoutubeImpl implements VideoInterface {
   );
 
   @override
-  void init(String video) async {
+  void init(String video,
+      {double w = 1360, double h = 768, void Function()? callback}) async {
     await Future.delayed(const Duration(seconds: 2));
+    width = w;
+    height = h;
     play();
   }
 
   @override
-  void load(String videoId) {
+  void load(String videoId, {void Function()? callback}) {
     _controller.load(videoId);
   }
 
@@ -39,8 +43,18 @@ class YoutubeImpl implements VideoInterface {
   }
 
   @override
+  void enableFrame(bool enable) {
+    return;
+  }
+
+  @override
   void seek(Duration position) {
     _controller.seekTo(position);
+  }
+
+  @override
+  bool isPlaying() {
+    return _controller.value.hasPlayed;
   }
 
   @override
@@ -56,8 +70,11 @@ class YoutubeImpl implements VideoInterface {
             aspectRatio: 16 / 9,
           )
         : _thumbnail.isEmpty
-            ? Image.asset(_thumbnail)
-            : Container(width: 5, height: 5, color: Colors.red);
+            ? Container(width: 5, height: 5, color: Colors.red)
+            : SizedBox(
+                width: width,
+                height: height,
+                child: Image.asset(_thumbnail, fit: BoxFit.cover));
   }
 
   @override

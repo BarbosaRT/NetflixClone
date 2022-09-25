@@ -6,13 +6,14 @@ import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/core/video/player_impl.dart';
+import 'package:netflix/core/video/get_impl.dart';
 import 'package:netflix/core/video/video_interface.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -37,18 +38,28 @@ class _HomePageState extends State<HomePage> {
   static const fadeInDuration = Duration(milliseconds: 700);
 
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
-  final videoController = PlayerImpl();
+  final VideoInterface videoController = GetImpl().getImpl();
   final scrollController = ScrollController(initialScrollOffset: 0);
+
+  final ValueNotifier<bool> _alreadyChanged = ValueNotifier(false);
+
+  void callback() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
+    videoController.init(content.trailer, callback: callback);
+    videoController.defineThumbnail(content.backdrop);
     super.initState();
     final loginController = context.read<LoginController>();
+
     if (!loginController.isLogged) {
       Navigator.pushReplacementNamed(context, '/login');
       return;
     }
-    videoController.init(content.trailer);
-    videoController.defineThumbnail(content.backdrop);
 
     final contentController = Modular.get<ContentController>();
 
@@ -57,29 +68,24 @@ class _HomePageState extends State<HomePage> {
         content = contentController.getContent('Herois e Outsiders', 0);
         videoController.defineThumbnail(content.backdrop);
         videoController.init(content.trailer);
-      }
-    });
-
-    videoController.controller.addListener(() {
-      if (videoController.controller.value.position ==
-          videoController.controller.value.duration) {
         setState(() {
-          videoController.enableFrame(false);
+          videoController.enableFrame(true);
         });
       }
     });
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   Future.delayed(const Duration(seconds: 10)).then((value) {
-    //     setState(() {
-    //       videoController.play();
-    //     });
-    //   });
-    // });
+    if (!kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(seconds: 10)).then((value) {
+          setState(() {
+            videoController.play();
+          });
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
-    final videoController = context.watch<PlayerImpl>();
     videoController.dispose();
     super.dispose();
   }
@@ -105,19 +111,26 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: backgroundColor,
         appBar: homeAppBar,
         key: myGlobals.scaffoldKey,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              videoController.enableFrame(true);
-              videoController.isPlaying()
-                  ? videoController.pause()
-                  : videoController.play();
-            });
-          },
-          child: Icon(
-            videoController.isPlaying() ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   elevation: 0,
+        //   hoverElevation: 0,
+        //   backgroundColor: Colors.transparent,
+        //   foregroundColor: Colors.transparent,
+        //   hoverColor: Colors.transparent,
+        //   focusColor: Colors.transparent,
+        //   splashColor: Colors.transparent,
+        //   onPressed: () {
+        //     setState(() {
+        //       videoController.enableFrame(true);
+        //       videoController.isPlaying()
+        //           ? videoController.pause()
+        //           : videoController.play();
+        //     });
+        //   },
+        //   child: Icon(
+        //       videoController.isPlaying() ? Icons.pause : Icons.play_arrow,
+        //       color: Colors.transparent),
+        // ),
         body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
@@ -138,17 +151,22 @@ class _HomePageState extends State<HomePage> {
                   //
                   // Background Video
                   //
-                  SingleChildScrollView(
-                    child: Stack(
-                      children: [
-                        videoController.frame(),
-                        Container(
-                          height: 768,
-                          width: 1360,
-                          color: Colors.black.withOpacity(0.2),
+                  ValueListenableBuilder(
+                    valueListenable: _alreadyChanged,
+                    builder: (context, value, child) {
+                      return SingleChildScrollView(
+                        child: Stack(
+                          children: [
+                            videoController.frame(),
+                            Container(
+                              height: 768,
+                              width: 1360,
+                              color: Colors.black.withOpacity(0.2),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                   //
                   // Video Gradient
@@ -279,12 +297,37 @@ class _HomePageState extends State<HomePage> {
                           left: 1200,
                           child: Row(
                             children: [
-                              VolumeButton(
-                                videoController: videoController,
+                              ValueListenableBuilder(
+                                valueListenable: _alreadyChanged,
+                                builder: (context, value, child) {
+                                  return videoController.isPlaying()
+                                      ? VolumeButton(
+                                          onClick: () {
+                                            setState(() {});
+                                          },
+                                          videoController: videoController,
+                                          iconOn: Icons.volume_up_outlined,
+                                          iconOff: Icons.volume_off_outlined,
+                                        )
+                                      : VolumeButton(
+                                          iconOn: Icons.repeat,
+                                          iconOff: Icons.repeat,
+                                          onClick: () {
+                                            _alreadyChanged.value =
+                                                !_alreadyChanged.value;
+                                            setState(() {
+                                              videoController.enableFrame(true);
+                                              videoController.isPlaying()
+                                                  ? videoController.pause()
+                                                  : videoController.play();
+                                            });
+                                          },
+                                        );
+                                },
                               ),
                               Container(
                                   height: 32,
-                                  width: 200,
+                                  width: 400,
                                   decoration: BoxDecoration(
                                     color: backgroundColor.withOpacity(0.5),
                                   ),
@@ -337,8 +380,16 @@ class _HomePageState extends State<HomePage> {
 }
 
 class VolumeButton extends StatefulWidget {
-  final VideoInterface videoController;
-  const VolumeButton({super.key, required this.videoController});
+  final VideoInterface? videoController;
+  final void Function()? onClick;
+  final IconData iconOn;
+  final IconData iconOff;
+  const VolumeButton(
+      {super.key,
+      this.videoController,
+      this.onClick,
+      required this.iconOn,
+      required this.iconOff});
 
   @override
   State<VolumeButton> createState() => _VolumeButtonState();
@@ -347,13 +398,10 @@ class VolumeButton extends StatefulWidget {
 class _VolumeButtonState extends State<VolumeButton> {
   bool pressed = false;
   bool hover = false;
+
   @override
   void initState() {
-    pressed = !(widget.videoController.getVolume() == 0);
     super.initState();
-    setState(() {
-      pressed = false;
-    });
   }
 
   @override
@@ -381,15 +429,22 @@ class _VolumeButtonState extends State<VolumeButton> {
                 color: Colors.grey.withOpacity(hover ? 0.1 : 0.0)),
             child: IconButton(
                 onPressed: () {
-                  setState(() {
-                    pressed = !(widget.videoController.getVolume() == 0);
-                    widget.videoController.setVolume(pressed ? 0 : 1);
-                  });
+                  if (widget.onClick != null) {
+                    widget.onClick!();
+                    setState(() {
+                      pressed = !pressed;
+                    });
+                  }
+                  if (widget.videoController != null) {
+                    widget.onClick?.call();
+                    setState(() {
+                      pressed = !(widget.videoController!.getVolume() == 0);
+                      widget.videoController!.setVolume(pressed ? 0 : 1);
+                    });
+                  }
                 },
                 icon: Icon(
-                  pressed
-                      ? Icons.volume_off_outlined
-                      : Icons.volume_up_outlined,
+                  pressed ? widget.iconOff : widget.iconOn,
                   color: Colors.white,
                   size: pressed ? 16 : 17,
                 ))),

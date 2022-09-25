@@ -2,7 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 
@@ -35,6 +38,14 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   final ValueNotifier<bool> _textSelected = ValueNotifier(false);
   bool canDetectList = true;
   bool leftActive = false;
+  bool loaded = false;
+
+  List<List<ContentModel>> contents = List.generate(
+      5,
+      (index) => List.generate(
+            5,
+            (index) => ContentModel.fromJson(AppConsts.placeholderJson),
+          ));
 
   final int widgetCount = 5;
   List<Widget> widgetList = [];
@@ -49,7 +60,33 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       controller = CarouselController();
       widgetBuilder();
     }
+    final contentController = Modular.get<ContentController>();
+    contentController.init();
     super.initState();
+
+    contentController.addListener(() {
+      if (!contentController.loading && mounted) {
+        loaded = true;
+        initContents();
+        widgetBuilder();
+        setState(() {});
+      }
+    });
+  }
+
+  void initContents() {
+    if (loaded) {
+      contents = [];
+      final contentController = Modular.get<ContentController>();
+      for (var i = 0; i < widgetCount; i++) {
+        final List<ContentModel> l = [];
+        for (var j = 0; j < 5; j++) {
+          l.add(
+              contentController.getContent(widget.title, i * widgetCount + j));
+        }
+        contents.add(l.toList());
+      }
+    }
   }
 
   @override
@@ -71,20 +108,20 @@ class _ContentListWidgetState extends State<ContentListWidget> {
 
   void widgetBuilder() {
     widgetList = [];
-
     if (!leftActive) {
       widgetList.add(const SizedBox(
         width: 10,
         height: 100,
       ));
     }
-
     // Widgets itself :)
     for (int i = 0; i < widgetCount; i++) {
       widgetList.add(
         ContentInnerWidget(
+          key: UniqueKey(),
           id: widget.title,
           index: i,
+          contents: contents[i],
           onHover: (value) {
             onWidgetChanging(value);
           },

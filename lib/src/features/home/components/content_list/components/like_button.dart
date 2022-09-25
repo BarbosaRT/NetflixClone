@@ -59,7 +59,7 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _loveSelected,
         builder: (context, bool value, child) {
           return ContentButton(
-            icon: Image.asset('images/love.png'),
+            icon: Image.asset('assets/images/love.png'),
             onHover: () {
               _loveSelected.value = true;
             },
@@ -86,7 +86,7 @@ class _LikeButtonState extends State<LikeButton> {
             onExit: () {
               _deslikeSelected.value = false;
             },
-            icon: Image.asset('images/deslike.png'),
+            icon: Image.asset('assets/images/deslike.png'),
             text: Text(
               'Não é para mim',
               textAlign: TextAlign.center,
@@ -101,7 +101,7 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _likeSelected,
         builder: (context, bool value, child) {
           return ContentButton(
-            icon: Image.asset('images/like.png'),
+            icon: Image.asset('assets/images/like.png'),
             onHover: () {
               _likeSelected.value = true;
             },

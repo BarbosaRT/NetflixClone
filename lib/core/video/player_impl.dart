@@ -4,16 +4,18 @@ import 'package:video_player/video_player.dart';
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
-  bool _enableFrame = true;
+  bool _enableFrame = false;
   String path = '';
   late VideoPlayerController _controller;
   double width = 1360;
   double height = 768;
+  bool _isInitialized = false;
   VideoPlayerController get controller => _controller;
 
   @override
   Widget frame() {
-    if (_controller.value.isInitialized && _enableFrame && isPlaying()) {
+    print('$_isInitialized && $_enableFrame && ${isPlaying()}');
+    if (_isInitialized && _enableFrame && isPlaying()) {
       return AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
         child: VideoPlayer(_controller),
@@ -29,8 +31,9 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  void init(String video, {double w = 1360, double h = 768}) {
-    load(video);
+  void init(String video,
+      {double w = 1360, double h = 768, void Function()? callback}) {
+    load(video, callback: callback);
     path = video;
     width = w;
     height = h;
@@ -38,8 +41,32 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  void load(String id) {
-    _controller = VideoPlayerController.asset(id)..initialize();
+  void load(String id, {void Function()? callback}) {
+    Future.delayed(const Duration(milliseconds: 1000));
+    _controller = VideoPlayerController.asset(id)
+      ..initialize().then((value) {
+        _isInitialized = true;
+        if (callback != null) {
+          callback.call();
+        }
+      });
+    _controller.addListener(
+      () {
+        if (controller.value.position == controller.value.duration) {
+          enableFrame(false);
+        }
+        if (_controller.value.isPlaying && !_enableFrame) {
+          Future.delayed(const Duration(milliseconds: 500)).then(
+            (value) {
+              if (callback != null) {
+                callback.call();
+              }
+              enableFrame(true);
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -67,10 +94,12 @@ class PlayerImpl implements VideoInterface {
     _controller.dispose();
   }
 
+  @override
   bool isPlaying() {
     return _controller.value.isPlaying;
   }
 
+  @override
   void enableFrame(bool enable) {
     _enableFrame = enable;
   }

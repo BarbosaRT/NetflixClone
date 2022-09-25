@@ -32,7 +32,7 @@ class AppModule extends Module {
         ChildRoute('/login', child: (context, args) => const LoginPage()),
         ChildRoute('/profile', child: (context, args) => const ProfilePage()),
         ChildRoute('/splash', child: (context, args) => const SplashPage()),
-        RedirectRoute('/', to: '/splash'),
+        RedirectRoute('/', to: '/profile'),
         ChildRoute(
           '/home',
           child: (context, args) => const HomePage(),

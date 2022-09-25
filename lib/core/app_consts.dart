@@ -16,11 +16,11 @@ class AppConsts {
             "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado"
             }""";
   static const Map<int, String> classifications = {
-    0: 'images/classifications/L.png',
-    10: 'images/classifications/10.png',
-    12: 'images/classifications/12.png',
-    14: 'images/classifications/14.png',
-    16: 'images/classifications/16.png',
-    18: 'images/classifications/18.png',
+    0: 'assets/images/classifications/L.png',
+    10: 'assets/images/classifications/10.png',
+    12: 'assets/images/classifications/12.png',
+    14: 'assets/images/classifications/14.png',
+    16: 'assets/images/classifications/16.png',
+    18: 'assets/images/classifications/18.png',
   };
 }
