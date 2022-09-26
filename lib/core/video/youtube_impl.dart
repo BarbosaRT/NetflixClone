@@ -53,8 +53,8 @@ class YoutubeImpl implements VideoInterface {
   }
 
   @override
-  bool isPlaying() {
-    return _controller.value.hasPlayed;
+  bool isPlaying({bool? enable}) {
+    return enable ?? _controller.value.hasPlayed;
   }
 
   @override
@@ -70,7 +70,7 @@ class YoutubeImpl implements VideoInterface {
             aspectRatio: 16 / 9,
           )
         : _thumbnail.isEmpty
-            ? Container(width: 5, height: 5, color: Colors.red)
+            ? Container(width: 5, height: 5, color: Colors.transparent)
             : SizedBox(
                 width: width,
                 height: height,

@@ -13,6 +13,6 @@ abstract class VideoInterface {
   double getVolume();
   void setVolume(double volume);
   void enableFrame(bool enable);
-  bool isPlaying();
+  bool isPlaying({bool? enable});
   Widget frame();
 }

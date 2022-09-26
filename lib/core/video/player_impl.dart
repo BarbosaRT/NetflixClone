@@ -11,10 +11,12 @@ class PlayerImpl implements VideoInterface {
   double height = 768;
   bool _isInitialized = false;
   VideoPlayerController get controller => _controller;
+  int id = 0;
+
+  PlayerImpl({required this.id});
 
   @override
   Widget frame() {
-    print('$_isInitialized && $_enableFrame && ${isPlaying()}');
     if (_isInitialized && _enableFrame && isPlaying()) {
       return AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
@@ -56,7 +58,7 @@ class PlayerImpl implements VideoInterface {
           enableFrame(false);
         }
         if (_controller.value.isPlaying && !_enableFrame) {
-          Future.delayed(const Duration(milliseconds: 500)).then(
+          Future.delayed(const Duration(milliseconds: 1000)).then(
             (value) {
               if (callback != null) {
                 callback.call();
@@ -95,8 +97,8 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  bool isPlaying() {
-    return _controller.value.isPlaying;
+  bool isPlaying({bool? enable}) {
+    return enable ?? _controller.value.isPlaying;
   }
 
   @override

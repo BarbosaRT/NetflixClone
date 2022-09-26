@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   static const fadeInDuration = Duration(milliseconds: 700);
 
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
-  final VideoInterface videoController = GetImpl().getImpl();
+  final VideoInterface videoController = GetImpl().getImpl(id: 69);
   final scrollController = ScrollController(initialScrollOffset: 0);
 
   final ValueNotifier<bool> _alreadyChanged = ValueNotifier(false);
@@ -73,15 +73,14 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
-    if (!kIsWeb) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(seconds: 10)).then((value) {
-          setState(() {
-            videoController.play();
-          });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 10)).then((value) {
+        setState(() {
+          videoController.enableFrame(true);
+          videoController.play();
         });
       });
-    }
+    });
   }
 
   @override
@@ -111,26 +110,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: backgroundColor,
         appBar: homeAppBar,
         key: myGlobals.scaffoldKey,
-        // floatingActionButton: FloatingActionButton(
-        //   elevation: 0,
-        //   hoverElevation: 0,
-        //   backgroundColor: Colors.transparent,
-        //   foregroundColor: Colors.transparent,
-        //   hoverColor: Colors.transparent,
-        //   focusColor: Colors.transparent,
-        //   splashColor: Colors.transparent,
-        //   onPressed: () {
-        //     setState(() {
-        //       videoController.enableFrame(true);
-        //       videoController.isPlaying()
-        //           ? videoController.pause()
-        //           : videoController.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //       videoController.isPlaying() ? Icons.pause : Icons.play_arrow,
-        //       color: Colors.transparent),
-        // ),
         body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
@@ -342,9 +321,19 @@ class _HomePageState extends State<HomePage> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Image.asset(AppConsts
-                                              .classifications[content.age] ??
-                                          'images/classifications/L.png'),
+                                      GestureDetector(
+                                        onTap: () {
+                                          videoController.isPlaying(
+                                            enable:
+                                                !videoController.isPlaying(),
+                                          );
+                                          _alreadyChanged.value =
+                                              !_alreadyChanged.value;
+                                        },
+                                        child: Image.asset(AppConsts
+                                                .classifications[content.age] ??
+                                            'images/classifications/L.png'),
+                                      ),
                                     ],
                                   )),
                             ],

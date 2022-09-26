@@ -1,15 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
+import 'package:netflix/core/video/get_impl.dart';
 import 'package:netflix/core/video/video_interface.dart';
 import 'package:netflix/core/video/youtube_impl.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
+import 'package:netflix/src/features/home/home_page.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ContentContainer extends StatefulWidget {
   final ContentContainerAnchor anchor;
@@ -38,7 +43,7 @@ class _ContentContainerState extends State<ContentContainer> {
   static const duration = Duration(milliseconds: 200);
   static const curve = Curves.easeInOut;
   static const delay = Duration(milliseconds: 400);
-  //static const trailerDelay = Duration(milliseconds: 3000);
+  static const trailerDelay = Duration(milliseconds: 3000);
   static const double realWidth = 325;
   static const double width = 245;
   static const double wDifference = 60;
@@ -54,7 +59,7 @@ class _ContentContainerState extends State<ContentContainer> {
   bool hover = false;
   ValueNotifier<bool> added = ValueNotifier(false);
 
-  final VideoInterface videoController = YoutubeImpl();
+  VideoInterface videoController = YoutubeImpl();
 
   GestureDetector? button;
 
@@ -67,8 +72,6 @@ class _ContentContainerState extends State<ContentContainer> {
   @override
   void initState() {
     super.initState();
-    videoController.init(widget.content.trailer,
-        w: width * factor, h: height * factor, callback: callback);
   }
 
   double getValueFromAnchor(double left, double center, double right) {
@@ -83,8 +86,6 @@ class _ContentContainerState extends State<ContentContainer> {
   }
 
   void onExit() {
-    videoController.enableFrame(false);
-    videoController.pause();
     videoController.seek(Duration.zero);
     if (widget.onExit != null) {
       widget.onExit!();
@@ -93,6 +94,8 @@ class _ContentContainerState extends State<ContentContainer> {
     if (mounted) {
       setState(() {
         hover = false;
+        videoController.enableFrame(false);
+        videoController.pause();
       });
     }
   }
@@ -109,6 +112,26 @@ class _ContentContainerState extends State<ContentContainer> {
           hover = true;
         });
       }
+      if (videoController.runtimeType != GetImpl().getImpl().runtimeType) {
+        videoController = GetImpl().getImpl(
+            id: Random(widget.id.length + widget.index).nextInt(69420));
+        videoController.init(widget.content.trailer,
+            w: width * factor, h: height * factor, callback: callback);
+        videoController.defineThumbnail(widget.content.poster);
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(trailerDelay).then((value) {
+          if (!isHover) {
+            return;
+          }
+          if (mounted) {
+            setState(() {
+              videoController.enableFrame(true);
+              videoController.play();
+            });
+          }
+        });
+      });
     });
   }
 
@@ -124,6 +147,7 @@ class _ContentContainerState extends State<ContentContainer> {
       onTap: () {
         setState(() {
           videoController.enableFrame(true);
+
           videoController.isPlaying()
               ? videoController.pause()
               : videoController.play();
@@ -196,13 +220,25 @@ class _ContentContainerState extends State<ContentContainer> {
             child: SingleChildScrollView(
               child: Stack(
                 children: [
-                  videoController.frame(),
                   AnimatedContainer(
                     curve: curve,
                     duration: duration,
                     height: hover ? height * factor : height,
                     width: hover ? width * factor : width,
+                    child: videoController.frame(),
                   ),
+                  videoController.isPlaying() && hover
+                      ? Container(
+                          height: height * factor - 10,
+                          width: width * factor - 10,
+                          alignment: Alignment.bottomRight,
+                          child: VolumeButton(
+                            videoController: videoController,
+                            iconOn: Icons.volume_up,
+                            iconOff: Icons.volume_off,
+                          ),
+                        )
+                      : Container()
                 ],
               ),
             ),

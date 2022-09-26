@@ -3,6 +3,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
+
+enum SelectedButton { deslike, like, love, none }
 
 class LikeButton extends StatefulWidget {
   const LikeButton({super.key});
@@ -16,6 +19,7 @@ class _LikeButtonState extends State<LikeButton> {
   final ValueNotifier<bool> _loveSelected = ValueNotifier(false);
   final ValueNotifier<bool> _likeSelected = ValueNotifier(false);
   final ValueNotifier<bool> _deslikeSelected = ValueNotifier(false);
+  SelectedButton _selectedButton = SelectedButton.none;
   bool hover = false;
 
   void onHover() {
@@ -44,6 +48,42 @@ class _LikeButtonState extends State<LikeButton> {
         width: 40,
         height: 40,
         child: widget,
+      ),
+    );
+  }
+
+  Widget buttonBuilder(String on, String off, SelectedButton selection) {
+    return SizedBox(
+      height: 40,
+      width: 40,
+      child: Stack(
+        children: [
+          AnimatedContainer(
+              duration: delay,
+              width: 40,
+              height: 40,
+              curve: Curves.easeInQuint,
+              transform: Matrix4.translation(
+                vector.Vector3(0, _selectedButton == selection ? 7 : 0, 0),
+              ),
+              child: AnimatedContainer(
+                duration: delay,
+                curve: Curves.easeOutQuint,
+                transform: Matrix4.translation(
+                  vector.Vector3(0, _selectedButton == selection ? -7 : 0, 0),
+                ),
+                child: _selectedButton == selection
+                    ? Image.asset(on)
+                    : Container(),
+              )),
+          _selectedButton == selection
+              ? Container()
+              : Image.asset(
+                  off,
+                  width: 40,
+                  height: 40,
+                )
+        ],
       ),
     );
   }
@@ -80,13 +120,21 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _deslikeSelected,
         builder: (context, bool value, child) {
           return ContentButton(
+            onClick: () {
+              setState(() {
+                _selectedButton = _selectedButton == SelectedButton.deslike
+                    ? SelectedButton.none
+                    : SelectedButton.deslike;
+              });
+            },
             onHover: () {
               _deslikeSelected.value = true;
             },
             onExit: () {
               _deslikeSelected.value = false;
             },
-            icon: Image.asset('assets/images/deslike.png'),
+            icon: buttonBuilder('assets/images/deslike_on.png',
+                'assets/images/deslike.png', SelectedButton.deslike),
             text: Text(
               'Não é para mim',
               textAlign: TextAlign.center,
@@ -101,13 +149,21 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _likeSelected,
         builder: (context, bool value, child) {
           return ContentButton(
-            icon: Image.asset('assets/images/like.png'),
+            onClick: () {
+              setState(() {
+                _selectedButton = _selectedButton == SelectedButton.like
+                    ? SelectedButton.none
+                    : SelectedButton.like;
+              });
+            },
             onHover: () {
               _likeSelected.value = true;
             },
             onExit: () {
               _likeSelected.value = false;
             },
+            icon: buttonBuilder('assets/images/like_on.png',
+                'assets/images/like.png', SelectedButton.like),
             text: Text(
               'Gostei',
               textAlign: TextAlign.center,

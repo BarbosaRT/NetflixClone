@@ -60,6 +60,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
         },
       );
       player.errorStream.listen((event) {
+        // ignore: avoid_print
         print('libvlc error.');
       });
       devices = Devices.all;

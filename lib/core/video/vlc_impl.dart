@@ -6,23 +6,30 @@ import 'package:dart_vlc/dart_vlc.dart';
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
-  bool _enableFrame = true;
+  bool _enableFrame = false;
   bool _isPlaying = true;
   String path = '';
-  final Player _controller = Player(
-    id: 0,
-    videoDimensions: const VideoDimensions(640, 360),
-    registerTexture: !Platform.isWindows,
-  );
+  int id = 0;
+  late Player _controller;
   double width = 1360;
   double height = 768;
 
   List<Media> medias = <Media>[];
   Player get controller => _controller;
 
+  PlayerImpl({required this.id}) {
+    _controller = Player(
+      id: id,
+      videoDimensions: const VideoDimensions(640, 360),
+      registerTexture: !Platform.isWindows,
+    );
+  }
+
   @override
   Widget frame() {
-    print('PRINT: $_enableFrame, ${isPlaying()}');
+    if (id == 69) {
+      print('PRINT: $_enableFrame, ${isPlaying()}');
+    }
     if (_enableFrame && _isPlaying) {
       return !Platform.isWindows
           ? Video(
@@ -45,12 +52,6 @@ class PlayerImpl implements VideoInterface {
   @override
   void init(String video,
       {double w = 1360, double h = 768, void Function()? callback}) {
-    // _controller = Player(
-    //   id: video.length,
-    //   videoDimensions: const VideoDimensions(1360, 768),
-    //   registerTexture: !Platform.isWindows,
-    // );
-    //
     _controller.playbackStream.listen((event) {
       _isPlaying = event.isPlaying;
       callback?.call();
@@ -99,13 +100,14 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  bool isPlaying() {
+  bool isPlaying({bool? enable}) {
+    _isPlaying = enable ?? _isPlaying;
     return _isPlaying;
   }
 
   @override
   void enableFrame(bool enable) {
-    _enableFrame = true;
+    _enableFrame = enable;
   }
 
   @override

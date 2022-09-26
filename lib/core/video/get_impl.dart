@@ -4,7 +4,7 @@ import 'package:netflix/core/video/vlc_impl.dart'
     as video;
 
 class GetImpl {
-  VideoInterface getImpl() {
-    return video.PlayerImpl();
+  VideoInterface getImpl({int id = 0}) {
+    return video.PlayerImpl(id: id);
   }
 }
