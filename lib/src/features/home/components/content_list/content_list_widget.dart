@@ -13,15 +13,23 @@ class ContentListWidget extends StatefulWidget {
   final int index;
   final String title;
   final ContentListAnchor anchor;
+  final bool disable;
+  final int initialPage;
+  final int contentCount; // how many content_container
+  final int listCount; // how many inner_widgets
   final void Function() onHover;
-  final void Function(String content) onSeeMore;
+  final void Function(String content)? onSeeMore;
   const ContentListWidget({
     super.key,
     required this.index,
     required this.title,
     required this.anchor,
     required this.onHover,
-    required this.onSeeMore,
+    this.onSeeMore,
+    this.disable = false,
+    this.contentCount = 5,
+    this.listCount = 5,
+    this.initialPage = 0,
   });
 
   @override
@@ -47,11 +55,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             (index) => ContentModel.fromJson(AppConsts.placeholderJson),
           ));
 
-  final int widgetCount = 5;
   List<Widget> widgetList = [];
-
   late CarouselController controller;
-
   int currentIndex = 0;
 
   @override
@@ -65,8 +70,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     super.initState();
 
     contentController.addListener(() {
-      if (!contentController.loading && mounted) {
-        loaded = true;
+      if (!contentController.loading && mounted && !loaded) {
         initContents();
         widgetBuilder();
         setState(() {});
@@ -75,18 +79,20 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void initContents() {
-    if (loaded) {
-      contents = [];
-      final contentController = Modular.get<ContentController>();
-      for (var i = 0; i < widgetCount; i++) {
-        final List<ContentModel> l = [];
-        for (var j = 0; j < 5; j++) {
-          l.add(
-              contentController.getContent(widget.title, i * widgetCount + j));
-        }
-        contents.add(l.toList());
+    contents = [];
+    final contentController = Modular.get<ContentController>();
+    for (var i = widget.initialPage;
+        i < widget.listCount + widget.initialPage;
+        i++) {
+      final List<ContentModel> l = [];
+      for (var j = 0; j < widget.contentCount; j++) {
+        l.add(contentController.getContent(
+            widget.title, i * widget.contentCount + j));
       }
+      contents.add(l.toList());
     }
+    //print('PRINT: $contents');
+    loaded = true;
   }
 
   @override
@@ -115,12 +121,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       ));
     }
     // Widgets itself :)
-    for (int i = 0; i < widgetCount; i++) {
+    for (int i = 0; i < widget.listCount; i++) {
       widgetList.add(
         ContentInnerWidget(
           key: UniqueKey(),
           id: widget.title,
           index: i,
+          contentCount: widget.contentCount,
           contents: contents[i],
           onHover: (value) {
             onWidgetChanging(value);
@@ -145,7 +152,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     }
     leftActive = true;
     widgetBuilder();
-    controller.jumpToPage(widgetCount);
+    controller.jumpToPage(widget.listCount);
     Future.delayed(duration).then(
       (value) {
         moveForward();
@@ -198,80 +205,90 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   height: 50,
                   child: Stack(
                     children: [
-                      Text(
-                        widget.title,
-                        style: headline6,
-                      ),
-                      ValueListenableBuilder(
-                          valueListenable: _seeMoreSelected,
-                          builder:
-                              (BuildContext context, bool val, Widget? child) {
-                            return AnimatedOpacity(
-                                duration: seeMoreDuration,
-                                opacity: val ? 1 : 0,
-                                //
-                                child: AnimatedContainer(
-                                    margin: EdgeInsets.only(
-                                        top: 3,
-                                        left: val
-                                            ? textSize.width + 15
-                                            : textSize.width),
+                      widget.disable
+                          ? Container()
+                          : Text(
+                              widget.title,
+                              style: headline6,
+                            ),
+                      widget.disable
+                          ? Container()
+                          : ValueListenableBuilder(
+                              valueListenable: _seeMoreSelected,
+                              builder: (BuildContext context, bool val,
+                                  Widget? child) {
+                                return AnimatedOpacity(
                                     duration: seeMoreDuration,
-                                    child: Text(
-                                      'Ver tudo',
-                                      style: seeMoreStyle,
-                                    )));
-                          }),
-                      ValueListenableBuilder(
-                          valueListenable: _seeMoreSelected,
-                          builder:
-                              (BuildContext context, bool val, Widget? child) {
-                            return AnimatedPositioned(
-                              duration: seeMoreDuration,
-                              left: val
-                                  ? textSize.width + seeMoreSize.width + 15
-                                  : textSize.width,
-                              child: ValueListenableBuilder(
-                                valueListenable: _textSelected,
-                                builder: (BuildContext context, bool value,
-                                    Widget? child) {
-                                  return Opacity(
-                                    opacity: value ? 1 : 0,
-                                    child: const Icon(CupertinoIcons.forward,
-                                        color: Colors.blue, size: 20),
-                                  );
-                                },
-                              ),
-                            );
-                          })
+                                    opacity: val ? 1 : 0,
+                                    //
+                                    child: AnimatedContainer(
+                                        margin: EdgeInsets.only(
+                                            top: 3,
+                                            left: val
+                                                ? textSize.width + 15
+                                                : textSize.width),
+                                        duration: seeMoreDuration,
+                                        child: Text(
+                                          'Ver tudo',
+                                          style: seeMoreStyle,
+                                        )));
+                              }),
+                      widget.disable
+                          ? Container()
+                          : ValueListenableBuilder(
+                              valueListenable: _seeMoreSelected,
+                              builder: (BuildContext context, bool val,
+                                  Widget? child) {
+                                return AnimatedPositioned(
+                                  duration: seeMoreDuration,
+                                  left: val
+                                      ? textSize.width + seeMoreSize.width + 15
+                                      : textSize.width,
+                                  child: ValueListenableBuilder(
+                                    valueListenable: _textSelected,
+                                    builder: (BuildContext context, bool value,
+                                        Widget? child) {
+                                      return Opacity(
+                                        opacity: value ? 1 : 0,
+                                        child: const Icon(
+                                            CupertinoIcons.forward,
+                                            color: Colors.blue,
+                                            size: 20),
+                                      );
+                                    },
+                                  ),
+                                );
+                              })
                     ],
                   ),
                 ),
               ),
-              ValueListenableBuilder(
-                  valueListenable: _listSelected,
-                  builder: (BuildContext context, bool val, Widget? child) {
-                    return val
-                        ? Positioned(
-                            top: distanceToTop + 13,
-                            left: width * 0.9,
-                            child: Row(
-                              children: [
-                                for (int i = 0; i < widgetCount; i++)
-                                  Container(
-                                    width: 13,
-                                    height: 2,
-                                    color: i == currentIndex
-                                        ? Colors.grey
-                                        : Colors.grey.shade800,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 1),
-                                  ),
-                              ],
-                            ),
-                          )
-                        : Container();
-                  }),
+              widget.disable
+                  ? Container()
+                  : ValueListenableBuilder(
+                      valueListenable: _listSelected,
+                      builder: (BuildContext context, bool val, Widget? child) {
+                        return val
+                            ? Positioned(
+                                top: distanceToTop + 13,
+                                left: width * 0.9,
+                                child: Row(
+                                  children: [
+                                    for (int i = 0; i < widget.listCount; i++)
+                                      Container(
+                                        width: 13,
+                                        height: 2,
+                                        color: i == currentIndex
+                                            ? Colors.grey
+                                            : Colors.grey.shade800,
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 1),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            : Container();
+                      }),
               //
               // List
               //
@@ -295,50 +312,53 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               //
               // Buttons
               //
-              ValueListenableBuilder(
-                  valueListenable: _listSelected,
-                  builder: (BuildContext context, bool val, Widget? child) {
-                    return Positioned(
-                      top: 120,
-                      child: SizedBox(
-                          width: width,
-                          height: 140,
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 145,
-                                width: 50,
-                                color: Colors.black.withOpacity(0.3),
-                                child: leftActive && val
-                                    ? IconButton(
-                                        onPressed: () {
-                                          moveBackward();
-                                        },
-                                        icon: const Icon(Icons.arrow_back_ios,
-                                            color: Colors.white),
-                                      )
-                                    : Container(),
-                              ),
-                              const Spacer(),
-                              Container(
-                                height: 145,
-                                width: 50,
-                                color: Colors.black.withOpacity(0.3),
-                                child: val
-                                    ? IconButton(
-                                        onPressed: () {
-                                          moveForward();
-                                        },
-                                        icon: const Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Colors.white),
-                                      )
-                                    : Container(),
-                              ),
-                            ],
-                          )),
-                    );
-                  }),
+              widget.disable
+                  ? Container()
+                  : ValueListenableBuilder(
+                      valueListenable: _listSelected,
+                      builder: (BuildContext context, bool val, Widget? child) {
+                        return Positioned(
+                          top: 120,
+                          child: SizedBox(
+                              width: width,
+                              height: 140,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 145,
+                                    width: 50,
+                                    color: Colors.black.withOpacity(0.3),
+                                    child: leftActive && val
+                                        ? IconButton(
+                                            onPressed: () {
+                                              moveBackward();
+                                            },
+                                            icon: const Icon(
+                                                Icons.arrow_back_ios,
+                                                color: Colors.white),
+                                          )
+                                        : Container(),
+                                  ),
+                                  const Spacer(),
+                                  Container(
+                                    height: 145,
+                                    width: 50,
+                                    color: Colors.black.withOpacity(0.3),
+                                    child: val
+                                        ? IconButton(
+                                            onPressed: () {
+                                              moveForward();
+                                            },
+                                            icon: const Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: Colors.white),
+                                          )
+                                        : Container(),
+                                  ),
+                                ],
+                              )),
+                        );
+                      }),
               //
               // MouseRegion of the text
               //
@@ -376,7 +396,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   // For Debugging
                   child: TextButton(
                     onPressed: () {
-                      widget.onSeeMore(widget.title);
+                      if (widget.onSeeMore != null) {
+                        widget.onSeeMore!(widget.title);
+                      }
                     },
                     child: Container(
                         width: textSize.width + 69,

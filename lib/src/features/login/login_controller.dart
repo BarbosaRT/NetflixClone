@@ -7,6 +7,11 @@ class LoginController extends ChangeNotifier {
   String _email = '';
   String _senha = '';
 
+  void changeLog(bool newValue) {
+    _isLogged = newValue;
+    notifyListeners();
+  }
+
   void login() {
     if (!canLog()) {
       return;

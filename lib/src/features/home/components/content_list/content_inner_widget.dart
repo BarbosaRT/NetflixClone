@@ -10,10 +10,12 @@ class ContentInnerWidget extends StatefulWidget {
   final String id;
   final List<ContentModel> contents;
   final void Function(bool value)? onHover;
+  final int contentCount;
   const ContentInnerWidget(
       {Key? key,
       this.index = 0,
       this.onHover,
+      this.contentCount = 5,
       required this.id,
       required this.contents})
       : super(key: key);
@@ -26,7 +28,6 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   static const Duration duration = Duration(milliseconds: 300);
   static const double spacing = 252.0;
   int current = 0;
-  static const int contentCount = 5;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
 
@@ -37,7 +38,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   }
 
   void widgetBuilder() {
-    for (int i = contentCount - 1; i >= 0; i--) {
+    for (int i = widget.contentCount - 1; i >= 0; i--) {
       widgets.add(
         Positioned(
           key: UniqueKey(),
@@ -51,7 +52,6 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
             },
             anchor: getAnchor(i),
             localIndex: i,
-            index: widget.index * contentCount + i,
             content: widget.contents[i],
           ),
         ),
@@ -61,12 +61,14 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   }
 
   ContentContainerAnchor getAnchor(int i) {
-    int v = i >= contentCount ? i - contentCount * (i ~/ contentCount) : i;
+    int v = i >= widget.contentCount
+        ? i - widget.contentCount * (i ~/ widget.contentCount)
+        : i;
 
     List<ContentContainerAnchor> anchors = [
       ContentContainerAnchor.left,
     ];
-    for (int i = 0; i < contentCount - 2; i++) {
+    for (int i = 0; i < widget.contentCount - 2; i++) {
       anchors.add(ContentContainerAnchor.center);
     }
     anchors.add(ContentContainerAnchor.right);
@@ -127,7 +129,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: spacing * contentCount,
+      width: spacing * widget.contentCount,
       height: 500,
       child: Stack(
         children: widgets,

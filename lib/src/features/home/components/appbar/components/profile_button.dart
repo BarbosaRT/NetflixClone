@@ -6,9 +6,11 @@ class ProfileButton extends StatefulWidget {
   final double width;
   final Widget? picture;
   final String text;
+  final void Function()? onClick;
   const ProfileButton(
       {super.key,
       this.showPicture = true,
+      this.onClick,
       required this.width,
       required this.picture,
       required this.text});
@@ -63,33 +65,36 @@ class _ProfileButtonState extends State<ProfileButton> {
       onHover: (v) {
         onHover();
       },
-      child: SizedBox(
-        height: 40,
-        width: widget.width,
-        child: widget.showPicture
-            ? Padding(
-                padding: const EdgeInsets.only(left: 10, bottom: 9),
-                child: Row(
-                  children: [
-                    Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5),
+      child: GestureDetector(
+        onTap: widget.onClick,
+        child: SizedBox(
+          height: 40,
+          width: widget.width,
+          child: widget.showPicture
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 10, bottom: 9),
+                  child: Row(
+                    children: [
+                      Container(
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
                           ),
-                        ),
-                        child: widget.picture),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    text,
-                  ],
+                          child: widget.picture),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      text,
+                    ],
+                  ),
+                )
+              : Center(
+                  child: text,
                 ),
-              )
-            : Center(
-                child: text,
-              ),
+        ),
       ),
     );
   }

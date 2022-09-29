@@ -14,13 +14,11 @@ import 'package:netflix/src/features/home/components/content_list/components/lik
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
 import 'package:netflix/src/features/home/home_page.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ContentContainer extends StatefulWidget {
   final ContentContainerAnchor anchor;
   final String id;
   final int localIndex;
-  final int index;
   final ContentModel content;
   final Function(int) onHover;
   final Function()? onExit;
@@ -28,7 +26,6 @@ class ContentContainer extends StatefulWidget {
     super.key,
     required this.anchor,
     required this.localIndex,
-    required this.index,
     required this.onHover,
     required this.id,
     this.onExit,
@@ -113,8 +110,8 @@ class _ContentContainerState extends State<ContentContainer> {
         });
       }
       if (videoController.runtimeType != GetImpl().getImpl().runtimeType) {
-        videoController = GetImpl().getImpl(
-            id: Random(widget.id.length + widget.index).nextInt(69420));
+        videoController =
+            GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
         videoController.init(widget.content.trailer,
             w: width * factor, h: height * factor, callback: callback);
         videoController.defineThumbnail(widget.content.poster);
@@ -230,9 +227,10 @@ class _ContentContainerState extends State<ContentContainer> {
                   videoController.isPlaying() && hover
                       ? Container(
                           height: height * factor - 10,
-                          width: width * factor - 10,
+                          width: width * factor - 8,
                           alignment: Alignment.bottomRight,
                           child: VolumeButton(
+                            scale: 8 / 7,
                             videoController: videoController,
                             iconOn: Icons.volume_up,
                             iconOff: Icons.volume_off,

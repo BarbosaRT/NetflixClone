@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/components/profile_button.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 
 class ProfileIcon extends StatefulWidget {
@@ -68,6 +69,7 @@ class _ProfileIconState extends State<ProfileIcon> {
   @override
   Widget build(BuildContext context) {
     final profileController = Modular.get<ProfileController>();
+    final loginController = Modular.get<LoginController>();
 
     final options = ['Gerenciar Perfis', 'Conta', 'Central de Ajuda'];
     const optionsWidgets = [
@@ -82,6 +84,10 @@ class _ProfileIconState extends State<ProfileIcon> {
         continue;
       }
       items.add(ProfileButton(
+        onClick: () {
+          profileController.select(i);
+          Modular.to.pushNamed('/splash');
+        },
         width: width,
         picture: Image.asset(
           profileController.profiles[i].icon,
@@ -135,9 +141,13 @@ class _ProfileIconState extends State<ProfileIcon> {
                       height: 4,
                       width: width,
                       color: Colors.grey.withOpacity(0.2))),
-              const Positioned(
+              Positioned(
                 top: 300,
                 child: ProfileButton(
+                  onClick: () {
+                    loginController.changeLog(false);
+                    Modular.to.pushNamed('/login');
+                  },
                   showPicture: false,
                   width: width,
                   picture: null,

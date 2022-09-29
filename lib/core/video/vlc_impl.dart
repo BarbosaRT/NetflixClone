@@ -27,9 +27,6 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
-    if (id == 69) {
-      print('PRINT: $_enableFrame, ${isPlaying()}');
-    }
     if (_enableFrame && _isPlaying) {
       return !Platform.isWindows
           ? Video(

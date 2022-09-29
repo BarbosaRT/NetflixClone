@@ -76,6 +76,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   void cacheImages() {
+    if (!mounted) {
+      return;
+    }
     final controller = Modular.get<ContentController>();
     for (var i = 0; i < 2; i++) {
       final id = controller.getKey(i);

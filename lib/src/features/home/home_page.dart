@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -13,12 +15,12 @@ import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/home/components/home_button.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 MyGlobals myGlobals = MyGlobals();
 
 class MyGlobals {
   late GlobalKey _scaffoldKey;
+  final Random random = Random(69420);
   MyGlobals() {
     _scaffoldKey = GlobalKey();
   }
@@ -373,10 +375,12 @@ class VolumeButton extends StatefulWidget {
   final void Function()? onClick;
   final IconData iconOn;
   final IconData iconOff;
+  final double scale;
   const VolumeButton(
       {super.key,
       this.videoController,
       this.onClick,
+      this.scale = 1,
       required this.iconOn,
       required this.iconOff});
 
@@ -410,8 +414,8 @@ class _VolumeButtonState extends State<VolumeButton> {
           });
         },
         child: Container(
-            width: 35,
-            height: 35,
+            width: 35 * widget.scale,
+            height: 35 * widget.scale,
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.white, width: pressed ? 2 : 1),
                 shape: BoxShape.circle,
@@ -435,7 +439,7 @@ class _VolumeButtonState extends State<VolumeButton> {
                 icon: Icon(
                   pressed ? widget.iconOff : widget.iconOn,
                   color: Colors.white,
-                  size: pressed ? 16 : 17,
+                  size: pressed ? 16 * widget.scale : 17 * widget.scale,
                 ))),
       ),
     );
