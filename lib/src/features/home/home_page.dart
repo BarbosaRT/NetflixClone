@@ -51,28 +51,42 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void init(ContentController contentController) {
+    content = contentController.getContent('Herois e Outsiders', 0);
+    videoController.defineThumbnail(content.backdrop);
+    videoController.init(content.trailer);
+    if (mounted) {
+      setState(() {
+        videoController.enableFrame(true);
+      });
+    }
+  }
+
   @override
   void initState() {
     videoController.init(content.trailer, callback: callback);
     videoController.defineThumbnail(content.backdrop);
-    super.initState();
-    final loginController = context.read<LoginController>();
 
+    content.overview =
+        "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia.";
+
+    super.initState();
+
+    final loginController = context.read<LoginController>();
     if (!loginController.isLogged) {
       Navigator.pushReplacementNamed(context, '/login');
       return;
     }
 
     final contentController = Modular.get<ContentController>();
-
+    if (contentController.loading) {
+      contentController.init();
+    } else {
+      init(contentController);
+    }
     contentController.addListener(() {
       if (!contentController.loading) {
-        content = contentController.getContent('Herois e Outsiders', 0);
-        videoController.defineThumbnail(content.backdrop);
-        videoController.init(content.trailer);
-        setState(() {
-          videoController.enableFrame(true);
-        });
+        init(contentController);
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -306,6 +320,9 @@ class _HomePageState extends State<HomePage> {
                                         );
                                 },
                               ),
+                              //
+                              // Classificação Indicativa
+                              //
                               Container(
                                   height: 32,
                                   width: 400,
@@ -351,6 +368,10 @@ class _HomePageState extends State<HomePage> {
                       onSeeMore: (String content) {
                         Modular.to
                             .pushNamed('/home/seeMore', arguments: content);
+                        videoController.isPlaying(
+                          enable: false,
+                        );
+                        videoController.pause();
                       },
                     ),
                   ),

@@ -10,9 +10,9 @@ class ContentModel {
   final String detail;
   final String logo;
   final String title;
-  final String overview;
+  String overview;
 
-  const ContentModel({
+  ContentModel({
     required this.logo,
     required this.age,
     required this.detail,
@@ -29,14 +29,16 @@ class ContentModel {
       ContentModel.fromMap(json.decode(str));
 
   factory ContentModel.fromMap(Map<String, dynamic> json) => ContentModel(
-      rating: json["rating"],
-      trailer: json["trailer"],
-      logo: json['logo'],
-      detail: json['detail'],
-      poster: json["poster"],
-      backdrop: json["backdrop"],
-      title: json["title"],
-      overview: json["overview"],
-      age: json['age'],
-      tags: json['tags']);
+      rating: json["rating"] ?? 98,
+      trailer:
+          json["trailer"] ?? "assets/data/trailers/breaking_bad_trailer.mp4",
+      logo: json['logo'] ?? "assets/data/logos/breaking_bad_logo.png",
+      detail: json['detail'] ?? "5 temporadas",
+      poster: json["poster"] ?? "assets/data/posters/breaking_bad_poster.jpg",
+      backdrop:
+          json["backdrop"] ?? "assets/data/backdrops/breaking_bad_backdrop.jpg",
+      title: json["title"] ?? "Breaking Bad",
+      overview: json["overview"] ?? "",
+      age: json['age'] ?? 0,
+      tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"]);
 }
