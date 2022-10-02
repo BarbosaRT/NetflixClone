@@ -6,7 +6,7 @@ import 'package:netflix/src/features/home/components/content_list/content_list_w
 enum ContentListAnchor { top, middle, bottom }
 
 class ListContentController extends ChangeNotifier {
-  final List<int> _pages = [1, 1, 1, 1, 1, 1];
+  final List<int> _pages = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
   void setPage(int index, int page) {
     _pages[index] = page;
@@ -36,9 +36,9 @@ class _ListContentsState extends State<ListContents> {
   static const List<String> titles = [
     'Herois e Outsiders',
     'Em Alta',
-    'Herois e Outsiders',
-    'Herois e Outsiders',
-    'Herois e Outsiders',
+    '2',
+    '3',
+    '4',
     'Herois e Outsiders',
   ];
   static const listCount = 6;

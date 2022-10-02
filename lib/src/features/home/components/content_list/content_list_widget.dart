@@ -49,9 +49,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   bool loaded = false;
 
   List<List<ContentModel>> contents = List.generate(
-      5,
+      8,
       (index) => List.generate(
-            5,
+            8,
             (index) => ContentModel.fromJson(AppConsts.placeholderJson),
           ));
 
@@ -66,14 +66,21 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       widgetBuilder();
     }
     final contentController = Modular.get<ContentController>();
-    contentController.init();
+    if (contentController.loading) {
+      contentController.init();
+    } else {
+      initContents();
+      widgetBuilder();
+    }
     super.initState();
 
     contentController.addListener(() {
-      if (!contentController.loading && mounted && !loaded) {
+      if (!contentController.loading && !loaded) {
         initContents();
         widgetBuilder();
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }
@@ -86,8 +93,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         i++) {
       final List<ContentModel> l = [];
       for (var j = 0; j < widget.contentCount; j++) {
-        l.add(contentController.getContent(
-            widget.title, i * widget.contentCount + j));
+        final content = contentController.getContent(
+            widget.title, i * widget.contentCount + j);
+        l.add(content);
       }
       contents.add(l.toList());
     }

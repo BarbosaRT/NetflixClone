@@ -11,6 +11,9 @@ class ContentController extends ChangeNotifier {
   bool loading = true;
 
   void init() {
+    if (!loading) {
+      return;
+    }
     rootBundle.loadString('assets/data/contents.json').then((value) {
       start(value);
     });
@@ -29,6 +32,10 @@ class ContentController extends ChangeNotifier {
         final List<ContentModel> contentList = <ContentModel>[];
         //
         for (int j = 0; j <= contentsKeys.length - 1; j++) {
+          if (contents[contentsKeys[j]]['age'] is String) {
+            int? age = int.tryParse(contents[contentsKeys[j]]['age']);
+            contents[contentsKeys[j]]['age'] = age ?? 0;
+          }
           contentList.add(ContentModel.fromMap(contents[contentsKeys[j]]));
         }
         _contentModel[keys[i]] = contentList.toList();

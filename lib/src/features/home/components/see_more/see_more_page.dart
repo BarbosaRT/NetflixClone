@@ -28,11 +28,11 @@ class SeeMorePage extends StatefulWidget {
 
 class _SeeMorePageState extends State<SeeMorePage> {
   final scrollController = ScrollController(initialScrollOffset: 0);
-  static const listCount = 5;
+  static const listCount = 8;
   static const Duration duration = Duration(milliseconds: 300);
   static const transitionDuration = Duration(milliseconds: 300);
   final ValueNotifier<bool> _active = ValueNotifier(false);
-  final height = 1000.0;
+  final height = 1800.0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
   static const double spacing = 150.0;
@@ -48,7 +48,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
         _active.value = true;
       },
     );
-    //TODO: FAZER O PLAYER PARAR
+    //TODO: Usar o Image.file para acelerar o processo de compilação talvez n funfe
   }
 
   ContentListAnchor getAnchorFromValue(int index) {

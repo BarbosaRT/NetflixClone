@@ -10,6 +10,13 @@ Data Source: TMDB, uNoGs
 
 ## Instructions 
 
+Requirements: python >= 3.6, dart >= 2.17  
+
+Python:  
 ```
-to be add
+pip install pytube, requests
 ```
+
+## Extras
+
+The use of api.py isn't the most appropriate, but this program was made to work offline, so yeah  

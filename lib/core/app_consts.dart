@@ -1,10 +1,11 @@
 class AppConsts {
-  static const String placeholderJson = """{
+  static const String placeholderJson =
+      """{
             "title": "Breaking Bad",
-            "backdrop": "assets/data/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/breaking_bad_poster.jpg",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/breaking_bad_poster.jpg",
             "rating": 98,
-            "trailer": "assets/data/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
             "tags": [
                 "Violentos",
                 "Realistas",
@@ -12,7 +13,7 @@ class AppConsts {
             ],
             "age": 18,
             "detail": "5 temporadas",
-            "logo": "assets/data/breaking_bad_logo.png",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
             "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado"
             }""";
   static const Map<int, String> classifications = {

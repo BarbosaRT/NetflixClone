@@ -48,6 +48,11 @@ flutter:
       - assets/images/profiles/
       - assets/images/classifications/
       - assets/data/
+      - assets/data/backdrops/
+      - assets/data/logos/
+      - assets/data/posters/
+      - assets/data/trailers/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
