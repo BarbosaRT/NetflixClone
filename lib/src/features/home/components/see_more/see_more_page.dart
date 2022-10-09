@@ -35,7 +35,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
   final height = 1800.0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
-  static const double spacing = 150.0;
+  static const double spacing = 200.0;
   int current = 0;
 
   @override

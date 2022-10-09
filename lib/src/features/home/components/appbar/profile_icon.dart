@@ -74,7 +74,7 @@ class _ProfileIconState extends State<ProfileIcon> {
     final options = ['Gerenciar Perfis', 'Conta', 'Central de Ajuda'];
     const optionsWidgets = [
       Icon(Icons.edit, color: Colors.white),
-      Icon(Icons.person_off_outlined, color: Colors.white),
+      Icon(Icons.person, color: Colors.white),
       Icon(Icons.help_center_outlined, color: Colors.white),
     ];
 

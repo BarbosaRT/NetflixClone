@@ -21,6 +21,7 @@ class ContentContainer extends StatefulWidget {
   final int localIndex;
   final ContentModel content;
   final Function(int) onHover;
+  final Function(bool value) onPlay;
   final Function()? onExit;
   const ContentContainer({
     super.key,
@@ -30,6 +31,7 @@ class ContentContainer extends StatefulWidget {
     required this.id,
     this.onExit,
     required this.content,
+    required this.onPlay,
   });
 
   @override
@@ -88,6 +90,7 @@ class _ContentContainerState extends State<ContentContainer> {
       widget.onExit!();
     }
     isHover = false;
+    widget.onPlay(false);
     if (mounted) {
       setState(() {
         hover = false;
@@ -109,6 +112,9 @@ class _ContentContainerState extends State<ContentContainer> {
           hover = true;
         });
       }
+
+      widget.onPlay(true);
+
       if (videoController.runtimeType != GetImpl().getImpl().runtimeType) {
         videoController =
             GetImpl().getImpl(id: myGlobals.random.nextInt(69420));

@@ -18,6 +18,7 @@ class ContentListWidget extends StatefulWidget {
   final int contentCount; // how many content_container
   final int listCount; // how many inner_widgets
   final void Function() onHover;
+  final void Function(bool value)? onPlay;
   final void Function(String content)? onSeeMore;
   const ContentListWidget({
     super.key,
@@ -30,6 +31,7 @@ class ContentListWidget extends StatefulWidget {
     this.contentCount = 5,
     this.listCount = 5,
     this.initialPage = 0,
+    this.onPlay,
   });
 
   @override
@@ -49,11 +51,12 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   bool loaded = false;
 
   List<List<ContentModel>> contents = List.generate(
-      8,
-      (index) => List.generate(
-            8,
-            (index) => ContentModel.fromJson(AppConsts.placeholderJson),
-          ));
+    36,
+    (index) => List.generate(
+      40,
+      (index) => ContentModel.fromJson(AppConsts.placeholderJson),
+    ),
+  );
 
   List<Widget> widgetList = [];
   late CarouselController controller;
@@ -137,6 +140,11 @@ class _ContentListWidgetState extends State<ContentListWidget> {
           index: i,
           contentCount: widget.contentCount,
           contents: contents[i],
+          onPlay: (bool value) {
+            if (widget.onPlay != null) {
+              widget.onPlay!(value);
+            }
+          },
           onHover: (value) {
             onWidgetChanging(value);
           },

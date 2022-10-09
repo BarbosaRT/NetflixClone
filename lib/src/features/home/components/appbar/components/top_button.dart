@@ -4,8 +4,10 @@ class TopButton extends StatefulWidget {
   final TextStyle selectedStyle;
   final TextStyle unselectedStyle;
   final String name;
+  final double height;
   const TopButton(
       {super.key,
+      this.height = 50,
       required this.selectedStyle,
       required this.unselectedStyle,
       required this.name});
@@ -32,7 +34,7 @@ class _TopButtonState extends State<TopButton> {
       },
       onPressed: () {},
       child: SizedBox(
-        height: 50,
+        height: widget.height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -6,13 +6,23 @@ class ProfileButton extends StatefulWidget {
   final double width;
   final Widget? picture;
   final String text;
+  final Alignment alignment;
+  final Color textColor;
+  final TextStyle? textStyle;
+  final double height;
   final void Function()? onClick;
+  final double underline;
   const ProfileButton(
       {super.key,
       this.showPicture = true,
       this.onClick,
+      this.underline = 1,
+      this.height = 40,
+      this.alignment = Alignment.center,
+      this.textColor = Colors.white,
       required this.width,
-      required this.picture,
+      this.picture,
+      this.textStyle,
       required this.text});
 
   @override
@@ -48,13 +58,13 @@ class _ProfileButtonState extends State<ProfileButton> {
 
   @override
   Widget build(BuildContext context) {
+    final style = widget.textStyle ?? GoogleFonts.robotoFlex();
+
     final text = Text(widget.text,
-        style: GoogleFonts.robotoFlex(
-          textStyle: TextStyle(
-            decoration: _hover ? TextDecoration.underline : TextDecoration.none,
-            decorationThickness: 1,
-            color: Colors.white,
-          ),
+        style: style.copyWith(
+          decoration: _hover ? TextDecoration.underline : TextDecoration.none,
+          decorationThickness: widget.underline,
+          color: widget.textColor,
         ));
 
     return MouseRegion(
@@ -68,7 +78,7 @@ class _ProfileButtonState extends State<ProfileButton> {
       child: GestureDetector(
         onTap: widget.onClick,
         child: SizedBox(
-          height: 40,
+          height: widget.height,
           width: widget.width,
           child: widget.showPicture
               ? Padding(
@@ -91,7 +101,8 @@ class _ProfileButtonState extends State<ProfileButton> {
                     ],
                   ),
                 )
-              : Center(
+              : Align(
+                  alignment: widget.alignment,
                   child: text,
                 ),
         ),

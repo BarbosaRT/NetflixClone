@@ -6,7 +6,7 @@ import 'package:netflix/src/features/home/components/content_list/content_list_w
 enum ContentListAnchor { top, middle, bottom }
 
 class ListContentController extends ChangeNotifier {
-  final List<int> _pages = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  final List<int> _pages = List.generate(36, (index) => 1);
 
   void setPage(int index, int page) {
     _pages[index] = page;
@@ -20,7 +20,9 @@ class ListContentController extends ChangeNotifier {
 
 class ListContents extends StatefulWidget {
   final void Function(String content) onSeeMore;
-  const ListContents({super.key, required this.onSeeMore});
+  final void Function(bool value) onPlay;
+  const ListContents(
+      {super.key, required this.onSeeMore, required this.onPlay});
 
   @override
   State<ListContents> createState() => _ListContentsState();
@@ -36,12 +38,38 @@ class _ListContentsState extends State<ListContents> {
   static const List<String> titles = [
     'Herois e Outsiders',
     'Em Alta',
-    '2',
-    '3',
     '4',
-    'Herois e Outsiders',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '28',
+    '29',
+    '30',
+    '31',
+    '32',
+    '33',
   ];
-  static const listCount = 6;
+  static const listCount = 32;
 
   @override
   void initState() {
@@ -76,6 +104,7 @@ class _ListContentsState extends State<ListContents> {
             onHover: () {
               onHover(i);
             },
+            onPlay: widget.onPlay,
             onSeeMore: widget.onSeeMore,
           ),
         ),
@@ -133,7 +162,7 @@ class _ListContentsState extends State<ListContents> {
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
       width: width,
-      height: 4000,
+      height: 8000,
       child: Stack(
         children: widgets,
       ),

@@ -10,11 +10,13 @@ class ContentInnerWidget extends StatefulWidget {
   final String id;
   final List<ContentModel> contents;
   final void Function(bool value)? onHover;
+  final void Function(bool value) onPlay;
   final int contentCount;
   const ContentInnerWidget(
       {Key? key,
       this.index = 0,
       this.onHover,
+      required this.onPlay,
       this.contentCount = 5,
       required this.id,
       required this.contents})
@@ -47,6 +49,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
             key: UniqueKey(),
             onHover: onHover,
             id: widget.id,
+            onPlay: widget.onPlay,
             onExit: () {
               onChangeValue(false);
             },

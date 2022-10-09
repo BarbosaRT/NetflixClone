@@ -14,7 +14,7 @@ Requirements: python >= 3.6, dart >= 2.17
 
 Python:  
 ```
-pip install pytube, requests
+pip install pytube, requests, json, unidecode
 ```
 
 ## Extras
