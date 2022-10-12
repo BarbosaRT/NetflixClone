@@ -11,6 +11,7 @@ class ContentButton extends StatefulWidget {
   final Color circleColor;
   final double opacity;
   final Color buttonColor;
+  final double rightPadding;
   const ContentButton({
     super.key,
     required this.icon,
@@ -22,6 +23,7 @@ class ContentButton extends StatefulWidget {
     this.onClick,
     this.onHover,
     this.onExit,
+    this.rightPadding = 0,
   });
 
   @override
@@ -30,6 +32,7 @@ class ContentButton extends StatefulWidget {
 
 class _ContentButtonState extends State<ContentButton> {
   static const double width = 250;
+  bool isHover = false;
 
   void onClick() {
     if (widget.onClick != null) {
@@ -38,12 +41,14 @@ class _ContentButtonState extends State<ContentButton> {
   }
 
   void onHover() {
+    isHover = true;
     if (widget.onHover != null) {
       widget.onHover!();
     }
   }
 
   void onExit() {
+    isHover = false;
     if (widget.onExit != null) {
       widget.onExit!();
     }
@@ -67,17 +72,23 @@ class _ContentButtonState extends State<ContentButton> {
           onTap: () {
             onClick();
           },
-          child: Container(
-              width: 40,
-              height: 40,
-              padding: EdgeInsets.zero,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: widget.circleColor, width: 1),
-                shape: BoxShape.circle,
-                color: widget.buttonColor.withOpacity(widget.opacity),
-              ),
-              child: widget.icon),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: Container(
+                width: 40,
+                height: 40,
+                padding: EdgeInsets.zero,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: isHover ? Colors.white : widget.circleColor,
+                      width: 1),
+                  shape: BoxShape.circle,
+                  color: widget.buttonColor.withOpacity(widget.opacity),
+                ),
+                child: widget.icon),
+          ),
         ),
         child: SizedBox(
           height: 100,
@@ -86,6 +97,7 @@ class _ContentButtonState extends State<ContentButton> {
             children: [
               Positioned(
                 top: 12,
+                right: widget.rightPadding,
                 child: SizedBox(
                   width: width,
                   height: 50,
