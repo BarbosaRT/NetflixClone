@@ -60,19 +60,19 @@ class _LikeButtonState extends State<LikeButton> {
     );
   }
 
-  Widget withOpacity(Widget widget, EdgeInsets padding) {
-    return AnimatedOpacity(
-      opacity: hover ? 1 : 0,
-      duration: delay,
-      child: AnimatedContainer(
-        margin: hover ? padding : EdgeInsets.zero,
-        duration: delay,
-        width: 40,
-        height: 40,
-        child: widget,
-      ),
-    );
-  }
+  // Widget withOpacity(Widget widget, EdgeInsets padding) {
+  //   return AnimatedOpacity(
+  //     opacity: hover ? 1 : 0,
+  //     duration: delay,
+  //     child: AnimatedContainer(
+  //       margin: hover ? padding : EdgeInsets.zero,
+  //       duration: delay,
+  //       width: 40,
+  //       height: 40,
+  //       child: widget,
+  //     ),
+  //   );
+  // }
 
   Widget buttonBuilder(
       Widget widgetOn, Widget widgetOff, SelectedButton selection) {
@@ -308,7 +308,7 @@ class _LikeButtonState extends State<LikeButton> {
           //
           AnimatedOpacity(
             duration: delay,
-            opacity: hover ? 1 : 0,
+            opacity: _selectedButton == SelectedButton.deslike || hover ? 1 : 0,
             child: AnimatedContainer(
               duration: delay,
               margin:
@@ -321,7 +321,7 @@ class _LikeButtonState extends State<LikeButton> {
           //
           AnimatedOpacity(
             duration: delay,
-            opacity: hover ? 1 : 0,
+            opacity: _selectedButton == SelectedButton.love || hover ? 1 : 0,
             child: AnimatedContainer(
               duration: delay,
               margin: hover ? const EdgeInsets.only(left: 90) : EdgeInsets.zero,
@@ -331,10 +331,18 @@ class _LikeButtonState extends State<LikeButton> {
           //
           // LikeButton
           //
-          AnimatedContainer(
-            margin: hover ? const EdgeInsets.only(left: 45) : EdgeInsets.zero,
+          AnimatedOpacity(
             duration: delay,
-            child: likeWidget,
+            opacity: _selectedButton == SelectedButton.like ||
+                    _selectedButton == SelectedButton.none ||
+                    hover
+                ? 1
+                : 0,
+            child: AnimatedContainer(
+              margin: hover ? const EdgeInsets.only(left: 45) : EdgeInsets.zero,
+              duration: delay,
+              child: likeWidget,
+            ),
           ),
           //
           // MouseRegion

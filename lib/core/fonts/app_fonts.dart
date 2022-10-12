@@ -23,6 +23,14 @@ class AppFonts {
     fontSize: 32,
   );
 
+  TextStyle headtext4 = const TextStyle(
+    fontFamily: 'Netflix Sans',
+    letterSpacing: 1,
+    color: Colors.white,
+    fontWeight: FontWeight.normal,
+    fontSize: 27,
+  );
+
   TextStyle headline6 = GoogleFonts.roboto(
     letterSpacing: 0.5,
     fontWeight: FontWeight.w600,
@@ -36,6 +44,15 @@ class AppFonts {
     fontWeight: FontWeight.w500,
     color: Colors.white,
     fontSize: 15,
+  );
+
+  TextStyle headline8 = GoogleFonts.roboto(
+    letterSpacing: 0.5,
+    wordSpacing: 0.5,
+    fontWeight: FontWeight.w300,
+    height: 1.5,
+    color: Colors.white,
+    fontSize: 14,
   );
 
   // Infos in the login screen

@@ -30,6 +30,7 @@ dependencies:
   path_drawing: ^1.0.1
 
   carousel_slider: ^4.1.1
+  flutter_layout_grid: ^2.0.1
   
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ flutter:
       - assets/data/logos/
       - assets/data/posters/
       - assets/data/trailers/
+      - assets/data/videos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

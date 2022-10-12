@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/app_consts.dart';
@@ -288,6 +286,9 @@ class _ContentContainerState extends State<ContentContainer> {
                       height: 200,
                       child: Stack(
                         children: [
+                          //
+                          // Play
+                          //
                           const Positioned(
                             left: 15 + wDifference,
                             top: 70,
@@ -297,6 +298,8 @@ class _ContentContainerState extends State<ContentContainer> {
                               color: Colors.white,
                             ),
                           ),
+                          //
+                          // Add to list
                           //
                           Positioned(
                             top: 2,
@@ -331,22 +334,38 @@ class _ContentContainerState extends State<ContentContainer> {
                                   },
                                 )),
                           ),
-
+                          //
+                          // Like
+                          //
                           const Positioned(
                             top: 2,
                             left: 18,
                             child: LikeButton(),
                           ),
+                          //
+                          // Mais Informações
+                          //
                           Positioned(
                             top: 2,
                             left: 260,
                             child: ContentButton(
+                                rightPadding: widget.anchor ==
+                                        ContentContainerAnchor.right
+                                    ? 40
+                                    : 0,
                                 text: Text(
                                   'Mais Informações',
                                   textAlign: TextAlign.center,
                                   style:
                                       headline6.copyWith(color: Colors.black),
                                 ),
+                                onClick: () {
+                                  if (widget.content.hasDetailPage ||
+                                      widget.content.episodes != {}) {
+                                    Modular.to.pushNamed('/home/detail',
+                                        arguments: widget.content);
+                                  }
+                                },
                                 icon: button ?? Container()),
                           ),
                         ],

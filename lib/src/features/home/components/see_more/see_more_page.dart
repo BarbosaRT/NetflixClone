@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/colors/color_controller.dart';
@@ -48,7 +46,8 @@ class _SeeMorePageState extends State<SeeMorePage> {
         _active.value = true;
       },
     );
-    //TODO: Usar o Image.file para acelerar o processo de compilação talvez n funfe
+    //TODO: Usar o Image.file para acelerar o processo de compilação
+    //TODO: Comprimir os assets antes de usar
   }
 
   ContentListAnchor getAnchorFromValue(int index) {

@@ -16,6 +16,77 @@
             "logo": "assets/data/logos/breaking_bad_logo.png",
             "overview": "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia."
         },
+        "Blender Studios": {
+            "title": "Blender Studios",
+            "backdrop": "assets/data/backdrops/blender.webp",
+            "poster": "assets/data/backdrops/blender.webp",
+            "rating": 96,
+            "trailer": "assets/data/videos/sintel.mp4",
+            "tags": [
+                "Irreverentes",
+                "Realistas",
+                "Suspense"
+            ],
+            "hasDetailPage": true,
+            "cast": [
+                "Blender Foundation",
+                "BarbosaRT"
+            ],
+            "episodes": {
+                "Big Bunny": {
+                    "title": "Big Bunny",
+                    "backdrop": "assets/data/videos/bigbunny.jpg",
+                    "poster": "assets/data/videos/bigbunny.jpg",
+                    "rating": 95,
+                    "trailer": "assets/data/videos/bigbunny.mp4",
+                    "tags": [
+                        "Empolgante",
+                        "Realistas",
+                        "Suspense"
+                    ],
+                    "age": 0,
+                    "detail": "17min",
+                    "logo": "assets/data/logos/breaking_bad_logo.png",
+                    "overview": "Tired of being picked on by Frankie the squirrel and his band of puny forest creatures, JC the bunny finally decides to fight back."
+                },
+                "Sintel": {
+                    "title": "Sintel",
+                    "backdrop": "assets/data/videos/sintel.jpg",
+                    "poster": "assets/data/videos/sintel.jpeg",
+                    "rating": 91,
+                    "trailer": "assets/data/videos/sintel.mp4",
+                    "tags": [
+                        "Empolgante",
+                        "Realistas",
+                        "Suspense"
+                    ],
+                    "age": 0,
+                    "detail": "10min",
+                    "logo": "assets/data/logos/breaking_bad_logo.png",
+                    "overview": "Sintel tells the story of a friendship between a girl named Sintel, a baby dragon and the desperate lengths she will go to when that friendship is taken from her."
+                },
+                "Elephants": {
+                    "title": "Elephants",
+                    "backdrop": "assets/data/videos/elephants.jpg",
+                    "poster": "assets/data/videos/elephants.jpg",
+                    "rating": 92,
+                    "trailer": "assets/data/videos/elephants.mp4",
+                    "tags": [
+                        "Empolgante",
+                        "Realistas",
+                        "Suspense"
+                    ],
+                    "age": 0,
+                    "detail": "22min",
+                    "logo": "assets/data/logos/breaking_bad_logo.png",
+                    "overview": "Elephants Dream tells the story of Emo and Proog, two people with different visions of the surreal world in which they live."
+                }
+            },
+            "age": 0,
+            "detail": "1 temporada",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": ""
+        },
         "El Camino": {
             "title": "El Camino",
             "backdrop": "assets/data/backdrops/el_camino_backdrop.jpg",

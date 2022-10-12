@@ -11,8 +11,14 @@ class ContentModel {
   final String logo;
   final String title;
   String overview;
+  bool hasDetailPage;
+  List<dynamic>? cast;
+  Map<dynamic, dynamic>? episodes;
 
   ContentModel({
+    this.hasDetailPage = false,
+    this.cast,
+    this.episodes,
     required this.logo,
     required this.age,
     required this.detail,
@@ -39,6 +45,9 @@ class ContentModel {
           json["backdrop"] ?? "assets/data/backdrops/breaking_bad_backdrop.jpg",
       title: json["title"] ?? "Breaking Bad",
       overview: json["overview"] ?? "",
+      hasDetailPage: json["hasDetailPage"] ?? false,
+      cast: json["cast"],
+      episodes: json["episodes"],
       age: json['age'] ?? 0,
       tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"]);
 }
