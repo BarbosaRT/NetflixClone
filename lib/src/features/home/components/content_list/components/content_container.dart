@@ -314,8 +314,8 @@ class _ContentContainerState extends State<ContentContainer> {
                                       child) {
                                     return Text(
                                       value
-                                          ? 'Remover da lista'
-                                          : 'Adicionar à lista',
+                                          ? 'Remover da Minha lista'
+                                          : 'Adicionar à Minha lista',
                                       textAlign: TextAlign.center,
                                       style: headline6.copyWith(
                                           color: Colors.black),
