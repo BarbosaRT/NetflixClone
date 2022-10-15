@@ -34,8 +34,11 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void init(String video,
-      {double w = 1360, double h = 768, void Function()? callback}) {
-    load(video, callback: callback);
+      {double w = 1360,
+      double h = 768,
+      void Function()? callback,
+      void Function(Duration position)? positionStream}) {
+    load(video, callback: callback, positionStream: positionStream);
     path = video;
     width = w;
     height = h;
@@ -43,8 +46,12 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  void load(String id, {void Function()? callback}) {
-    Future.delayed(const Duration(milliseconds: 1000));
+  void load(String id,
+      {void Function()? callback,
+      void Function(Duration position)? positionStream}) {
+    Future.delayed(
+      const Duration(milliseconds: 1000),
+    );
     _controller = VideoPlayerController.asset(id)
       ..initialize().then((value) {
         _isInitialized = true;
@@ -54,6 +61,7 @@ class PlayerImpl implements VideoInterface {
       });
     _controller.addListener(
       () {
+        positionStream?.call(controller.value.position);
         if (controller.value.position == controller.value.duration) {
           enableFrame(false);
         }
@@ -119,5 +127,15 @@ class PlayerImpl implements VideoInterface {
   @override
   void setVolume(double volume) {
     _controller.setVolume(volume);
+  }
+
+  @override
+  Duration getPosition() {
+    throw _controller.value.position;
+  }
+
+  @override
+  Duration getDuration() {
+    throw _controller.value.duration;
   }
 }

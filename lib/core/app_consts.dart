@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+
 class AppConsts {
-  static const String placeholderJson = """{
+  static const String placeholderJson =
+      """{
             "title": "Breaking Bad",
             "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
             "poster": "assets/data/posters/breaking_bad_poster.jpg",
@@ -23,4 +26,15 @@ class AppConsts {
     16: 'assets/images/classifications/16.png',
     18: 'assets/images/classifications/18.png',
   };
+
+  Size getTextSize(String text, TextStyle style) {
+    final textSpan = TextSpan(
+      text: text,
+      style: style,
+    );
+    final textPainter =
+        TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+    textPainter.layout();
+    return textPainter.size;
+  }
 }

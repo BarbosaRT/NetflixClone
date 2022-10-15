@@ -123,6 +123,7 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _loveSelected,
         builder: (context, bool value, child) {
           return ContentButton(
+            hoverActive: false,
             onClick: () {
               setState(() {
                 _selectedButton = _selectedButton == SelectedButton.love
@@ -177,6 +178,7 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _deslikeSelected,
         builder: (context, bool value, child) {
           return ContentButton(
+            hoverActive: false,
             onClick: () {
               setState(() {
                 _selectedButton = _selectedButton == SelectedButton.deslike
@@ -245,6 +247,7 @@ class _LikeButtonState extends State<LikeButton> {
         valueListenable: _likeSelected,
         builder: (context, bool value, child) {
           return ContentButton(
+            hoverActive: false,
             onClick: () {
               setState(() {
                 _selectedButton = _selectedButton == SelectedButton.like

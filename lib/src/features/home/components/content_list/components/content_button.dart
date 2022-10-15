@@ -12,10 +12,12 @@ class ContentButton extends StatefulWidget {
   final double opacity;
   final Color buttonColor;
   final double rightPadding;
+  final bool hoverActive;
   const ContentButton({
     super.key,
     required this.icon,
     required this.text,
+    this.hoverActive = true,
     this.circleColor = Colors.grey,
     this.buttonColor = Colors.grey,
     this.distance = 70,
@@ -82,7 +84,9 @@ class _ContentButtonState extends State<ContentButton> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: isHover ? Colors.white : widget.circleColor,
+                      color: isHover && widget.hoverActive
+                          ? Colors.white
+                          : widget.circleColor,
                       width: 1),
                   shape: BoxShape.circle,
                   color: widget.buttonColor.withOpacity(widget.opacity),

@@ -6,11 +6,11 @@ import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 
-MyGlobals myGlobals = MyGlobals();
+SeeMoreGlobals seeMoreGlobals = SeeMoreGlobals();
 
-class MyGlobals {
+class SeeMoreGlobals {
   late GlobalKey _scaffoldKey;
-  MyGlobals() {
+  SeeMoreGlobals() {
     _scaffoldKey = GlobalKey();
   }
   GlobalKey get scaffoldKey => _scaffoldKey;
@@ -143,7 +143,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      key: myGlobals.scaffoldKey,
+      key: seeMoreGlobals.scaffoldKey,
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 abstract class VideoInterface {
   void init(String video,
-      {double w = 1360, double h = 768, void Function()? callback});
+      {double w = 1360,
+      double h = 768,
+      void Function()? callback,
+      void Function(Duration position)? positionStream});
   void play();
   void seek(Duration position);
   void pause();
@@ -14,5 +17,7 @@ abstract class VideoInterface {
   void setVolume(double volume);
   void enableFrame(bool enable);
   bool isPlaying({bool? enable});
+  Duration getPosition();
+  Duration getDuration();
   Widget frame();
 }

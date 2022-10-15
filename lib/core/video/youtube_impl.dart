@@ -20,7 +20,10 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   void init(String video,
-      {double w = 1360, double h = 768, void Function()? callback}) async {
+      {double w = 1360,
+      double h = 768,
+      void Function()? callback,
+      void Function(Duration position)? positionStream}) async {
     await Future.delayed(const Duration(seconds: 2));
     width = w;
     height = h;
@@ -92,4 +95,14 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   void setVolume(double volume) {}
+
+  @override
+  Duration getPosition() {
+    return _controller.value.position;
+  }
+
+  @override
+  Duration getDuration() {
+    return _controller.metadata.duration;
+  }
 }

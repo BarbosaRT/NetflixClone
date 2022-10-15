@@ -32,6 +32,10 @@
                 "Blender Foundation",
                 "BarbosaRT"
             ],
+            "age": 0,
+            "detail": "1 temporada",
+            "logo": "assets/data/logos/blender_logo.png",
+            "overview": "Blender Studio is the creative part of the Blender HQ. A dedicated team of artists and developers who challenge themselves with creative-technical targets to help Blender users and to drive Blender development forward. ",
             "episodes": {
                 "Big Bunny": {
                     "title": "Big Bunny",
@@ -81,11 +85,7 @@
                     "logo": "assets/data/logos/breaking_bad_logo.png",
                     "overview": "Elephants Dream tells the story of Emo and Proog, two people with different visions of the surreal world in which they live."
                 }
-            },
-            "age": 0,
-            "detail": "1 temporada",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            }
         },
         "El Camino": {
             "title": "El Camino",

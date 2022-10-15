@@ -10,6 +10,7 @@ import 'package:netflix/src/features/home/components/see_more/see_more_page.dart
 import 'package:netflix/src/features/home/home_page.dart';
 import 'package:netflix/src/features/login/login_controller.dart';
 import 'package:netflix/src/features/login/login_page.dart';
+import 'package:netflix/src/features/player/player_page.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 import 'package:netflix/src/features/profile/profile_page.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
@@ -33,6 +34,12 @@ class AppModule extends Module {
         ChildRoute('/login', child: (context, args) => const LoginPage()),
         ChildRoute('/profile', child: (context, args) => const ProfilePage()),
         ChildRoute('/splash', child: (context, args) => const SplashPage()),
+        ChildRoute(
+          '/video',
+          child: (context, args) => PlayerPage(
+            playerModel: args.data,
+          ),
+        ),
         RedirectRoute('/', to: '/profile'),
         ChildRoute(
           '/home',

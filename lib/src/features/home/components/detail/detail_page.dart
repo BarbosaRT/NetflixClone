@@ -11,19 +11,25 @@ import 'package:netflix/core/video/video_interface.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/components/profile_button.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
+import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
 import 'package:netflix/src/features/home/components/detail/components/detail_container.dart';
 import 'package:netflix/src/features/home/components/detail/components/detail_content.dart';
+import 'package:netflix/src/features/home/components/home_button.dart';
+import 'package:netflix/src/features/home/home_page.dart';
+import 'package:netflix/src/features/player/player_page.dart';
 
-MyGlobals myGlobals = MyGlobals();
+DetailGlobals detailGlobals = DetailGlobals();
 
-class MyGlobals {
+class DetailGlobals {
   late GlobalKey _scaffoldKey;
-  MyGlobals() {
+  DetailGlobals() {
     _scaffoldKey = GlobalKey();
   }
   GlobalKey get scaffoldKey => _scaffoldKey;
 }
 
+// ignore: must_be_immutable
 class DetailPage extends StatefulWidget {
   ContentModel? content;
   DetailPage({super.key, this.content});
@@ -35,11 +41,14 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   final scrollController = ScrollController(initialScrollOffset: 0);
   static const transitionDuration = Duration(milliseconds: 300);
+
   final ValueNotifier<bool> _active = ValueNotifier(false);
   final ValueNotifier<bool> _hover = ValueNotifier(false);
   final ValueNotifier<bool> _expanded = ValueNotifier(false);
-  final double startHeight = 2600.0;
-  double height = 2600.0;
+  final ValueNotifier<bool> added = ValueNotifier(false);
+
+  final double startHeight = 2150.0;
+  double height = 2000.0;
   final double containerWidth = 1000;
   final VideoInterface videoController = GetImpl().getImpl(id: 2);
 
@@ -61,6 +70,9 @@ class _DetailPageState extends State<DetailPage> {
     } else {
       initContents();
     }
+    height = startHeight +
+        410 * (_expanded.value ? 5 : 0) +
+        150.0 * widget.content!.episodes!.length;
     super.initState();
 
     contentController.addListener(() {
@@ -80,6 +92,15 @@ class _DetailPageState extends State<DetailPage> {
         _active.value = true;
       },
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 10)).then((value) {
+        setState(() {
+          videoController.enableFrame(true);
+          videoController.play();
+          videoController.setVolume(0);
+        });
+      });
+    });
   }
 
   void initContents() {
@@ -102,6 +123,8 @@ class _DetailPageState extends State<DetailPage> {
     final headline4 = AppFonts().labelIntermedium.copyWith(color: Colors.white);
     final headline5 = AppFonts().headtext4;
 
+    final blackHeadline6 =
+        headline.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
     const overview =
@@ -149,7 +172,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      key: myGlobals.scaffoldKey,
+      key: detailGlobals.scaffoldKey,
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
@@ -220,6 +243,85 @@ class _DetailPageState extends State<DetailPage> {
                                 )),
                               )),
                           //
+                          // Logo
+                          //
+                          Positioned(
+                              top: 360,
+                              left: 300,
+                              child: Image.asset(
+                                widget.content!.logo,
+                                height: 100,
+                              )),
+                          //
+                          // Buttons
+                          //
+                          Positioned(
+                            top: 460,
+                            left: 300,
+                            child: HomeButton(
+                              textStyle: blackHeadline6,
+                              overlayColor: Colors.grey.shade300,
+                              buttonColor: Colors.white,
+                              icon: Icons.play_arrow,
+                              text: 'Assistir',
+                              onPressed: () {
+                                Modular.to.pushNamed('/video',
+                                    arguments: PlayerModel(widget.content!, 0));
+                                videoController.isPlaying(enable: false);
+                                videoController.pause();
+                                videoController.stop();
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            top: 390,
+                            left: 345,
+                            child: ContentButton(
+                                onClick: () {
+                                  added.value = !added.value;
+                                },
+                                text: ValueListenableBuilder(
+                                  valueListenable: added,
+                                  builder: (BuildContext context, bool value,
+                                      child) {
+                                    return Text(
+                                      value
+                                          ? 'Remover da Minha lista'
+                                          : 'Adicionar à Minha lista',
+                                      textAlign: TextAlign.center,
+                                      style: headline.copyWith(
+                                          color: Colors.black),
+                                    );
+                                  },
+                                ),
+                                icon: ValueListenableBuilder(
+                                  valueListenable: added,
+                                  builder: (BuildContext context, bool value,
+                                      child) {
+                                    return Icon(
+                                      value ? Icons.done : Icons.add,
+                                      size: 25,
+                                      color: Colors.white,
+                                    );
+                                  },
+                                )),
+                          ),
+                          const Positioned(
+                            top: 390,
+                            left: 345,
+                            child: LikeButton(),
+                          ),
+                          Positioned(
+                            top: 457,
+                            right: 300,
+                            child: VolumeButton(
+                              videoController: videoController,
+                              iconOn: Icons.volume_up,
+                              iconOff: Icons.volume_off,
+                              scale: 1.15,
+                            ),
+                          ),
+                          //
                           // Close Button
                           //
                           Positioned(
@@ -227,6 +329,7 @@ class _DetailPageState extends State<DetailPage> {
                             left: width - 310,
                             child: GestureDetector(
                               onTap: () {
+                                videoController.stop();
                                 _active.value = false;
                                 Modular.to.navigate('/home');
                               },
@@ -580,7 +683,12 @@ class _DetailPageState extends State<DetailPage> {
                                                         410 *
                                                             (_expanded.value
                                                                 ? 5
-                                                                : 0);
+                                                                : 0) +
+                                                        150.0 *
+                                                            widget
+                                                                .content!
+                                                                .episodes!
+                                                                .length;
                                                   });
                                                 },
                                                 child: Container(

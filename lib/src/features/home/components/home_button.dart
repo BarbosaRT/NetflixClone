@@ -9,6 +9,7 @@ class HomeButton extends StatefulWidget {
   final double iconSize;
   final EdgeInsets padding;
   final double spacing;
+  final void Function()? onPressed;
   const HomeButton(
       {super.key,
       required this.textStyle,
@@ -18,7 +19,8 @@ class HomeButton extends StatefulWidget {
       required this.text,
       this.spacing = 4,
       this.iconSize = 40,
-      this.padding = const EdgeInsets.only(left: 10, right: 25)});
+      this.padding = const EdgeInsets.only(left: 10, right: 25),
+      this.onPressed});
 
   @override
   State<HomeButton> createState() => _HomeButtonState();
@@ -39,7 +41,11 @@ class _HomeButtonState extends State<HomeButton> {
         onHover: (value) => setState(() {
               hovered = value;
             }),
-        onPressed: () {},
+        onPressed: () {
+          if (widget.onPressed != null) {
+            widget.onPressed!.call();
+          }
+        },
         child: Padding(
           padding: widget.padding,
           child: Row(

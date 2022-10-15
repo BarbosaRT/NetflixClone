@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     videoController.init(content.trailer);
     if (mounted) {
       setState(() {
-        videoController.enableFrame(true);
+        videoController.enableFrame(false);
       });
     }
   }
@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           videoController.enableFrame(true);
           videoController.play();
+          videoController.setVolume(0);
         });
       });
     });
@@ -315,13 +316,20 @@ class _HomePageState extends State<HomePage> {
                           child: Padding(
                               padding: const EdgeInsets.only(left: 25),
                               child: Row(children: [
-                                //TODO: Fazer este botao pausar e despausar
                                 HomeButton(
                                   textStyle: blackHeadline6,
                                   overlayColor: Colors.grey.shade300,
                                   buttonColor: Colors.white,
                                   icon: Icons.play_arrow,
                                   text: 'Assistir',
+                                  onPressed: () {
+                                    setState(() {
+                                      videoController.enableFrame(true);
+                                      videoController.isPlaying()
+                                          ? videoController.pause()
+                                          : videoController.play();
+                                    });
+                                  },
                                 ),
                                 const SizedBox(width: 10),
                                 HomeButton(
@@ -432,9 +440,18 @@ class _HomePageState extends State<HomePage> {
                       },
                       onPlay: (bool value) {
                         if (value) {
+                          videoController.isPlaying(
+                            enable: false,
+                          );
                           videoController.pause();
                         } else {
-                          videoController.play();
+                          Future.delayed(const Duration(seconds: 1)).then(
+                            (value) {
+                              if (mounted) {
+                                videoController.play();
+                              }
+                            },
+                          );
                         }
                       },
                     ),
@@ -581,6 +598,10 @@ class _VolumeButtonState extends State<VolumeButton> {
                     setState(() {
                       pressed = !(widget.videoController!.getVolume() == 0);
                       widget.videoController!.setVolume(pressed ? 0 : 1);
+                    });
+                  } else {
+                    setState(() {
+                      pressed = !pressed;
                     });
                   }
                 },

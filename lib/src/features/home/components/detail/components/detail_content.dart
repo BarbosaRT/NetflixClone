@@ -52,7 +52,7 @@ class _DetailContentState extends State<DetailContent> {
             ),
             Container(
               width: 236,
-              height: 140,
+              height: 130,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(5), topRight: Radius.circular(5)),
@@ -82,10 +82,10 @@ class _DetailContentState extends State<DetailContent> {
             // Details
             //
             Positioned(
-              left: 116,
+              left: 96,
               child: Container(
-                  width: 120,
-                  height: 120,
+                  width: 140,
+                  height: 140,
                   alignment: Alignment.topRight,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -102,7 +102,7 @@ class _DetailContentState extends State<DetailContent> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      widget.content.detail.replaceAll('temporada', 'parte'),
+                      widget.content.detail,
                       style: headline2.copyWith(
                           color: Colors.white, fontWeight: FontWeight.w500),
                     ),
@@ -112,7 +112,7 @@ class _DetailContentState extends State<DetailContent> {
             // Info
             //
             Positioned(
-              top: 160,
+              top: 150,
               child: Row(
                 children: [
                   Container(
@@ -154,7 +154,7 @@ class _DetailContentState extends State<DetailContent> {
               ),
             ),
             Positioned(
-              top: 220,
+              top: 210,
               left: 17,
               child: SizedBox(
                 width: 220,
@@ -165,7 +165,7 @@ class _DetailContentState extends State<DetailContent> {
               ),
             ),
             Positioned(
-              top: 100,
+              top: 90,
               left: 70,
               child: ContentButton(
                   onClick: () {

@@ -13,7 +13,8 @@ class PlayerImpl implements VideoInterface {
   late Player _controller;
   double width = 1360;
   double height = 768;
-
+  Duration _position = Duration.zero;
+  Duration _duration = const Duration(seconds: 2);
   List<Media> medias = <Media>[];
   Player get controller => _controller;
 
@@ -27,7 +28,7 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
-    if (_enableFrame && _isPlaying) {
+    if (_enableFrame) {
       return !Platform.isWindows
           ? Video(
               player: _controller,
@@ -48,10 +49,25 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void init(String video,
-      {double w = 1360, double h = 768, void Function()? callback}) {
+      {double w = 1360,
+      double h = 768,
+      void Function()? callback,
+      void Function(Duration position)? positionStream}) {
     _controller.playbackStream.listen((event) {
       _isPlaying = event.isPlaying;
       callback?.call();
+    });
+    _controller.positionStream.listen((event) {
+      if (event.position != null) {
+        _position = event.position!;
+        positionStream?.call(_position);
+        callback?.call();
+      }
+
+      if (event.duration != null) {
+        _duration = event.duration!;
+        callback?.call();
+      }
     });
     load(video, callback: callback);
     path = video;
@@ -88,7 +104,6 @@ class PlayerImpl implements VideoInterface {
   @override
   void stop() {
     _controller.stop();
-    dispose();
   }
 
   @override
@@ -120,5 +135,18 @@ class PlayerImpl implements VideoInterface {
   @override
   void setVolume(double volume) {
     _controller.setVolume(volume);
+  }
+
+  @override
+  Duration getPosition() {
+    if (_position.inSeconds > 0 && _position < getDuration()) {
+      return _position;
+    }
+    return Duration.zero;
+  }
+
+  @override
+  Duration getDuration() {
+    return _duration;
   }
 }

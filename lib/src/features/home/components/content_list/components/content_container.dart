@@ -57,7 +57,7 @@ class _ContentContainerState extends State<ContentContainer> {
   ValueNotifier<bool> added = ValueNotifier(false);
 
   VideoInterface videoController = YoutubeImpl();
-
+  //TODO: SCALING
   GestureDetector? button;
 
   void callback() {
@@ -349,24 +349,28 @@ class _ContentContainerState extends State<ContentContainer> {
                             top: 2,
                             left: 260,
                             child: ContentButton(
-                                rightPadding: widget.anchor ==
-                                        ContentContainerAnchor.right
-                                    ? 40
-                                    : 0,
-                                text: Text(
-                                  'Mais Informações',
-                                  textAlign: TextAlign.center,
-                                  style:
-                                      headline6.copyWith(color: Colors.black),
-                                ),
-                                onClick: () {
-                                  if (widget.content.hasDetailPage ||
-                                      widget.content.episodes != {}) {
-                                    Modular.to.pushNamed('/home/detail',
-                                        arguments: widget.content);
-                                  }
-                                },
-                                icon: button ?? Container()),
+                              rightPadding:
+                                  widget.anchor == ContentContainerAnchor.right
+                                      ? 40
+                                      : 0,
+                              text: Text(
+                                'Mais Informações',
+                                textAlign: TextAlign.center,
+                                style: headline6.copyWith(color: Colors.black),
+                              ),
+                              onClick: () {
+                                if (widget.content.hasDetailPage ||
+                                    widget.content.episodes != {}) {
+                                  Modular.to.pushNamed('/home/detail',
+                                      arguments: widget.content);
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.expand_more_rounded,
+                                size: 25,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ],
                       ),
