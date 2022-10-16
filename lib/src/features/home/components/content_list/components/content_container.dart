@@ -20,6 +20,7 @@ class ContentContainer extends StatefulWidget {
   final ContentModel content;
   final Function(int) onHover;
   final Function(bool value) onPlay;
+  final Function(ContentModel content)? onDetail;
   final Function()? onExit;
   const ContentContainer({
     super.key,
@@ -28,6 +29,7 @@ class ContentContainer extends StatefulWidget {
     required this.onHover,
     required this.id,
     this.onExit,
+    this.onDetail,
     required this.content,
     required this.onPlay,
   });
@@ -57,7 +59,7 @@ class _ContentContainerState extends State<ContentContainer> {
   ValueNotifier<bool> added = ValueNotifier(false);
 
   VideoInterface videoController = YoutubeImpl();
-  //TODO: SCALING
+  //TODO: Fazer os widgets escalarem quando muda a resolução
   GestureDetector? button;
 
   void callback() {
@@ -361,8 +363,9 @@ class _ContentContainerState extends State<ContentContainer> {
                               onClick: () {
                                 if (widget.content.hasDetailPage ||
                                     widget.content.episodes != {}) {
-                                  Modular.to.pushNamed('/home/detail',
-                                      arguments: widget.content);
+                                  if (widget.onDetail != null) {
+                                    widget.onDetail!(widget.content);
+                                  }
                                 }
                               },
                               icon: const Icon(

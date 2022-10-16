@@ -430,6 +430,17 @@ class _HomePageState extends State<HomePage> {
                   Positioned(
                     top: 500,
                     child: ListContents(
+                      onDetail: (ContentModel content) {
+                        Modular.to
+                            .pushNamed('/home/detail', arguments: content);
+                        Future.delayed(const Duration(seconds: 1))
+                            .then((value) {
+                          videoController.isPlaying(
+                            enable: false,
+                          );
+                          videoController.pause();
+                        });
+                      },
                       onSeeMore: (String content) {
                         Modular.to
                             .pushNamed('/home/seeMore', arguments: content);
@@ -440,18 +451,9 @@ class _HomePageState extends State<HomePage> {
                       },
                       onPlay: (bool value) {
                         if (value) {
-                          videoController.isPlaying(
-                            enable: false,
-                          );
                           videoController.pause();
                         } else {
-                          Future.delayed(const Duration(seconds: 1)).then(
-                            (value) {
-                              if (mounted) {
-                                videoController.play();
-                              }
-                            },
-                          );
+                          videoController.play();
                         }
                       },
                     ),

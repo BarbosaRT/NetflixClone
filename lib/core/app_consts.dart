@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:netflix/src/features/splash/components/icon_painter.dart';
 
 class AppConsts {
-  static const String placeholderJson =
-      """{
+  static const String placeholderJson = """{
             "title": "Breaking Bad",
             "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
             "poster": "assets/data/posters/breaking_bad_poster.jpg",
@@ -36,5 +36,19 @@ class AppConsts {
         TextPainter(text: textSpan, textDirection: TextDirection.ltr);
     textPainter.layout();
     return textPainter.size;
+  }
+
+  Widget createIcon(Path path, Color color, Size size) {
+    return CustomPaint(
+      painter: IconPainter(
+        path: path,
+        color: color,
+      ),
+      child: Container(
+        height: size.height,
+        width: size.width,
+        color: Colors.transparent,
+      ),
+    );
   }
 }

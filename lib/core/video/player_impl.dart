@@ -131,11 +131,24 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Duration getPosition() {
-    throw _controller.value.position;
+    if (!_isInitialized) {
+      return const Duration(seconds: 1);
+    }
+    return _controller.value.position;
   }
 
   @override
   Duration getDuration() {
-    throw _controller.value.duration;
+    if (!_isInitialized) {
+      return const Duration(seconds: 2);
+    }
+    return _controller.value.duration;
+  }
+
+  @override
+  void changeSpeed(double speed) {
+    if (_isInitialized) {
+      _controller.setPlaybackSpeed(speed);
+    }
   }
 }

@@ -3,12 +3,16 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
+import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/core/video/get_impl.dart';
 import 'package:netflix/core/video/video_interface.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/home_page.dart';
-import 'package:netflix/src/features/splash/components/icon_painter.dart';
+import 'package:netflix/src/features/player/components/episode_list.dart';
+import 'package:netflix/src/features/player/components/skip_widget.dart';
+import 'package:netflix/src/features/player/components/speed_widget.dart';
+import 'package:netflix/src/features/player/components/translation_widget.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 class PlayerModel {
@@ -29,6 +33,7 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerPageState extends State<PlayerPage> {
   final ValueNotifier<bool> positionChanged = ValueNotifier(false);
+  final ValueNotifier<bool> volumeChanged = ValueNotifier(false);
   Duration _position = const Duration(seconds: 1);
   static const Duration _hover = Duration(milliseconds: 100);
 
@@ -36,10 +41,7 @@ class _PlayerPageState extends State<PlayerPage> {
   final ValueNotifier<bool> _rewindHover = ValueNotifier(false);
   final ValueNotifier<bool> _forwardHover = ValueNotifier(false);
   final ValueNotifier<bool> _volumeHover = ValueNotifier(false);
-  final ValueNotifier<bool> _skipHover = ValueNotifier(false);
-  final ValueNotifier<bool> _listHover = ValueNotifier(false);
   final ValueNotifier<bool> _subtitlesHover = ValueNotifier(false);
-  final ValueNotifier<bool> _speedHover = ValueNotifier(false);
   final ValueNotifier<bool> _fullHover = ValueNotifier(false);
 
   // myGlobals.random.nextInt(69420)
@@ -55,31 +57,19 @@ class _PlayerPageState extends State<PlayerPage> {
     _position = position;
   }
 
-  Widget createIcon(Path path, Color color) {
-    return CustomPaint(
-      painter: IconPainter(
-        path: path,
-        color: color,
-      ),
-      child: Container(
-        height: 40,
-        width: 40,
-        color: Colors.transparent,
-      ),
-    );
-  }
-
+  //TODO: BUG WHEN SEEKING, dont seek try to pause before
+  //TODO: ENABLE FRAME BUGGED
   @override
   void initState() {
     widget.playerModel ??=
         PlayerModel(ContentModel.fromJson(AppConsts.placeholderJson), 0);
+
     VideoInterface videoController =
         GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
-    super.initState();
-
     videoController.init(widget.playerModel!.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
     videoController.defineThumbnail(widget.playerModel!.content.poster);
+    super.initState();
   }
 
   String durationFormatter(Duration duration) {
@@ -139,6 +129,11 @@ class _PlayerPageState extends State<PlayerPage> {
     final episodes = widget.playerModel!.content.episodes!;
     final episodeContent =
         ContentModel.fromMap(episodes[episodes.keys.toList()[episode]]);
+
+    final nextEpisode = episode < episodes.length - 1 ? episode + 1 : 0;
+    final nextContent =
+        ContentModel.fromMap(episodes[episodes.keys.toList()[nextEpisode]]);
+
     if (!initialized) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(const Duration(seconds: 1)).then((value) {
@@ -157,11 +152,11 @@ class _PlayerPageState extends State<PlayerPage> {
       });
     }
     final d = videoController.getDuration();
-    final listIcon = parseSvgPathData(
-        'M8 5H22V13H24V5C24 3.89543 23.1046 3 22 3H8V5ZM18 9H4V7H18C19.1046 7 20 7.89543 20 9V17H18V9ZM0 13C0 11.8954 0.895431 11 2 11H14C15.1046 11 16 11.8954 16 13V19C16 20.1046 15.1046 21 14 21H2C0.895431 21 0 20.1046 0 19V13ZM14 19V13H2V19H14Z');
-    final headline = AppFonts().headline6;
+    final TextStyle headline = AppFonts().headline6;
+
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
+    final redColor = colorController.currentScheme.loginButtonColor;
     final content = widget.playerModel!.content;
 
     return Scaffold(
@@ -211,28 +206,6 @@ class _PlayerPageState extends State<PlayerPage> {
                 ),
               ),
               //
-              // Play
-              //
-              buttonCreator(
-                  listenable: _playHover,
-                  icon: IconButton(
-                    icon: Icon(
-                        videoController.isPlaying()
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 40),
-                    onPressed: () {
-                      setState(() {
-                        videoController.enableFrame(true);
-                        videoController.isPlaying()
-                            ? videoController.pause()
-                            : videoController.play();
-                      });
-                    },
-                  ),
-                  left: 10),
-              //
               // Duration
               //
               Positioned(
@@ -251,34 +224,68 @@ class _PlayerPageState extends State<PlayerPage> {
               // Slider
               //
               Positioned(
-                top: size.height - 100,
-                left: 5,
+                bottom: 71,
+                left: 20,
                 child: SizedBox(
-                  width: size.width - 80,
+                  width: size.width - 110,
                   child: ValueListenableBuilder(
                     valueListenable: positionChanged,
                     builder: (context, bool value, child) {
-                      return Slider(
-                        thumbColor: Colors.red,
-                        activeColor: Colors.red,
-                        inactiveColor: Colors.grey,
-                        value: _position.inSeconds.toDouble(),
-                        onChanged: (newValue) {
-                          setState(() {
+                      Duration duration = videoController.getDuration();
+                      duration = duration.inSeconds.toInt() <= 0
+                          ? const Duration(seconds: 1)
+                          : duration;
+                      return SliderTheme(
+                        data: const SliderThemeData(
+                            overlayShape:
+                                RoundSliderOverlayShape(overlayRadius: 0),
+                            thumbShape:
+                                RoundSliderThumbShape(enabledThumbRadius: 7)),
+                        child: Slider(
+                          thumbColor: redColor,
+                          activeColor: redColor,
+                          inactiveColor: Colors.grey,
+                          value: _position.inSeconds.toDouble(),
+                          onChanged: (newValue) {
+                            videoController.pause();
                             _position = Duration(seconds: newValue.toInt());
                             videoController
                                 .seek(Duration(seconds: newValue.toInt()));
-                          });
-                        },
-                        min: 0,
-                        max: videoController.getDuration().inSeconds.toDouble(),
-                        label: durationFormatter(_position),
-                        divisions:
-                            videoController.getDuration().inSeconds.toInt(),
+                            videoController.play();
+                            positionChanged.value = !positionChanged.value;
+                          },
+                          min: 0,
+                          max: duration.inSeconds.toDouble(),
+                          label: durationFormatter(_position),
+                          divisions: duration.inSeconds.toInt(),
+                        ),
                       );
                     },
                   ),
                 ),
+              ),
+              //
+              // Play
+              //
+              buttonCreator(
+                listenable: _playHover,
+                icon: IconButton(
+                  icon: Icon(
+                      videoController.isPlaying()
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 40),
+                  onPressed: () {
+                    setState(() {
+                      videoController.enableFrame(true);
+                      videoController.isPlaying()
+                          ? videoController.pause()
+                          : videoController.play();
+                    });
+                  },
+                ),
+                left: 10,
               ),
               //
               // Rewind
@@ -299,31 +306,125 @@ class _PlayerPageState extends State<PlayerPage> {
               // Forward
               //
               buttonCreator(
-                  listenable: _forwardHover,
-                  icon: IconButton(
-                    icon: const Icon(Icons.fast_forward,
-                        color: Colors.white, size: 40),
-                    onPressed: () {
-                      final pos = videoController.getPosition().inSeconds;
-                      videoController.seek(
-                          Duration(seconds: pos - 12 < 10 ? pos + 10 : 0));
-                    },
-                  ),
-                  left: 160),
+                listenable: _forwardHover,
+                icon: IconButton(
+                  icon: const Icon(Icons.fast_forward,
+                      color: Colors.white, size: 40),
+                  onPressed: () {
+                    final pos = videoController.getPosition().inSeconds;
+                    videoController
+                        .seek(Duration(seconds: pos - 12 < 10 ? pos + 10 : 0));
+                  },
+                ),
+                left: 160,
+              ),
               //
               // Volume
               //
-              Positioned(
-                top: size.height - 60,
-                left: 240,
-                child: IconButton(
-                  icon: const Icon(Icons.volume_up,
-                      color: Colors.white, size: 40),
-                  onPressed: () {
-                    videoController.setVolume(1);
-                  },
-                ),
-              ),
+              ValueListenableBuilder(
+                  valueListenable: _volumeHover,
+                  builder: (context, bool value, child) {
+                    return Positioned(
+                      bottom: 12,
+                      left: 170,
+                      child: HoverWidget(
+                        useNotification: false,
+                        delayOut: const Duration(milliseconds: 200),
+                        fadeDuration: Duration.zero,
+                        type: HoverType.top,
+                        rightPadding: 40,
+                        maxWidth: 100,
+                        maxHeight: 180,
+                        distance: 140,
+                        onHover: () {
+                          _volumeHover.value = true;
+                        },
+                        onExit: () {
+                          _volumeHover.value = false;
+                        },
+                        icon: ValueListenableBuilder(
+                          valueListenable: volumeChanged,
+                          builder: (context, bv, child) {
+                            final double v = videoController.getVolume();
+                            IconData volumeIcon = Icons.volume_off;
+                            if (v > 0.7) {
+                              volumeIcon = Icons.volume_up;
+                            } else if (v > 0.5) {
+                              volumeIcon = Icons.volume_down;
+                            } else if (v > 0) {
+                              volumeIcon = Icons.volume_mute;
+                            }
+                            return AnimatedScale(
+                              duration: _hover,
+                              scale: value ? 1.4 : 1,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                color: Colors.blue.withOpacity(0.0),
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(volumeIcon,
+                                      color: Colors.white, size: 40),
+                                  onPressed: () {
+                                    if (v > 0) {
+                                      videoController.setVolume(0);
+                                    } else {
+                                      videoController.setVolume(1);
+                                    }
+                                    volumeChanged.value = !volumeChanged.value;
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        child: Container(
+                          width: 35,
+                          height: 120,
+                          alignment: Alignment.topLeft,
+                          color: Colors.amber.withOpacity(0),
+                          child: Container(
+                            width: 30,
+                            height: 120,
+                            color: backgroundColor,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: RotatedBox(
+                                quarterTurns: 3,
+                                child: ValueListenableBuilder(
+                                  valueListenable: volumeChanged,
+                                  builder: (context, value, child) {
+                                    return SliderTheme(
+                                      data: const SliderThemeData(
+                                          overlayShape: RoundSliderOverlayShape(
+                                              overlayRadius: 0),
+                                          thumbShape: RoundSliderThumbShape(
+                                              enabledThumbRadius: 7,
+                                              elevation: 0,
+                                              pressedElevation: 0)),
+                                      child: Slider(
+                                        value: videoController.getVolume(),
+                                        onChanged: (value) {
+                                          videoController.setVolume(value);
+                                          volumeChanged.value =
+                                              !volumeChanged.value;
+                                        },
+                                        min: 0,
+                                        max: 1,
+                                        thumbColor: redColor,
+                                        activeColor: redColor,
+                                        inactiveColor: Colors.grey,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
               //
               // Title
               //
@@ -347,118 +448,42 @@ class _PlayerPageState extends State<PlayerPage> {
               Positioned(
                 top: size.height - 320,
                 right: 70,
-                child: HoverWidget(
-                  useNotification: false,
-                  delayOut: Duration.zero,
-                  fadeDuration: Duration.zero,
-                  type: HoverType.top,
-                  rightPadding: 300,
-                  maxWidth: 550,
-                  maxHeight: 500,
-                  distance: 260,
-                  detectChildArea: false,
-                  icon: GestureDetector(
-                    onTap: () {
-                      videoController.stop();
-                      Modular.to.popAndPushNamed('/video',
-                          arguments: PlayerModel(content,
-                              episode < episodes.length - 1 ? episode + 1 : 0));
-                    },
-                    child: const Icon(Icons.skip_next,
-                        color: Colors.white, size: 50),
-                  ),
-                  child:
-                      Container(width: 550, height: 250, color: Colors.green),
+                child: SkipWidget(
+                  content: content,
+                  videoController: videoController,
+                  hover: _hover,
+                  nextContent: nextContent,
+                  nextEpisode: nextEpisode,
                 ),
               ),
               //
               // List Episodes
               //
               Positioned(
-                top: size.height - 470,
+                top: size.height - 550,
                 right: 0,
-                child: HoverWidget(
-                  useNotification: false,
-                  delayOut: Duration.zero,
-                  fadeDuration: Duration.zero,
-                  type: HoverType.top,
-                  rightPadding: 280,
-                  maxWidth: 600,
-                  maxHeight: 900,
-                  distance: 425,
-                  detectChildArea: false,
-                  icon: GestureDetector(
-                    onTap: () {
-                      videoController.stop();
-                      Modular.to.popAndPushNamed('/video',
-                          arguments: PlayerModel(content,
-                              episode < episodes.length - 1 ? episode + 1 : 0));
-                    },
-                    child: Transform.scale(
-                        scale: 1.5, child: createIcon(listIcon, Colors.white)),
-                  ),
-                  child: Container(width: 600, height: 400, color: Colors.blue),
+                child: EpisodesList(
+                  videoController: videoController,
+                  hover: _hover,
+                  content: content,
+                  episode: episode,
+                  episodeContent: episodeContent,
                 ),
               ),
               //
               // Translations
               //
               Positioned(
-                top: size.height - 559,
-                right: 0,
-                child: HoverWidget(
-                  useNotification: false,
-                  delayOut: Duration.zero,
-                  fadeDuration: Duration.zero,
-                  type: HoverType.top,
-                  rightPadding: 220,
-                  maxWidth: 450,
-                  maxHeight: 600,
-                  distance: 500,
-                  detectChildArea: false,
-                  icon: GestureDetector(
-                    onTap: () {
-                      videoController.stop();
-                      Modular.to.popAndPushNamed('/video',
-                          arguments: PlayerModel(content,
-                              episode < episodes.length - 1 ? episode + 1 : 0));
-                    },
-                    child: const Icon(Icons.subtitles,
-                        color: Colors.white, size: 43),
-                  ),
-                  child:
-                      Container(width: 450, height: 490, color: Colors.purple),
-                ),
-              ),
+                  top: size.height - 569,
+                  right: 0,
+                  child: const TranslationWidget()),
               //
               // Speed
               //
               Positioned(
-                top: size.height - 220,
-                right: 0,
-                child: HoverWidget(
-                  useNotification: false,
-                  delayOut: Duration.zero,
-                  fadeDuration: Duration.zero,
-                  type: HoverType.top,
-                  rightPadding: 150,
-                  maxWidth: 600,
-                  maxHeight: 300,
-                  distance: 160,
-                  detectChildArea: false,
-                  icon: GestureDetector(
-                    onTap: () {
-                      videoController.stop();
-                      Modular.to.popAndPushNamed('/video',
-                          arguments: PlayerModel(content,
-                              episode < episodes.length - 1 ? episode + 1 : 0));
-                    },
-                    child:
-                        const Icon(Icons.speed, color: Colors.white, size: 45),
-                  ),
-                  child: Container(width: 600, height: 150, color: Colors.grey),
-                ),
-              ),
+                  top: size.height - 240,
+                  right: 0,
+                  child: SpeedWidget(videoController: videoController)),
               //
               // FullScreen
               //
@@ -474,5 +499,48 @@ class _PlayerPageState extends State<PlayerPage> {
             ],
           )),
     );
+  }
+}
+
+class PlayerNotifier extends ChangeNotifier {
+  int _selectedButton = 0;
+  double _selectedSpeed = 0;
+  int _selectedCaption = 0;
+  int _selectedTranslation = 0;
+
+  void changeSelected(int selected) {
+    _selectedButton = selected;
+    notifyListeners();
+  }
+
+  int getSelected() {
+    return _selectedButton;
+  }
+
+  void changeSpeed(double selected) {
+    _selectedSpeed = selected;
+    notifyListeners();
+  }
+
+  double getSpeed() {
+    return _selectedSpeed;
+  }
+
+  void changeTranslation(int translation) {
+    _selectedTranslation = translation;
+    notifyListeners();
+  }
+
+  int getTranslation() {
+    return _selectedTranslation;
+  }
+
+  void changeCaption(int caption) {
+    _selectedCaption = caption;
+    notifyListeners();
+  }
+
+  int getCaption() {
+    return _selectedCaption;
   }
 }

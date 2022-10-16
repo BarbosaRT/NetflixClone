@@ -20,12 +20,14 @@ class ContentListWidget extends StatefulWidget {
   final void Function() onHover;
   final void Function(bool value)? onPlay;
   final void Function(String content)? onSeeMore;
+  final void Function(ContentModel content)? onDetail;
   const ContentListWidget({
     super.key,
     required this.index,
     required this.title,
     required this.anchor,
     required this.onHover,
+    this.onDetail,
     this.onSeeMore,
     this.disable = false,
     this.contentCount = 5,
@@ -135,20 +137,24 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     for (int i = 0; i < widget.listCount; i++) {
       widgetList.add(
         ContentInnerWidget(
-          key: UniqueKey(),
-          id: widget.title,
-          index: i,
-          contentCount: widget.contentCount,
-          contents: contents[i],
-          onPlay: (bool value) {
-            if (widget.onPlay != null) {
-              widget.onPlay!(value);
-            }
-          },
-          onHover: (value) {
-            onWidgetChanging(value);
-          },
-        ),
+            key: UniqueKey(),
+            id: widget.title,
+            index: i,
+            contentCount: widget.contentCount,
+            contents: contents[i],
+            onPlay: (bool value) {
+              if (widget.onPlay != null) {
+                widget.onPlay!(value);
+              }
+            },
+            onHover: (value) {
+              onWidgetChanging(value);
+            },
+            onDetail: (ContentModel content) {
+              if (widget.onDetail != null) {
+                widget.onDetail!(content);
+              }
+            }),
       );
     }
   }

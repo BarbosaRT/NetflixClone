@@ -149,4 +149,9 @@ class PlayerImpl implements VideoInterface {
   Duration getDuration() {
     return _duration;
   }
+
+  @override
+  void changeSpeed(double speed) {
+    _controller.setRate(speed);
+  }
 }

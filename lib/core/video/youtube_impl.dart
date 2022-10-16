@@ -105,4 +105,9 @@ class YoutubeImpl implements VideoInterface {
   Duration getDuration() {
     return _controller.metadata.duration;
   }
+
+  @override
+  void changeSpeed(double speed) {
+    _controller.setPlaybackRate(speed);
+  }
 }

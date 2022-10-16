@@ -19,5 +19,6 @@ abstract class VideoInterface {
   bool isPlaying({bool? enable});
   Duration getPosition();
   Duration getDuration();
+  void changeSpeed(double speed);
   Widget frame();
 }

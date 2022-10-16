@@ -9,6 +9,7 @@ class ContentInnerWidget extends StatefulWidget {
   final int index;
   final String id;
   final List<ContentModel> contents;
+  final void Function(ContentModel content)? onDetail;
   final void Function(bool value)? onHover;
   final void Function(bool value) onPlay;
   final int contentCount;
@@ -16,6 +17,7 @@ class ContentInnerWidget extends StatefulWidget {
       {Key? key,
       this.index = 0,
       this.onHover,
+      this.onDetail,
       required this.onPlay,
       this.contentCount = 5,
       required this.id,
@@ -46,17 +48,21 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
           key: UniqueKey(),
           left: spacing * i,
           child: ContentContainer(
-            key: UniqueKey(),
-            onHover: onHover,
-            id: widget.id,
-            onPlay: widget.onPlay,
-            onExit: () {
-              onChangeValue(false);
-            },
-            anchor: getAnchor(i),
-            localIndex: i,
-            content: widget.contents[i],
-          ),
+              key: UniqueKey(),
+              onHover: onHover,
+              id: widget.id,
+              onPlay: widget.onPlay,
+              onExit: () {
+                onChangeValue(false);
+              },
+              anchor: getAnchor(i),
+              localIndex: i,
+              content: widget.contents[i],
+              onDetail: (ContentModel content) {
+                if (widget.onDetail != null) {
+                  widget.onDetail!(content);
+                }
+              }),
         ),
       );
     }

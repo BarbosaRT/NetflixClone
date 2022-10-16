@@ -27,6 +27,7 @@ class AppModule extends Module {
         Bind((i) => LoginController()),
         Bind((i) => ListContentController()),
         Bind((i) => ContentController()),
+        Bind((i) => PlayerNotifier()),
       ];
 
   @override

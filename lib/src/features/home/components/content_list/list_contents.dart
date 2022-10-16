@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
 
 enum ContentListAnchor { top, middle, bottom }
@@ -19,10 +20,14 @@ class ListContentController extends ChangeNotifier {
 }
 
 class ListContents extends StatefulWidget {
+  final void Function(ContentModel content) onDetail;
   final void Function(String content) onSeeMore;
   final void Function(bool value) onPlay;
   const ListContents(
-      {super.key, required this.onSeeMore, required this.onPlay});
+      {super.key,
+      required this.onSeeMore,
+      required this.onPlay,
+      required this.onDetail});
 
   @override
   State<ListContents> createState() => _ListContentsState();
@@ -106,6 +111,7 @@ class _ListContentsState extends State<ListContents> {
             },
             onPlay: widget.onPlay,
             onSeeMore: widget.onSeeMore,
+            onDetail: widget.onDetail,
           ),
         ),
       );
