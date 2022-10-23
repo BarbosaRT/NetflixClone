@@ -17,7 +17,7 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
-    if (_isInitialized && _enableFrame && isPlaying()) {
+    if (_isInitialized && _enableFrame) {
       return AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
         child: VideoPlayer(_controller),
@@ -80,18 +80,39 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
+  Widget slider(EdgeInsets padding) {
+    if (!_isInitialized) {
+      return Container();
+    }
+    return VideoProgressIndicator(
+      _controller,
+      allowScrubbing: true,
+      padding: padding,
+    );
+  }
+
+  @override
   void pause() {
+    if (!_isInitialized) {
+      return;
+    }
     _controller.pause();
   }
 
   @override
   void play() {
+    if (!_isInitialized) {
+      return;
+    }
     _controller.play();
   }
 
   @override
-  void seek(Duration position) {
-    _controller.seekTo(position);
+  void seek(Duration position) async {
+    if (!_isInitialized) {
+      return;
+    }
+    await _controller.seekTo(position);
   }
 
   @override
@@ -101,6 +122,9 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void dispose() {
+    if (!_isInitialized) {
+      return;
+    }
     _controller.dispose();
   }
 
@@ -121,11 +145,17 @@ class PlayerImpl implements VideoInterface {
 
   @override
   double getVolume() {
+    if (!_isInitialized) {
+      return 1.0;
+    }
     return _controller.value.volume;
   }
 
   @override
   void setVolume(double volume) {
+    if (!_isInitialized) {
+      return;
+    }
     _controller.setVolume(volume);
   }
 

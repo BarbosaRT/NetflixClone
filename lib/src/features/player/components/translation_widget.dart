@@ -145,7 +145,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                               ),
                             Container(
                               width: 240,
-                              height: 40,
+                              height: 30,
                               alignment: Alignment.center,
                               child: Container(
                                   width: 150, height: 3, color: Colors.grey),

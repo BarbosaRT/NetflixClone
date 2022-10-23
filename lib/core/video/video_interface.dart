@@ -21,4 +21,5 @@ abstract class VideoInterface {
   Duration getDuration();
   void changeSpeed(double speed);
   Widget frame();
+  Widget slider(EdgeInsets padding);
 }

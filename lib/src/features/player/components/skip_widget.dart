@@ -95,70 +95,80 @@ class _SkipWidgetState extends State<SkipWidget> {
                 onExit: (v) {
                   _contentHover.value = false;
                 },
-                child: Container(
-                  width: 550,
-                  height: 180,
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding: const EdgeInsets.only(left: 24),
-                      child: Row(
-                        children: [
-                          Container(
-                              width: 200,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                        widget.nextContent.poster,
+                child: GestureDetector(
+                  onTap: () {
+                    widget.videoController.stop();
+                    Modular.to.popAndPushNamed('/video',
+                        arguments:
+                            PlayerModel(widget.content, widget.nextEpisode));
+                  },
+                  child: Container(
+                    width: 550,
+                    height: 180,
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                        padding: const EdgeInsets.only(left: 24),
+                        child: Row(
+                          children: [
+                            Container(
+                                width: 200,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                          widget.nextContent.poster,
+                                        ),
+                                        fit: BoxFit.cover)),
+                                child: ValueListenableBuilder(
+                                  valueListenable: _contentHover,
+                                  builder: (context, bool value, child) {
+                                    return AnimatedOpacity(
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      opacity: value ? 1 : 0.5,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(40),
+                                        child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 1),
+                                            ),
+                                            child: const Icon(Icons.play_arrow,
+                                                color: Colors.white, size: 40)),
                                       ),
-                                      fit: BoxFit.fill)),
-                              child: ValueListenableBuilder(
-                                valueListenable: _contentHover,
-                                builder: (context, bool value, child) {
-                                  return AnimatedOpacity(
-                                    duration: const Duration(milliseconds: 200),
-                                    opacity: value ? 1 : 0.5,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(40),
-                                      child: Container(
-                                          width: 40,
-                                          height: 40,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.white, width: 1),
-                                          ),
-                                          child: const Icon(Icons.play_arrow,
-                                              color: Colors.white, size: 40)),
-                                    ),
-                                  );
-                                },
-                              )),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 28),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 270,
-                                  child: Text(
-                                    '${widget.nextEpisode + 1}   ${widget.nextContent.title}',
-                                    style: headline,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 270,
-                                  child: Text(widget.nextContent.overview,
-                                      style: headline3),
-                                )
-                              ],
+                                    );
+                                  },
+                                )),
+                            const SizedBox(
+                              width: 20,
                             ),
-                          )
-                        ],
-                      )),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 28),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 270,
+                                    child: Text(
+                                      '${widget.nextEpisode + 1}   ${widget.nextContent.title}',
+                                      style: headline,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 270,
+                                    child: Text(widget.nextContent.overview,
+                                        style: headline3),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
                 ),
               ),
             ],

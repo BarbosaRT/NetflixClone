@@ -154,4 +154,9 @@ class PlayerImpl implements VideoInterface {
   void changeSpeed(double speed) {
     _controller.setRate(speed);
   }
+
+  @override
+  Widget slider(EdgeInsets padding) {
+    throw UnimplementedError();
+  }
 }

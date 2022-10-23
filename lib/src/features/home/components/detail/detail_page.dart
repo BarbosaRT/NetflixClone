@@ -42,6 +42,8 @@ class _DetailPageState extends State<DetailPage> {
   final scrollController = ScrollController(initialScrollOffset: 0);
   static const transitionDuration = Duration(milliseconds: 300);
 
+  static const trailerDelay = Duration(seconds: 10);
+
   final ValueNotifier<bool> _active = ValueNotifier(false);
   final ValueNotifier<bool> _hover = ValueNotifier(false);
   final ValueNotifier<bool> _expanded = ValueNotifier(false);
@@ -93,12 +95,14 @@ class _DetailPageState extends State<DetailPage> {
       },
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 10)).then((value) {
-        setState(() {
-          videoController.enableFrame(true);
-          videoController.play();
-          videoController.setVolume(0);
-        });
+      Future.delayed(trailerDelay).then((value) {
+        if (mounted) {
+          setState(() {
+            videoController.enableFrame(true);
+            videoController.play();
+            videoController.setVolume(0);
+          });
+        }
       });
     });
   }
@@ -217,7 +221,7 @@ class _DetailPageState extends State<DetailPage> {
                             top: 70,
                             left: 250,
                             child: SizedBox(
-                              width: 860,
+                              width: width - 500,
                               height: 500,
                               child: videoController.frame(),
                             ),
@@ -230,7 +234,7 @@ class _DetailPageState extends State<DetailPage> {
                               left: 250,
                               child: Container(
                                 height: 400,
-                                width: 860,
+                                width: width - 500,
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                   begin: Alignment.topCenter,
@@ -265,11 +269,13 @@ class _DetailPageState extends State<DetailPage> {
                               icon: Icons.play_arrow,
                               text: 'Assistir',
                               onPressed: () {
+                                videoController.setVolume(0);
+                                Future.delayed(trailerDelay).then((value) {
+                                  videoController.setVolume(0);
+                                  videoController.stop();
+                                });
                                 Modular.to.pushNamed('/video',
                                     arguments: PlayerModel(widget.content!, 0));
-                                videoController.isPlaying(enable: false);
-                                videoController.pause();
-                                videoController.stop();
                               },
                             ),
                           ),
@@ -512,7 +518,7 @@ class _DetailPageState extends State<DetailPage> {
                             left: 300,
                             child: SizedBox(
                               height: 100,
-                              width: 750,
+                              width: width - 570,
                               child: Row(
                                 children: [
                                   Text(
@@ -530,19 +536,22 @@ class _DetailPageState extends State<DetailPage> {
                           //
                           Positioned(
                             top: 835,
-                            left: 300,
+                            left: 280 * width / 1360,
                             child: Column(
                               children: [
                                 for (int e = 0;
                                     e < widget.content!.episodes!.length;
                                     e++)
-                                  DetailContainer(
-                                    key: UniqueKey(),
-                                    content: ContentModel.fromMap(
-                                        widget.content!.episodes![widget
-                                            .content!.episodes!.keys
-                                            .toList()[e]]),
-                                    index: e,
+                                  Transform.scale(
+                                    scale: width / 1360,
+                                    child: DetailContainer(
+                                      key: UniqueKey(),
+                                      content: ContentModel.fromMap(
+                                          widget.content!.episodes![widget
+                                              .content!.episodes!.keys
+                                              .toList()[e]]),
+                                      index: e,
+                                    ),
                                   ),
                               ],
                             ),
@@ -553,7 +562,7 @@ class _DetailPageState extends State<DetailPage> {
                           Positioned(
                               top: 835 +
                                   150.0 * widget.content!.episodes!.length,
-                              left: 300,
+                              left: 300 * width / 1360,
                               child: ValueListenableBuilder(
                                   valueListenable: _expanded,
                                   builder: (context, bool value, child) {
@@ -583,9 +592,14 @@ class _DetailPageState extends State<DetailPage> {
                                                       Positioned(
                                                           left:
                                                               c * 236 + c * 20,
-                                                          child: DetailContent(
-                                                            content: contents[
-                                                                3 * o + c],
+                                                          child:
+                                                              Transform.scale(
+                                                            scale: width / 1360,
+                                                            child:
+                                                                DetailContent(
+                                                              content: contents[
+                                                                  3 * o + c],
+                                                            ),
                                                           )),
                                                   ].reversed.toList(),
                                                 ),
@@ -611,11 +625,11 @@ class _DetailPageState extends State<DetailPage> {
                                     // Background
                                     //
                                     Container(
-                                        width: 800,
+                                        width: width - 500,
                                         height: 1000,
                                         color: Colors.transparent),
                                     Container(
-                                      width: 800,
+                                      width: width - 500,
                                       height: 50,
                                       decoration: BoxDecoration(
                                         color: backgroundColor,
@@ -631,15 +645,15 @@ class _DetailPageState extends State<DetailPage> {
                                     Positioned(
                                       top: 50,
                                       child: Container(
-                                          width: 800,
+                                          width: width - 500,
                                           height: 1000,
                                           color: backgroundColor),
                                     ),
                                     Positioned(
                                         top: 50,
-                                        left: 20,
+                                        left: 25 * width / 1360,
                                         child: Container(
-                                            width: 750,
+                                            width: width - 550,
                                             height: 2,
                                             color: Colors.grey.shade800)),
                                     //
@@ -649,7 +663,7 @@ class _DetailPageState extends State<DetailPage> {
                                       top: 30,
                                       left: 20,
                                       child: Container(
-                                        width: 750,
+                                        width: width - 500,
                                         height: 40,
                                         alignment: Alignment.topCenter,
                                         child: HoverWidget(

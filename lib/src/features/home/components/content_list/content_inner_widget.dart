@@ -34,19 +34,19 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   int current = 0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
-
+  int width = 1280;
   @override
   void initState() {
-    widgetBuilder();
     super.initState();
   }
 
   void widgetBuilder() {
+    widgets = [];
     for (int i = widget.contentCount - 1; i >= 0; i--) {
       widgets.add(
         Positioned(
           key: UniqueKey(),
-          left: spacing * i,
+          left: (spacing * width ~/ 1360) * i * 1.0,
           child: ContentContainer(
               key: UniqueKey(),
               onHover: onHover,
@@ -137,8 +137,13 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width.toInt();
+    if (width != screenWidth) {
+      width = screenWidth;
+      widgetBuilder();
+    }
     return SizedBox(
-      width: spacing * widget.contentCount,
+      width: (spacing * screenWidth / 1360) * widget.contentCount,
       height: 500,
       child: Stack(
         children: widgets,

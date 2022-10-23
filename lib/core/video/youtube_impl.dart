@@ -110,4 +110,9 @@ class YoutubeImpl implements VideoInterface {
   void changeSpeed(double speed) {
     _controller.setPlaybackRate(speed);
   }
+
+  @override
+  Widget slider(EdgeInsets padding) {
+    throw UnimplementedError();
+  }
 }

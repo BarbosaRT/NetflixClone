@@ -352,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                         //
                         Positioned(
                           top: 460,
-                          left: 1200,
+                          left: width - 160,
                           child: Row(
                             children: [
                               ValueListenableBuilder(

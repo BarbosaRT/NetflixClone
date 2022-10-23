@@ -142,7 +142,7 @@ class _ContentContainerState extends State<ContentContainer> {
   Widget build(BuildContext context) {
     final headline = AppFonts().headline7;
     final headline6 = AppFonts().headline6;
-
+    final screenWidth = MediaQuery.of(context).size.width;
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
 
@@ -190,320 +190,334 @@ class _ContentContainerState extends State<ContentContainer> {
         bottomLeft: Radius.circular(hoverBorder),
       ),
     );
-
-    return AnimatedContainer(
-      curve: curve,
-      duration: duration,
-      //
-      height: hover ? height * factor + infoHeight : height * factor,
-      //
-      width: hover ? realWidth * factor : width,
-      //
-      transform: Matrix4.translation(
-        vector.Vector3(
-            hover
-                ? getValueFromAnchor(-wDifference,
-                    -padding / 2 - wDifference + 5, -padding - wDifference + 15)
-                : 0,
-            hover ? 0 : 120,
-            0),
-      ),
-      child: Stack(
-        alignment: AlignmentDirectional.topCenter,
-        children: [
-          //
-          // Content Container
-          //
-          AnimatedContainer(
-            curve: curve,
-            duration: duration,
-            width: hover ? width * factor : width,
-            height: hover ? height * factor : height,
-            decoration: hover ? movieDecoraion : decoration,
-            child: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  AnimatedContainer(
-                    curve: curve,
-                    duration: duration,
-                    height: hover ? height * factor : height,
-                    width: hover ? width * factor : width,
-                    child: videoController.frame(),
-                  ),
-                  videoController.isPlaying() && hover
-                      ? Container(
-                          height: height * factor - 10,
-                          width: width * factor - 8,
-                          alignment: Alignment.bottomRight,
-                          child: VolumeButton(
-                            scale: 8 / 7,
-                            videoController: videoController,
-                            iconOn: Icons.volume_up,
-                            iconOff: Icons.volume_off,
-                          ),
-                        )
-                      : Container()
-                ],
+    final double scale = screenWidth / 1360;
+    print(scale);
+    return Transform.scale(
+      scale: scale,
+      child: AnimatedContainer(
+        curve: curve,
+        duration: duration,
+        //
+        height: hover ? height * factor + infoHeight : height * factor,
+        //
+        width: hover ? realWidth * factor : width,
+        //
+        transform: Matrix4.translation(
+          vector.Vector3(
+              hover
+                  ? getValueFromAnchor(
+                      -wDifference,
+                      -padding / 2 - wDifference + 5,
+                      -padding - wDifference + 15)
+                  : 0,
+              hover ? 0 : 120,
+              0),
+        ),
+        child: Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            //
+            // Content Container
+            //
+            AnimatedContainer(
+              curve: curve,
+              duration: duration,
+              width: hover
+                  ? width * factor / scale + 22 * (scale.toInt() - 1)
+                  : width / scale,
+              height: hover ? height * factor / scale : height / scale,
+              decoration: hover ? movieDecoraion : decoration,
+              child: SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    AnimatedContainer(
+                      curve: curve,
+                      duration: duration,
+                      height: hover ? height * factor / scale : height / scale,
+                      width: hover
+                          ? width * factor / scale + 22 * (scale.toInt() - 1)
+                          : width / scale,
+                      child: videoController.frame(),
+                    ),
+                    videoController.isPlaying() && hover
+                        ? Container(
+                            height: height * factor / scale -
+                                10 +
+                                10 * (scale.toInt() - 1),
+                            width: width * factor / scale - 8,
+                            alignment: Alignment.bottomRight,
+                            child: VolumeButton(
+                              scale: 8 / 7,
+                              videoController: videoController,
+                              iconOn: Icons.volume_up,
+                              iconOff: Icons.volume_off,
+                            ),
+                          )
+                        : Container()
+                  ],
+                ),
               ),
             ),
-          ),
-          //
-          // Info Container
-          //
-          AnimatedPositioned(
-            curve: curve,
-            duration: duration,
-            top: hover ? height * factor - 50 : height,
-            child: AnimatedOpacity(
-              duration: duration,
+            //
+            // Info Container
+            //
+            AnimatedPositioned(
               curve: curve,
-              opacity: hover ? 1 : 0,
-              child: Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  AnimatedContainer(
-                    duration: duration,
-                    margin: EdgeInsets.only(top: hover ? 50 : 0),
-                    width: hover ? width * factor : width,
-                    height: infoHeight,
-                    decoration: infoContainer
-                        .copyWith(color: backgroundColor, boxShadow: [
-                      BoxShadow(
-                        color: backgroundColor,
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                      )
-                    ]),
-                  ),
-                  //
-                  // Icons
-                  //
-                  Positioned(
-                    child: AnimatedContainer(
+              duration: duration,
+              top: hover ? height * factor - 50 : height,
+              child: AnimatedOpacity(
+                duration: duration,
+                curve: curve,
+                opacity: hover ? 1 : 0,
+                child: Stack(
+                  alignment: AlignmentDirectional.topCenter,
+                  children: [
+                    AnimatedContainer(
                       duration: duration,
-                      curve: curve,
-                      margin: EdgeInsets.only(
-                          right: hover ? 0 : width - wDifference * 2),
-                      width: hover ? realWidth * factor : realWidth,
-                      height: 200,
-                      child: Stack(
-                        children: [
-                          //
-                          // Play
-                          //
-                          const Positioned(
-                            left: 15 + wDifference,
-                            top: 70,
-                            child: Icon(
-                              Icons.play_circle,
-                              size: 45,
-                              color: Colors.white,
-                            ),
-                          ),
-                          //
-                          // Add to list
-                          //
-                          Positioned(
-                            top: 2,
-                            left: 17,
-                            child: ContentButton(
-                                onClick: () {
-                                  added.value = !added.value;
-                                },
-                                text: ValueListenableBuilder(
-                                  valueListenable: added,
-                                  builder: (BuildContext context, bool value,
-                                      child) {
-                                    return Text(
-                                      value
-                                          ? 'Remover da Minha lista'
-                                          : 'Adicionar à Minha lista',
-                                      textAlign: TextAlign.center,
-                                      style: headline6.copyWith(
-                                          color: Colors.black),
-                                    );
-                                  },
-                                ),
-                                icon: ValueListenableBuilder(
-                                  valueListenable: added,
-                                  builder: (BuildContext context, bool value,
-                                      child) {
-                                    return Icon(
-                                      value ? Icons.done : Icons.add,
-                                      size: 25,
-                                      color: Colors.white,
-                                    );
-                                  },
-                                )),
-                          ),
-                          //
-                          // Like
-                          //
-                          const Positioned(
-                            top: 2,
-                            left: 18,
-                            child: LikeButton(),
-                          ),
-                          //
-                          // Mais Informações
-                          //
-                          Positioned(
-                            top: 2,
-                            left: 260,
-                            child: ContentButton(
-                              rightPadding:
-                                  widget.anchor == ContentContainerAnchor.right
-                                      ? 40
-                                      : 0,
-                              text: Text(
-                                'Mais Informações',
-                                textAlign: TextAlign.center,
-                                style: headline6.copyWith(color: Colors.black),
-                              ),
-                              onClick: () {
-                                if (widget.content.hasDetailPage ||
-                                    widget.content.episodes != {}) {
-                                  if (widget.onDetail != null) {
-                                    widget.onDetail!(widget.content);
-                                  }
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.expand_more_rounded,
-                                size: 25,
+                      margin: EdgeInsets.only(top: hover ? 50 : 0),
+                      width: hover ? width * factor : width,
+                      height: infoHeight,
+                      decoration: infoContainer
+                          .copyWith(color: backgroundColor, boxShadow: [
+                        BoxShadow(
+                          color: backgroundColor,
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                        )
+                      ]),
+                    ),
+                    //
+                    // Icons
+                    //
+                    Positioned(
+                      child: AnimatedContainer(
+                        duration: duration,
+                        curve: curve,
+                        margin: EdgeInsets.only(
+                            right: hover ? 0 : width - wDifference * 2),
+                        width: hover ? realWidth * factor : realWidth,
+                        height: 200,
+                        child: Stack(
+                          children: [
+                            //
+                            // Play
+                            //
+                            const Positioned(
+                              left: 15 + wDifference,
+                              top: 70,
+                              child: Icon(
+                                Icons.play_circle,
+                                size: 45,
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  //
-                  // Infos
-                  //
-                  Positioned(
-                    left: 15 + wDifference,
-                    top: 130,
-                    child: SizedBox(
-                      width: width * factor,
-                      child: Row(
-                        children: [
-                          Text(
-                            '${widget.content.rating}% relevante',
-                            style: headline.copyWith(color: Colors.green),
-                          ),
-                          const SizedBox(width: 8),
-                          //
-                          Image.asset(
-                            AppConsts.classifications[widget.content.age] ??
-                                'assets/images/classifications/L.png',
-                            width: 30,
-                            height: 30,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            widget.content.detail,
-                            style: headline,
-                          ),
-                          const SizedBox(width: 5),
-                          Container(
-                            height: 25,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 1,
+                            //
+                            // Add to list
+                            //
+                            Positioned(
+                              top: 2,
+                              left: 17,
+                              child: ContentButton(
+                                  onClick: () {
+                                    added.value = !added.value;
+                                  },
+                                  text: ValueListenableBuilder(
+                                    valueListenable: added,
+                                    builder: (BuildContext context, bool value,
+                                        child) {
+                                      return Text(
+                                        value
+                                            ? 'Remover da Minha lista'
+                                            : 'Adicionar à Minha lista',
+                                        textAlign: TextAlign.center,
+                                        style: headline6.copyWith(
+                                            color: Colors.black),
+                                      );
+                                    },
+                                  ),
+                                  icon: ValueListenableBuilder(
+                                    valueListenable: added,
+                                    builder: (BuildContext context, bool value,
+                                        child) {
+                                      return Icon(
+                                        value ? Icons.done : Icons.add,
+                                        size: 25,
+                                        color: Colors.white,
+                                      );
+                                    },
+                                  )),
+                            ),
+                            //
+                            // Like
+                            //
+                            const Positioned(
+                              top: 2,
+                              left: 18,
+                              child: LikeButton(),
+                            ),
+                            //
+                            // Mais Informações
+                            //
+                            Positioned(
+                              top: 2,
+                              left: 260,
+                              child: ContentButton(
+                                rightPadding: widget.anchor ==
+                                        ContentContainerAnchor.right
+                                    ? 40
+                                    : 0,
+                                text: Text(
+                                  'Mais Informações',
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      headline6.copyWith(color: Colors.black),
                                 ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(5)),
-                                color: Colors.transparent),
-                            child: Center(
-                              child: Text(
-                                'HD',
-                                style: headline.copyWith(fontSize: 10),
+                                onClick: () {
+                                  if (widget.content.hasDetailPage ||
+                                      widget.content.episodes != {}) {
+                                    if (widget.onDetail != null) {
+                                      widget.onDetail!(widget.content);
+                                    }
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.expand_more_rounded,
+                                  size: 25,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  //
-                  // Tags
-                  //
-                  Positioned(
-                    left: 15 + wDifference,
-                    top: 170,
-                    child: SizedBox(
-                      width: width * factor,
-                      child: Row(
-                        children: [
-                          for (int i = 0;
-                              i <= widget.content.tags.length - 2;
-                              i++)
-                            Row(
-                              children: [
-                                Text(
-                                  widget.content.tags[i],
-                                  style: headline,
-                                ),
-                                const SizedBox(width: 5),
-                                const Icon(
-                                  Icons.circle,
-                                  size: 5,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(width: 5),
-                              ],
+                    //
+                    // Infos
+                    //
+                    Positioned(
+                      left: 15 + wDifference,
+                      top: 130,
+                      child: SizedBox(
+                        width: width * factor,
+                        child: Row(
+                          children: [
+                            Text(
+                              '${widget.content.rating}% relevante',
+                              style: headline.copyWith(color: Colors.green),
                             ),
-                          //
-                          //
-                          Text(
-                            widget.content.tags[widget.content.tags.length - 1],
-                            style: headline,
-                          ),
-                          const SizedBox(width: 5),
-                        ],
+                            const SizedBox(width: 8),
+                            //
+                            Image.asset(
+                              AppConsts.classifications[widget.content.age] ??
+                                  'assets/images/classifications/L.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              widget.content.detail,
+                              style: headline,
+                            ),
+                            const SizedBox(width: 5),
+                            Container(
+                              height: 25,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 1,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5)),
+                                  color: Colors.transparent),
+                              child: Center(
+                                child: Text(
+                                  'HD',
+                                  style: headline.copyWith(fontSize: 10),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    //
+                    // Tags
+                    //
+                    Positioned(
+                      left: 15 + wDifference,
+                      top: 170,
+                      child: SizedBox(
+                        width: width * factor,
+                        child: Row(
+                          children: [
+                            for (int i = 0;
+                                i <= widget.content.tags.length - 2;
+                                i++)
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.content.tags[i],
+                                    style: headline,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Icon(
+                                    Icons.circle,
+                                    size: 5,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 5),
+                                ],
+                              ),
+                            //
+                            //
+                            Text(
+                              widget
+                                  .content.tags[widget.content.tags.length - 1],
+                              style: headline,
+                            ),
+                            const SizedBox(width: 5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          //
-          // Mouse Region
-          //
-          AnimatedPositioned(
-            duration: duration,
-            curve: curve,
-            left: hover ? wDifference : 0,
-            child: MouseRegion(
-              opaque: false,
-              onEnter: (event) {
-                onHover();
-              },
-              onHover: (v) {
-                onHover();
-              },
-              //
-              //
-              onExit: (event) {
-                onExit();
-              },
-              child: Container(
-                  //
-                  height: hover
-                      ? height * factor + infoHeight
-                      : height * factor - 60,
-                  //
-                  width: hover ? width * factor : width,
-                  //
-                  color: Colors.yellow.withOpacity(0.0)),
+            //
+            // Mouse Region
+            //
+            AnimatedPositioned(
+              duration: duration,
+              curve: curve,
+              left: hover ? wDifference : 0,
+              child: MouseRegion(
+                opaque: false,
+                onEnter: (event) {
+                  onHover();
+                },
+                onHover: (v) {
+                  onHover();
+                },
+                //
+                //
+                onExit: (event) {
+                  onExit();
+                },
+                child: Container(
+                    //
+                    height: hover
+                        ? height * factor + infoHeight
+                        : height * factor - 60,
+                    //
+                    width: hover ? width * factor : width,
+                    //
+                    color: Colors.yellow.withOpacity(0.0)),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

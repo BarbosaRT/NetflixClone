@@ -20,6 +20,13 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  static const stroke = 17;
+  static const radius = 180.0;
+  static const ypos = 90;
+
+  final splashIcon = parseSvgPathData(
+      'M 0 $ypos A 1 1 90 0 0 $stroke $ypos A 1 1 90 0 1 $radius $ypos A 1 1 90 0 0 0 $ypos');
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 2),
     vsync: this,
@@ -96,13 +103,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     final profileController = context.watch<ProfileController>();
     final colorController = context.watch<ColorController>();
-
-    const stroke = 17;
-    const radius = 180.0;
-    const ypos = 90;
-
-    final splashIcon = parseSvgPathData(
-        'M 0 $ypos A 1 1 90 0 0 $stroke $ypos A 1 1 90 0 1 $radius $ypos A 1 1 90 0 0 0 $ypos');
 
     final color = colorController.currentScheme.loginButtonColor;
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
