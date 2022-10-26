@@ -191,7 +191,7 @@ class _ContentContainerState extends State<ContentContainer> {
       ),
     );
     final double scale = screenWidth / 1360;
-    print(scale);
+
     return Transform.scale(
       scale: scale,
       child: AnimatedContainer(

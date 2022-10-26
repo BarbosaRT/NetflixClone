@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -31,6 +32,8 @@ class MyGlobals {
   GlobalKey get scaffoldKey => _scaffoldKey;
 }
 
+enum HomePages { inicio, series, filmes }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -42,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   static const double height = 8000.0;
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
+  static const delay = Duration(seconds: 10);
   static const double buttonWidth = 215.0;
 
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
@@ -49,6 +53,8 @@ class _HomePageState extends State<HomePage> {
   final scrollController = ScrollController(initialScrollOffset: 0);
 
   final ValueNotifier<bool> _alreadyChanged = ValueNotifier(false);
+  bool played = false;
+  Timer playTimer = Timer(delay, () {});
 
   void callback() {
     if (mounted) {
@@ -67,6 +73,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void play() {
+    if (played) {
+      return;
+    }
+    played = true;
+    if (mounted) {
+      setState(() {
+        videoController.enableFrame(true);
+        videoController.play();
+        videoController.setVolume(0);
+      });
+    }
+  }
+
   @override
   void initState() {
     videoController.init(content.trailer, callback: callback);
@@ -74,6 +94,8 @@ class _HomePageState extends State<HomePage> {
 
     content.overview =
         "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia.";
+
+    playTimer = Timer(delay, play);
 
     super.initState();
 
@@ -93,15 +115,6 @@ class _HomePageState extends State<HomePage> {
       if (!contentController.loading) {
         init(contentController);
       }
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 10)).then((value) {
-        setState(() {
-          videoController.enableFrame(true);
-          videoController.play();
-          videoController.setVolume(0);
-        });
-      });
     });
   }
 
@@ -435,6 +448,7 @@ class _HomePageState extends State<HomePage> {
                             .pushNamed('/home/detail', arguments: content);
                         Future.delayed(const Duration(seconds: 1))
                             .then((value) {
+                          playTimer.cancel();
                           videoController.isPlaying(
                             enable: false,
                           );
@@ -442,6 +456,7 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                       onSeeMore: (String content) {
+                        playTimer.cancel();
                         Modular.to
                             .pushNamed('/home/seeMore', arguments: content);
                         videoController.isPlaying(
@@ -450,6 +465,9 @@ class _HomePageState extends State<HomePage> {
                         videoController.pause();
                       },
                       onPlay: (bool value) {
+                        if (!played) {
+                          playTimer = Timer(delay, play);
+                        }
                         if (value) {
                           videoController.pause();
                         } else {

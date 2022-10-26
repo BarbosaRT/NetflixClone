@@ -4,13 +4,15 @@ class TopButton extends StatefulWidget {
   final TextStyle selectedStyle;
   final TextStyle unselectedStyle;
   final String name;
+  final void Function()? onClick;
   final double height;
   const TopButton(
       {super.key,
       this.height = 50,
       required this.selectedStyle,
       required this.unselectedStyle,
-      required this.name});
+      required this.name,
+      this.onClick});
 
   @override
   State<TopButton> createState() => _TopButtonState();
@@ -32,7 +34,11 @@ class _TopButtonState extends State<TopButton> {
           selected = v;
         });
       },
-      onPressed: () {},
+      onPressed: () {
+        if (widget.onClick != null) {
+          widget.onClick!();
+        }
+      },
       child: SizedBox(
         height: widget.height,
         child: Column(

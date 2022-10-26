@@ -49,14 +49,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
     final homeAppBarController = context.watch<HomeAppBarController>();
     start(context);
 
-    final buttonLabels = [
-      'Inicio',
-      'Séries',
-      'Filmes',
-      'Bombando',
-      'Minha lista',
-      'Navegar Por Idiomas'
-    ];
+    final buttonLabels = ['Bombando', 'Minha lista', 'Navegar Por Idiomas'];
 
     final labelLarge = AppFonts().labelLarge;
 
@@ -82,6 +75,24 @@ class _HomeAppBarState extends State<HomeAppBar> {
           //
           // Central Buttons
           //
+          TopButton(
+            selectedStyle: selectedlabelLarge,
+            unselectedStyle: labelLarge,
+            name: 'Inicio',
+            onClick: () {},
+          ),
+          TopButton(
+            selectedStyle: selectedlabelLarge,
+            unselectedStyle: labelLarge,
+            name: 'Séries',
+            onClick: () {},
+          ),
+          TopButton(
+            selectedStyle: selectedlabelLarge,
+            unselectedStyle: labelLarge,
+            name: 'Filmes',
+            onClick: () {},
+          ),
           for (var item in buttonLabels)
             TopButton(
                 selectedStyle: selectedlabelLarge,
@@ -169,6 +180,51 @@ class NotificationBar extends StatelessWidget {
   static const double containerHeight = 330;
   static final _scrollController = ScrollController();
 
+  static final notifications = [
+    {
+      'title': 'Novidade',
+      'subtitle': 'Escola do Bem e do Mal',
+      'detail': 'há 2 dias',
+      'image': 'assets/images/notifications/escola_poster.jpg'
+    },
+    {
+      'title': 'Assista Agora',
+      'subtitle': 'El Camino',
+      'detail': 'há 4 dias',
+      'image': 'assets/images/notifications/el_camino_poster.jpg'
+    },
+    {
+      'title': 'Novidade',
+      'subtitle': 'Cuphead Show',
+      'detail': 'há 1 semana',
+      'image': 'assets/images/notifications/cuphead_poster.jpg'
+    },
+    {
+      'title': 'Assista Agora',
+      'subtitle': 'Temporada 3',
+      'detail': 'há 2 semanas',
+      'image': 'assets/images/notifications/sintonia_poster.jpg'
+    },
+    {
+      'title': 'Novidade',
+      'subtitle': 'Justiceiras',
+      'detail': 'há 2 semanas',
+      'image': 'assets/images/notifications/justiceiras_poster.jpg'
+    },
+    {
+      'title': 'Assista Agora',
+      'subtitle': 'Temporada 5',
+      'detail': 'há 1 mês',
+      'image': 'assets/images/notifications/cobra_kai_poster.jpg'
+    },
+    {
+      'title': 'Novidade',
+      'subtitle': 'The Witcher',
+      'detail': 'há 2 meses',
+      'image': 'assets/images/notifications/the_witcher_poster.jpg'
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return HoverWidget(
@@ -211,19 +267,23 @@ class NotificationBar extends StatelessWidget {
                       child: ListView(
                         controller: _scrollController,
                         children: [
-                          for (int i = 0; i < 15; i++)
+                          for (int i = 0; i < notifications.length; i++)
                             NotificationContainer(
-                              title: 'Novidade',
-                              subtitle: 'Como Seria se...?',
+                              title: notifications[i]['title'] ?? 'Novidade',
+                              subtitle: notifications[i]['subtitle'] ??
+                                  'Escola do Bem e do Mal',
+                              detail: notifications[i]['detail'] ?? 'há 2 dias',
                               icon: Container(
                                 height: 120,
                                 width: 100,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
-                                  ),
-                                  color: Colors.purple,
-                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                    image: DecorationImage(
+                                        image: AssetImage(notifications[i]
+                                                ['image'] ??
+                                            'assets/images/notifications/escola_poster.jpg'))),
                               ),
                             )
                         ],
@@ -241,12 +301,14 @@ class NotificationBar extends StatelessWidget {
 class NotificationContainer extends StatefulWidget {
   final String title;
   final String subtitle;
+  final String detail;
   final Widget icon;
   const NotificationContainer(
       {super.key,
       required this.title,
       required this.subtitle,
-      required this.icon});
+      required this.icon,
+      required this.detail});
 
   @override
   State<NotificationContainer> createState() => _NotificationContainerState();
@@ -269,11 +331,8 @@ class _NotificationContainerState extends State<NotificationContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-      fontSize: 18,
-      color: Colors.white,
-      fontWeight: _hover ? FontWeight.bold : FontWeight.normal,
-    );
+    final textStyle = AppFonts().headline7;
+    final textStyle2 = AppFonts().labelIntermedium;
 
     return MouseRegion(
       onExit: (v) {
@@ -300,10 +359,10 @@ class _NotificationContainerState extends State<NotificationContainer> {
                     child: widget.icon,
                   ),
                   const SizedBox(
-                    width: 20,
+                    width: 10,
                   ),
                   SizedBox(
-                    width: 160,
+                    width: 180,
                     height: 100,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,12 +378,9 @@ class _NotificationContainerState extends State<NotificationContainer> {
                         const SizedBox(
                           height: 10,
                         ),
-                        const Text(
-                          'há 2 dias',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
+                        Text(
+                          widget.detail,
+                          style: textStyle2,
                         ),
                       ],
                     ),
@@ -334,7 +390,7 @@ class _NotificationContainerState extends State<NotificationContainer> {
             ),
           ),
           const SizedBox(
-            width: 12,
+            width: 10,
           ),
         ],
       ),

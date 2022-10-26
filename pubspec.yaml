@@ -48,6 +48,7 @@ flutter:
       - assets/images/
       - assets/images/profiles/
       - assets/images/classifications/
+      - assets/images/notifications/
       - assets/data/
       - assets/data/backdrops/
       - assets/data/logos/
