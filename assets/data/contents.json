@@ -87,22 +87,6 @@
                 }
             }
         },
-        "El Camino": {
-            "title": "El Camino",
-            "backdrop": "assets/data/backdrops/el_camino_backdrop.jpg",
-            "poster": "assets/data/posters/el_camino_poster.jpg",
-            "rating": 92,
-            "trailer": "assets/data/trailers/el_camino_trailer.mp4",
-            "tags": [
-                "Crimes",
-                "Ação",
-                "Suspense"
-            ],
-            "age": 16,
-            "detail": "2h 2min",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
-        },
         "La Casa De Papel": {
             "title": "La Casa De Papel",
             "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
@@ -118,22 +102,6 @@
             "detail": "5 Partes",
             "logo": "assets/data/logos/breaking_bad_logo.png",
             "overview": ""
-        },
-        "Better Caul Saul": {
-            "title": "Better Caul Saul",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/better_call_saul_poster.jpg",
-            "rating": 99,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Excêntricos",
-                "Realistas",
-                "Drama"
-            ],
-            "age": 16,
-            "detail": "6 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
         },
         "Peaky Blinders": {
             "title": "Peaky Blinders",
@@ -249,6 +217,136 @@
         }
     },
     "Em Alta": {
+        "Better Caul Saul": {
+            "title": "Better Caul Saul",
+            "backdrop": "assets/data/backdrops/better_call_saul_backdrop.jpg",
+            "poster": "assets/data/posters/better_call_saul_poster.jpg",
+            "rating": 99,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Excêntricos",
+                "Realistas",
+                "Drama"
+            ],
+            "age": 16,
+            "detail": "6 temporadas",
+            "logo": "assets/data/logos/better_call_saul_logo.png",
+            "overview": "     Seis anos antes de Saul Goodman conhecer Walter White. Nós o conhecemos\n     Quando o homem que se tornará Saul Goodman é conhecido como Jimmy McGill\n     Antes de ser Saul Goodman, Jimmy era mais inocente, mas não era santo."
+        },
+        "The Witcher": {
+            "title": "The Witcher",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/the_witcher_poster.jpg",
+            "rating": 93,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Empolgante",
+                "Fantasia",
+                "Impacto visual"
+            ],
+            "age": 18,
+            "detail": "2 temporadas",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "(Des)encanto": {
+            "title": "(Des)encanto",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/desencanto_poster.png",
+            "rating": 94,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Espirituosos",
+                "Irreverentes",
+                "Fantasia"
+            ],
+            "age": 14,
+            "detail": "4 partes",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Black Mirror": {
+            "title": "Black Mirror",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/black_mirror_poster.jpg",
+            "rating": 95,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Realidade Alternativa",
+                "Distopia",
+                "Cyberpunk"
+            ],
+            "age": 16,
+            "detail": "5 temporadas",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Sintonia": {
+            "title": "Sintonia",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/sintonia_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Intimista",
+                "Comoventes",
+                "Teen"
+            ],
+            "age": 16,
+            "detail": "3 temporadas",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Round 6": {
+            "title": "Round 6",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/round_6_poster.jpg",
+            "rating": 96,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Suspense No Ar",
+                "Jogo Mortal",
+                "Coreano"
+            ],
+            "age": 18,
+            "detail": "1 temporada",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        },
+        "Cuphead": {
+            "title": "Cuphead",
+            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
+            "poster": "assets/data/posters/cuphead_poster.jpg",
+            "rating": 90,
+            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "tags": [
+                "Espirituosos",
+                "Irreverentes",
+                "Infantil"
+            ],
+            "age": 10,
+            "detail": "2 temporadas",
+            "logo": "assets/data/logos/breaking_bad_logo.png",
+            "overview": " "
+        }
+    },
+    "1": {
+        "El Camino": {
+            "title": "El Camino",
+            "backdrop": "assets/data/backdrops/el_camino_backdrop.jpg",
+            "poster": "assets/data/posters/el_camino_poster.jpg",
+            "rating": 92,
+            "trailer": "assets/data/trailers/el_camino_trailer.mp4",
+            "tags": [
+                "Crimes",
+                "Ação",
+                "Suspense"
+            ],
+            "age": 16,
+            "detail": "2h 2min",
+            "logo": "assets/data/logos/el_camino_logo.png",
+            "overview": "     Após sua dramática fuga do cativeiro, Jesse precisa se reconciliar\n     Com o passado para que consiga criar algum tipo de futuro. Escrito e dirigido\n     Pelo criador de Breaking Bad, Vince Gilligan, estrelado por Aaron Paul."
+        },
         "The Witcher": {
             "title": "The Witcher",
             "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",

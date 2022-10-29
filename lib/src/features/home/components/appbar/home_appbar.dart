@@ -4,14 +4,17 @@ import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/components/appbar/profile_icon.dart';
 import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
+import 'package:netflix/src/features/home/home_page.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height;
   final ScrollController scrollController;
+  final void Function(HomePages page) onChangePage;
   const HomeAppBar({
     super.key,
     this.height = kToolbarHeight,
     required this.scrollController,
+    required this.onChangePage,
   });
 
   @override
@@ -79,19 +82,25 @@ class _HomeAppBarState extends State<HomeAppBar> {
             selectedStyle: selectedlabelLarge,
             unselectedStyle: labelLarge,
             name: 'Inicio',
-            onClick: () {},
+            onClick: () {
+              widget.onChangePage(HomePages.inicio);
+            },
           ),
           TopButton(
             selectedStyle: selectedlabelLarge,
             unselectedStyle: labelLarge,
             name: 'Séries',
-            onClick: () {},
+            onClick: () {
+              widget.onChangePage(HomePages.series);
+            },
           ),
           TopButton(
             selectedStyle: selectedlabelLarge,
             unselectedStyle: labelLarge,
             name: 'Filmes',
-            onClick: () {},
+            onClick: () {
+              widget.onChangePage(HomePages.filmes);
+            },
           ),
           for (var item in buttonLabels)
             TopButton(

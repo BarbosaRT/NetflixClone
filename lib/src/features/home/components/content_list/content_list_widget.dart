@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/app_consts.dart';
+import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
@@ -198,6 +199,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       color: Colors.blue,
     );
     final contentController = Modular.get<ListContentController>();
+    final colorController = Modular.get<ColorController>();
+
+    final backgroundColor = colorController.currentScheme.darkBackgroundColor;
 
     final textSize = TextPainter(
         text: TextSpan(text: widget.title, style: headline6),
@@ -349,7 +353,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                   Container(
                                     height: 145,
                                     width: 50,
-                                    color: Colors.black.withOpacity(0.3),
+                                    color: leftActive
+                                        ? Colors.black.withOpacity(0.3)
+                                        : backgroundColor,
                                     child: leftActive && val
                                         ? IconButton(
                                             onPressed: () {

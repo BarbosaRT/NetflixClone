@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
+import 'package:netflix/src/features/home/home_page.dart';
 
 enum ContentListAnchor { top, middle, bottom }
 
@@ -30,20 +31,21 @@ class ListContents extends StatefulWidget {
       required this.onDetail});
 
   @override
-  State<ListContents> createState() => _ListContentsState();
+  State<ListContents> createState() => ListContentsState();
 }
 
-class _ListContentsState extends State<ListContents> {
+class ListContentsState extends State<ListContents> {
   static const Duration duration = Duration(milliseconds: 300);
   static const double spacing = 220.0;
   int current = 0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
+  HomePages currentPage = HomePages.inicio;
 
   static const List<String> titles = [
     'Herois e Outsiders',
     'Em Alta',
-    '4',
+    '1',
     '5',
     '6',
     '7',
@@ -73,8 +75,11 @@ class _ListContentsState extends State<ListContents> {
     '31',
     '32',
     '33',
+    '34',
+    '35',
   ];
-  static const listCount = 32;
+  static const totalListCount = 33;
+  static const listSize = totalListCount ~/ 3;
 
   @override
   void initState() {
@@ -88,35 +93,55 @@ class _ListContentsState extends State<ListContents> {
     switch (index) {
       case 0:
         return ContentListAnchor.top;
-      case listCount - 1:
+      case listSize - 1:
         return ContentListAnchor.bottom;
       default:
         return ContentListAnchor.middle;
     }
   }
 
-  void widgetBuilder() {
-    for (int i = listCount - 1; i >= 0; i--) {
-      widgets.add(
-        Positioned(
-          key: UniqueKey(),
-          top: spacing * i,
-          child: ContentListWidget(
-            key: UniqueKey(),
-            index: i,
-            title: titles[i],
-            anchor: getAnchorFromValue(i),
-            onHover: () {
-              onHover(i);
-            },
-            onPlay: widget.onPlay,
-            onSeeMore: widget.onSeeMore,
-            onDetail: widget.onDetail,
-          ),
-        ),
-      );
-    }
+  final Map<HomePages, int> homePages = {
+    HomePages.inicio: 0,
+    HomePages.series: 1,
+    HomePages.filmes: 2
+  };
+
+  List<List<Widget>> loadedPages = [];
+
+  void rebuild(HomePages page) {
+    currentPage = page;
+    widgets = loadedPages[homePages[currentPage] ?? 0];
     oldWidgets = widgets.toList();
+    setState(() {});
+  }
+
+  void widgetBuilder() {
+    for (int p = 0; p <= 3; p++) {
+      widgets = [];
+      for (int j = listSize - 1; j >= 0; j--) {
+        int i = j * 3 + p;
+        widgets.add(
+          Positioned(
+            key: UniqueKey(),
+            top: spacing * j,
+            child: ContentListWidget(
+              key: UniqueKey(),
+              index: j,
+              title: titles[i],
+              anchor: getAnchorFromValue(i),
+              onHover: () {
+                onHover(j);
+              },
+              onPlay: widget.onPlay,
+              onSeeMore: widget.onSeeMore,
+              onDetail: widget.onDetail,
+            ),
+          ),
+        );
+      }
+      loadedPages.add(widgets.toList());
+    }
+    rebuild(currentPage);
   }
 
   void onHover(int index) {

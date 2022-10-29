@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   dart_vlc
+  desktop_window
   flutter_native_view
   screen_retriever
   url_launcher_windows

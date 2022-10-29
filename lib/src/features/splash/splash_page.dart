@@ -1,5 +1,7 @@
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
@@ -107,66 +109,78 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     final color = colorController.currentScheme.loginButtonColor;
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
 
-    return Scaffold(
-      body: Stack(children: [
-        // Background
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: backgroundColor,
-        ),
-        //
-        // Logo
-        //
-        Padding(
-          padding: const EdgeInsets.only(left: 55, top: 21),
-          child: SizedBox(
-              width: width * 0.07,
-              child: Image.asset('assets/images/logo.png')),
-        ),
-        //
-        // Loading
-        //
-        Padding(
-          padding: EdgeInsets.only(left: (width - 130) / 2, top: height * 0.18),
-          child: Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.rotationY(math.pi),
-            child: RotationTransition(
-              turns: turnsTween.animate(_animation),
-              child: CustomPaint(
-                painter: IconPainter(
-                  path: splashIcon,
-                  color: color,
-                ),
-                child: Container(
-                  height: radius,
-                  width: radius,
-                  color: Colors.transparent,
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (value) async {
+        if (value is RawKeyDownEvent && !kIsWeb) {
+          if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+            await DesktopWindow.toggleFullScreen();
+          }
+        }
+      },
+      child: Scaffold(
+        body: Stack(children: [
+          // Background
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: backgroundColor,
+          ),
+          //
+          // Logo
+          //
+          Padding(
+            padding: const EdgeInsets.only(left: 55, top: 21),
+            child: SizedBox(
+                width: width * 0.07,
+                child: Image.asset('assets/images/logo.png')),
+          ),
+          //
+          // Loading
+          //
+          Padding(
+            padding:
+                EdgeInsets.only(left: (width - 130) / 2, top: height * 0.18),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.rotationY(math.pi),
+              child: RotationTransition(
+                turns: turnsTween.animate(_animation),
+                child: CustomPaint(
+                  painter: IconPainter(
+                    path: splashIcon,
+                    color: color,
+                  ),
+                  child: Container(
+                    height: radius,
+                    width: radius,
+                    color: Colors.transparent,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        //
-        // Icon
-        //
-        Padding(
-          padding: EdgeInsets.only(left: (width - 150) / 2, top: height / 6),
-          child: SizedBox(
-              height: 200,
-              width: 200,
-              child: Center(
-                child: profileController.profiles.isNotEmpty
-                    ? SizedBox(
-                        width: 75,
-                        child: Image.asset(profileController
-                            .profiles[profileController.selected].icon),
-                      )
-                    : Container(),
-              )),
-        ),
-      ]),
+          //
+          // Icon
+          //
+          Padding(
+            padding: EdgeInsets.only(left: (width - 150) / 2, top: height / 6),
+            child: SizedBox(
+                height: 200,
+                width: 200,
+                child: Center(
+                  child: profileController.profiles.isNotEmpty
+                      ? SizedBox(
+                          width: 75,
+                          child: Image.asset(profileController
+                              .profiles[profileController.selected].icon),
+                        )
+                      : Container(),
+                )),
+          ),
+        ]),
+      ),
     );
   }
 }

@@ -30,7 +30,8 @@ dependencies:
   path_drawing: ^1.0.1
 
   carousel_slider: ^4.1.1
-  flutter_layout_grid: ^2.0.1
+  flutter_layout_grid: ^2.0.1  
+  desktop_window: ^0.4.0
   
 dev_dependencies:
   flutter_test:

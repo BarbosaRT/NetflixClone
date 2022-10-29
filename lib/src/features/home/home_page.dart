@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:desktop_window/desktop_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/app_consts.dart';
@@ -42,6 +45,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ListContentsState> _listKey = GlobalKey();
+
   static const double height = 8000.0;
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
@@ -49,12 +54,13 @@ class _HomePageState extends State<HomePage> {
   static const double buttonWidth = 215.0;
 
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
-  final VideoInterface videoController = GetImpl().getImpl(id: 69);
+  VideoInterface videoController = GetImpl().getImpl(id: 69);
   final scrollController = ScrollController(initialScrollOffset: 0);
 
   final ValueNotifier<bool> _alreadyChanged = ValueNotifier(false);
   bool played = false;
   Timer playTimer = Timer(delay, () {});
+  HomePages currentPage = HomePages.inicio;
 
   void callback() {
     if (mounted) {
@@ -62,10 +68,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void init(ContentController contentController) {
-    content = contentController.getContent('Herois e Outsiders', 0);
+  void init(ContentController contentController,
+      {String list = 'Herois e Outsiders', int episode = 0}) {
+    content = contentController.getContent(list, episode);
+    videoController.pause();
+    videoController.dispose();
+    videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.defineThumbnail(content.backdrop);
-    videoController.init(content.trailer);
+    videoController.init(content.trailer, callback: callback);
+    playTimer = Timer(delay, play);
+
     if (mounted) {
       setState(() {
         videoController.enableFrame(false);
@@ -84,6 +96,11 @@ class _HomePageState extends State<HomePage> {
         videoController.play();
         videoController.setVolume(0);
       });
+      Future.delayed(const Duration(seconds: 1)).then(
+        (value) {
+          videoController.setVolume(1);
+        },
+      );
     }
   }
 
@@ -138,6 +155,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void onChangePage(HomePages page) {
+    final contentController = Modular.get<ContentController>();
+    currentPage = page;
+    switch (page) {
+      case HomePages.inicio:
+        init(contentController);
+        break;
+      case HomePages.series:
+        init(contentController, list: 'Em Alta');
+        break;
+      case HomePages.filmes:
+        init(contentController, list: '1');
+        break;
+    }
+    _listKey.currentState!.rebuild(page);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -161,8 +195,11 @@ class _HomePageState extends State<HomePage> {
     final blackHeadline6 =
         headline6.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
 
-    final homeAppBar =
-        HomeAppBar(scrollController: scrollController, height: 500);
+    final homeAppBar = HomeAppBar(
+      scrollController: scrollController,
+      height: 500,
+      onChangePage: onChangePage,
+    );
 
     final facebook = parseSvgPathData(
         "M13.9868 13.1621V21.9841H10.0418V13.1621H6.8418V9.51207H10.0468V6.73207C10.0468 3.56707 11.9318 1.82007 14.8148 1.82007C15.7616 1.83321 16.7061 1.91577 17.6408 2.06707V5.17307H16.0448C15.4952 5.10007 14.9422 5.28088 14.5419 5.66447C14.1415 6.04807 13.9373 6.59284 13.9868 7.14507V9.51207H17.4868L16.9278 13.1621H13.9868Z");
@@ -189,369 +226,386 @@ class _HomePageState extends State<HomePage> {
       ],
     ];
 
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: backgroundColor,
-        appBar: homeAppBar,
-        key: myGlobals.scaffoldKey,
-        body: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: Scrollbar(
-            trackVisibility: true,
-            thumbVisibility: true,
-            controller: scrollController,
-            child: SmoothScroll(
-              scrollSpeed: 90,
-              scrollAnimationLength: 150,
-              curve: Curves.decelerate,
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (value) async {
+        if (value is RawKeyDownEvent && !kIsWeb) {
+          if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+            await DesktopWindow.toggleFullScreen();
+          }
+        }
+      },
+      child: Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: backgroundColor,
+          appBar: homeAppBar,
+          key: myGlobals.scaffoldKey,
+          body: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: Scrollbar(
+              trackVisibility: true,
+              thumbVisibility: true,
               controller: scrollController,
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
+              child: SmoothScroll(
+                scrollSpeed: 90,
+                scrollAnimationLength: 150,
+                curve: Curves.decelerate,
                 controller: scrollController,
-                child: Stack(children: [
-                  Container(height: height),
-                  //
-                  // Background Video
-                  //
-                  ValueListenableBuilder(
-                    valueListenable: _alreadyChanged,
-                    builder: (context, value, child) {
-                      return SingleChildScrollView(
-                        child: Stack(
-                          children: [
-                            videoController.frame(),
-                            Container(
-                              height: 768,
-                              width: 1360,
-                              color: Colors.black.withOpacity(0.2),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  //
-                  // Video Gradient
-                  //
-                  Positioned(
-                      top: 500,
-                      child: Container(
-                        height: 400,
-                        width: 1360,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            backgroundColor.withOpacity(0),
-                            backgroundColor,
-                            backgroundColor,
-                          ],
-                        )),
-                      )),
-                  //
-                  // Gradient
-                  //
-                  Container(
-                    width: width,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.75),
-                            Colors.black.withOpacity(0)
-                          ]),
-                    ),
-                  ),
-                  //
-                  // Film Logo
-                  //
-                  SizedBox(
-                    width: 1360,
-                    height: 600,
-                    child: Stack(
-                      children: [
-                        //
-                        // Logo
-                        //
-                        AnimatedPositioned(
-                          top: videoController.isPlaying() ? 300 : 160,
-                          left: 55,
-                          duration: textDuration,
-                          child: AnimatedContainer(
-                            duration: textDuration,
-                            width: videoController.isPlaying() ? 250 : 400,
-                            child: Image.asset(
-                              content.logo,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        //
-                        // Descrição
-                        //
-                        AnimatedPositioned(
-                          top: videoController.isPlaying() ? 480 : 410,
-                          left: 32,
-                          duration: textDuration,
-                          child: videoController.isPlaying()
-                              ? AnimatedTextKit(
-                                  animatedTexts: [
-                                    FadeAnimatedText(
-                                      content.overview,
-                                      textStyle: headline6,
-                                      duration: fadeInDuration,
-                                    ),
-                                  ],
-                                  totalRepeatCount: 1,
-                                  pause: const Duration(milliseconds: 0),
-                                  displayFullTextOnTap: true,
-                                  stopPauseOnTap: true,
-                                  repeatForever: false,
-                                )
-                              : SizedBox(
-                                  height: 70,
-                                  child: Text(
-                                    content.overview,
-                                    style: headline6,
-                                  ),
-                                ),
-                        ),
-                        //
-                        // Botao Mais Informações
-                        //
-                        Positioned(
-                          top: 485,
-                          left: 30,
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 25),
-                              child: Row(children: [
-                                HomeButton(
-                                  textStyle: blackHeadline6,
-                                  overlayColor: Colors.grey.shade300,
-                                  buttonColor: Colors.white,
-                                  icon: Icons.play_arrow,
-                                  text: 'Assistir',
-                                  onPressed: () {
-                                    setState(() {
-                                      videoController.enableFrame(true);
-                                      videoController.isPlaying()
-                                          ? videoController.pause()
-                                          : videoController.play();
-                                    });
-                                  },
-                                ),
-                                const SizedBox(width: 10),
-                                HomeButton(
-                                  textStyle: headline6,
-                                  overlayColor:
-                                      Colors.grey.shade700.withOpacity(0.3),
-                                  buttonColor:
-                                      Colors.grey.shade700.withOpacity(0.5),
-                                  icon: Icons.info_outline,
-                                  iconSize: 25,
-                                  spacing: 10,
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 25, top: 7, bottom: 7),
-                                  text: 'Mais Informações',
-                                ),
-                              ])),
-                        ),
-                        //
-                        // Classificação Indicativa
-                        //
-                        Positioned(
-                          top: 460,
-                          left: width - 160,
-                          child: Row(
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: scrollController,
+                  child: Stack(children: [
+                    Container(height: height),
+                    //
+                    // Background Video
+                    //
+                    ValueListenableBuilder(
+                      valueListenable: _alreadyChanged,
+                      builder: (context, value, child) {
+                        return SingleChildScrollView(
+                          child: Stack(
                             children: [
-                              ValueListenableBuilder(
-                                valueListenable: _alreadyChanged,
-                                builder: (context, value, child) {
-                                  return videoController.isPlaying()
-                                      ? VolumeButton(
-                                          onClick: () {
-                                            setState(() {});
-                                          },
-                                          videoController: videoController,
-                                          iconOn: Icons.volume_up_outlined,
-                                          iconOff: Icons.volume_off_outlined,
-                                        )
-                                      : VolumeButton(
-                                          iconOn: Icons.repeat,
-                                          iconOff: Icons.repeat,
-                                          onClick: () {
-                                            _alreadyChanged.value =
-                                                !_alreadyChanged.value;
-                                            setState(() {
-                                              videoController.enableFrame(true);
-                                              videoController.isPlaying()
-                                                  ? videoController.pause()
-                                                  : videoController.play();
-                                            });
-                                          },
-                                        );
-                                },
-                              ),
-                              //
-                              // Classificação Indicativa
-                              //
+                              videoController.frame(),
                               Container(
-                                  height: 32,
-                                  width: 400,
-                                  decoration: BoxDecoration(
-                                    color: backgroundColor.withOpacity(0.5),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 32,
-                                        width: 3,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          videoController.isPlaying(
-                                            enable:
-                                                !videoController.isPlaying(),
-                                          );
-                                          _alreadyChanged.value =
-                                              !_alreadyChanged.value;
-                                        },
-                                        child: Image.asset(AppConsts
-                                                .classifications[content.age] ??
-                                            'images/classifications/L.png'),
-                                      ),
-                                    ],
-                                  )),
+                                height: 768,
+                                width: 1360,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
                             ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  ),
-                  //
-                  // Contents
-                  //
-                  Positioned(
-                    top: 500,
-                    child: ListContents(
-                      onDetail: (ContentModel content) {
-                        Modular.to
-                            .pushNamed('/home/detail', arguments: content);
-                        Future.delayed(const Duration(seconds: 1))
-                            .then((value) {
+                    //
+                    // Video Gradient
+                    //
+                    Positioned(
+                        top: 500,
+                        child: Container(
+                          height: 400,
+                          width: 1360,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              backgroundColor.withOpacity(0),
+                              backgroundColor,
+                              backgroundColor,
+                            ],
+                          )),
+                        )),
+                    //
+                    // Gradient
+                    //
+                    Container(
+                      width: width,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.75),
+                              Colors.black.withOpacity(0)
+                            ]),
+                      ),
+                    ),
+                    //
+                    // Film Logo
+                    //
+                    SizedBox(
+                      width: 1360,
+                      height: 600,
+                      child: Stack(
+                        children: [
+                          //
+                          // Logo
+                          //
+                          AnimatedPositioned(
+                            top: videoController.isPlaying() ? 300 : 160,
+                            left: 55,
+                            duration: textDuration,
+                            child: AnimatedContainer(
+                              duration: textDuration,
+                              alignment: Alignment.bottomLeft,
+                              width: videoController.isPlaying() ? 250 : 400,
+                              child: Image.asset(
+                                content.logo,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          //
+                          // Descrição
+                          //
+                          AnimatedPositioned(
+                            top: videoController.isPlaying() ? 480 : 410,
+                            left: 32,
+                            duration: textDuration,
+                            child: videoController.isPlaying()
+                                ? AnimatedTextKit(
+                                    animatedTexts: [
+                                      FadeAnimatedText(
+                                        content.overview,
+                                        textStyle: headline6,
+                                        duration: fadeInDuration,
+                                      ),
+                                    ],
+                                    totalRepeatCount: 1,
+                                    pause: const Duration(milliseconds: 0),
+                                    displayFullTextOnTap: true,
+                                    stopPauseOnTap: true,
+                                    repeatForever: false,
+                                  )
+                                : SizedBox(
+                                    height: 70,
+                                    child: Text(
+                                      content.overview,
+                                      style: headline6,
+                                    ),
+                                  ),
+                          ),
+                          //
+                          // Botao Mais Informações
+                          //
+                          Positioned(
+                            top: 485,
+                            left: 30,
+                            child: Padding(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: Row(children: [
+                                  HomeButton(
+                                    textStyle: blackHeadline6,
+                                    overlayColor: Colors.grey.shade300,
+                                    buttonColor: Colors.white,
+                                    icon: Icons.play_arrow,
+                                    text: 'Assistir',
+                                    onPressed: () {
+                                      setState(() {
+                                        videoController.enableFrame(true);
+                                        videoController.isPlaying()
+                                            ? videoController.pause()
+                                            : videoController.play();
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  HomeButton(
+                                    textStyle: headline6,
+                                    overlayColor:
+                                        Colors.grey.shade700.withOpacity(0.3),
+                                    buttonColor:
+                                        Colors.grey.shade700.withOpacity(0.5),
+                                    icon: Icons.info_outline,
+                                    iconSize: 25,
+                                    spacing: 10,
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 25, top: 7, bottom: 7),
+                                    text: 'Mais Informações',
+                                  ),
+                                ])),
+                          ),
+                          //
+                          // Classificação Indicativa
+                          //
+                          Positioned(
+                            top: 460,
+                            left: width - 160,
+                            child: Row(
+                              children: [
+                                ValueListenableBuilder(
+                                  valueListenable: _alreadyChanged,
+                                  builder: (context, value, child) {
+                                    return videoController.isPlaying()
+                                        ? VolumeButton(
+                                            onClick: () {
+                                              setState(() {});
+                                            },
+                                            videoController: videoController,
+                                            iconOn: Icons.volume_up_outlined,
+                                            iconOff: Icons.volume_off_outlined,
+                                          )
+                                        : VolumeButton(
+                                            iconOn: Icons.repeat,
+                                            iconOff: Icons.repeat,
+                                            onClick: () {
+                                              _alreadyChanged.value =
+                                                  !_alreadyChanged.value;
+                                              setState(() {
+                                                videoController
+                                                    .enableFrame(true);
+                                                videoController.isPlaying()
+                                                    ? videoController.pause()
+                                                    : videoController.play();
+                                              });
+                                            },
+                                          );
+                                  },
+                                ),
+                                //
+                                // Classificação Indicativa
+                                //
+                                Container(
+                                    height: 32,
+                                    width: 400,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor.withOpacity(0.5),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 32,
+                                          width: 3,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            videoController.isPlaying(
+                                              enable:
+                                                  !videoController.isPlaying(),
+                                            );
+                                            _alreadyChanged.value =
+                                                !_alreadyChanged.value;
+                                          },
+                                          child: Image.asset(AppConsts
+                                                      .classifications[
+                                                  content.age] ??
+                                              'images/classifications/L.png'),
+                                        ),
+                                      ],
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //
+                    // Contents
+                    //
+                    Positioned(
+                      top: 500,
+                      child: ListContents(
+                        key: _listKey,
+                        onDetail: (ContentModel content) {
+                          Modular.to
+                              .pushNamed('/home/detail', arguments: content);
+                          Future.delayed(const Duration(seconds: 1))
+                              .then((value) {
+                            playTimer.cancel();
+                            videoController.isPlaying(
+                              enable: false,
+                            );
+                            videoController.pause();
+                          });
+                        },
+                        onSeeMore: (String content) {
                           playTimer.cancel();
+                          Modular.to
+                              .pushNamed('/home/seeMore', arguments: content);
                           videoController.isPlaying(
                             enable: false,
                           );
                           videoController.pause();
-                        });
-                      },
-                      onSeeMore: (String content) {
-                        playTimer.cancel();
-                        Modular.to
-                            .pushNamed('/home/seeMore', arguments: content);
-                        videoController.isPlaying(
-                          enable: false,
-                        );
-                        videoController.pause();
-                      },
-                      onPlay: (bool value) {
-                        if (!played) {
-                          playTimer = Timer(delay, play);
-                        }
-                        if (value) {
-                          videoController.pause();
-                        } else {
-                          videoController.play();
-                        }
-                      },
+                        },
+                        onPlay: (bool value) {
+                          if (!played) {
+                            playTimer = Timer(delay, play);
+                          }
+                          if (value) {
+                            videoController.pause();
+                          } else {
+                            videoController.play();
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                  //
-                  // End Part
-                  //
-                  Positioned(
-                    top: height - 220,
-                    left: 240,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            createIcon(facebook, Colors.white),
-                            const SizedBox(width: 7),
-                            createIcon(instagram, Colors.white),
-                            const SizedBox(width: 7),
-                            createIcon(twitter, Colors.white),
-                            const SizedBox(width: 7),
-                            createIcon(youtube, Colors.white),
-                          ],
-                        ),
-                        for (int f = 0; f < infoButtons.length; f++)
+                    //
+                    // End Part
+                    //
+                    Positioned(
+                      top: height - 220,
+                      left: 240,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Row(
                             children: [
-                              for (int s = 0; s < infoButtons[f].length; s++)
-                                ProfileButton(
-                                    width: buttonWidth,
-                                    showPicture: false,
-                                    textColor: colorController
-                                        .currentScheme.containerColor2,
-                                    alignment: Alignment.centerLeft,
-                                    height: 30,
-                                    underline: 2,
-                                    textStyle: headline6.copyWith(fontSize: 12),
-                                    text: infoButtons[f][s]),
+                              createIcon(facebook, Colors.white),
+                              const SizedBox(width: 7),
+                              createIcon(instagram, Colors.white),
+                              const SizedBox(width: 7),
+                              createIcon(twitter, Colors.white),
+                              const SizedBox(width: 7),
+                              createIcon(youtube, Colors.white),
                             ],
                           ),
-                        Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: [
-                            Container(
-                              height: 30,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: colorController
-                                        .currentScheme.containerColor2,
-                                    width: 1),
+                          for (int f = 0; f < infoButtons.length; f++)
+                            Row(
+                              children: [
+                                for (int s = 0; s < infoButtons[f].length; s++)
+                                  ProfileButton(
+                                      width: buttonWidth,
+                                      showPicture: false,
+                                      textColor: colorController
+                                          .currentScheme.containerColor2,
+                                      alignment: Alignment.centerLeft,
+                                      height: 30,
+                                      underline: 2,
+                                      textStyle:
+                                          headline6.copyWith(fontSize: 12),
+                                      text: infoButtons[f][s]),
+                              ],
+                            ),
+                          Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: [
+                              Container(
+                                height: 30,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: colorController
+                                          .currentScheme.containerColor2,
+                                      width: 1),
+                                ),
                               ),
-                            ),
-                            TopButton(
-                              name: "Código de serviço",
-                              selectedStyle: selectedlabelLarge,
-                              unselectedStyle: labelLarge,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          '© 1997-2022 Netflix, Inc.  {89eaafce-69mm-45d6-9130-244974426922}',
-                          style: labelIntermedium,
-                        ),
-                      ],
+                              TopButton(
+                                name: "Código de serviço",
+                                selectedStyle: selectedlabelLarge,
+                                unselectedStyle: labelLarge,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '© 1997-2022 Netflix, Inc.  {89eaafce-69mm-45d6-9130-244974426922}',
+                            style: labelIntermedium,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    left: width - 13,
-                    child: Container(
-                      width: 15,
-                      height: height,
-                      color: Colors.white,
+                    Positioned(
+                      left: width - 13,
+                      child: Container(
+                        width: 15,
+                        height: height,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -870,10 +871,15 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                 ? Container()
                 : buttonCreator(
                     listenable: _fullHover,
-                    icon: const Icon(
-                      Icons.fullscreen,
-                      color: Colors.white,
-                      size: 50,
+                    icon: GestureDetector(
+                      onTap: () async {
+                        await DesktopWindow.toggleFullScreen();
+                      },
+                      child: const Icon(
+                        Icons.fullscreen,
+                        color: Colors.white,
+                        size: 50,
+                      ),
                     ),
                     addBottom: 2.0,
                     left: (size.width - 85).toInt(),
@@ -1088,7 +1094,17 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     currentPage = loaded ? loadedPage : loadingPage;
     currentPage = almostFinished ? almostFinishedPage : currentPage;
     currentPage = finished ? finishPage : currentPage;
-    return Scaffold(backgroundColor: backgroundColor, body: currentPage);
+    return RawKeyboardListener(
+        autofocus: true,
+        focusNode: FocusNode(),
+        onKey: (value) async {
+          if (value is RawKeyDownEvent && !kIsWeb) {
+            if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+              await DesktopWindow.toggleFullScreen();
+            }
+          }
+        },
+        child: Scaffold(backgroundColor: backgroundColor, body: currentPage));
   }
 }
 
