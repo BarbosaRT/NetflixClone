@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
@@ -51,10 +50,10 @@ class _EpisodesListState extends State<EpisodesList> {
       delayOut: widget.hover,
       fadeDuration: Duration.zero,
       type: HoverType.top,
-      rightPadding: 280,
+      rightPadding: 300,
       maxWidth: 600,
       maxHeight: 900,
-      distance: 505,
+      distance: 500,
       onHover: () {
         if (!hovered) {
           episodeController.changeSelected(widget.episode);
@@ -72,10 +71,7 @@ class _EpisodesListState extends State<EpisodesList> {
       icon: AnimatedScale(
         duration: duration,
         scale: hovered ? 1.25 : 1,
-        child: Transform.scale(
-            scale: 1.5,
-            child: AppConsts()
-                .createIcon(listIcon, Colors.white, const Size(40, 40))),
+        child: const Icon(Icons.list, size: 55, color: Colors.white),
       ),
       child: Container(
         width: 600,

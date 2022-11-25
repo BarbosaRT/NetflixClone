@@ -10,6 +10,7 @@ class ContentModel {
   final String detail;
   final String logo;
   final String title;
+  final bool isOnline;
   String overview;
   bool hasDetailPage;
   List<dynamic>? cast;
@@ -20,6 +21,7 @@ class ContentModel {
     this.cast,
     this.episodes,
     required this.logo,
+    required this.isOnline,
     required this.age,
     required this.detail,
     required this.tags,
@@ -49,5 +51,6 @@ class ContentModel {
       cast: json["cast"],
       episodes: json["episodes"],
       age: json['age'] ?? 0,
-      tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"]);
+      tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"],
+      isOnline: json["isOnline"] ?? false);
 }

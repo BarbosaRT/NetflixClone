@@ -70,7 +70,9 @@ class _HomePageState extends State<HomePage> {
 
   void init(ContentController contentController,
       {String list = 'Herois e Outsiders', int episode = 0}) {
-    content = contentController.getContent(list, episode);
+    contentController.getContent(list, episode).then((value) {
+      content = value;
+    });
     videoController.pause();
     videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/player/player_page.dart';
-import 'package:path_drawing/path_drawing.dart';
 
 class TranslationWidget extends StatefulWidget {
   const TranslationWidget({super.key});
@@ -17,8 +15,6 @@ class TranslationWidget extends StatefulWidget {
 
 class _TranslationWidgetState extends State<TranslationWidget> {
   final scrollController = ScrollController(initialScrollOffset: 0);
-  final Path icon = parseSvgPathData(
-      'M0 4C0 3.44772 0.447715 3 1 3H23C23.5523 3 24 3.44772 24 4V16C24 16.5523 23.5523 17 23 17H19V20C19 20.3688 18.797 20.7077 18.4719 20.8817C18.1467 21.0557 17.7522 21.0366 17.4453 20.8321L11.6972 17H1C0.447715 17 0 16.5523 0 16V4ZM2 5V15H12H12.3028L12.5547 15.1679L17 18.1315V16V15H18H22V5H2ZM10 9H4V7H10V9ZM20 11H14V13H20V11ZM12 13H4V11H12V13ZM20 7H12V9H20V7Z');
   static const List<String> translations = [
     'portugues [original]',
     'inglês',
@@ -61,10 +57,10 @@ class _TranslationWidgetState extends State<TranslationWidget> {
       delayOut: Duration.zero,
       fadeDuration: Duration.zero,
       type: HoverType.top,
-      rightPadding: 220,
+      rightPadding: 230,
       maxWidth: 450,
       maxHeight: 600,
-      distance: 510,
+      distance: 495,
       onHover: () {
         if (!hover) {
           setState(() {
@@ -80,13 +76,9 @@ class _TranslationWidgetState extends State<TranslationWidget> {
       icon: Padding(
         padding: const EdgeInsets.only(left: 15, top: 17),
         child: AnimatedScale(
-          duration: duration,
-          scale: hover ? 1.2 : 1,
-          child: Transform.scale(
-              scale: 1.7,
-              child: AppConsts()
-                  .createIcon(icon, Colors.white, const Size(40, 40))),
-        ),
+            duration: duration,
+            scale: hover ? 1.2 : 1,
+            child: const Icon(Icons.subtitles, size: 40, color: Colors.white)),
       ),
       child: Container(
           width: 450,

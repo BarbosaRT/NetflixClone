@@ -111,9 +111,11 @@ class _DetailPageState extends State<DetailPage> {
     contents = [];
     final contentController = Modular.get<ContentController>();
     for (var j = 0; j < 25; j++) {
-      final content =
-          contentController.getContent(contentController.getKey(1), j);
-      contents.add(content);
+      contentController.getContent(contentController.getKey(1), j).then(
+        (value) {
+          contents.add(value);
+        },
+      );
     }
     setState(() {});
   }

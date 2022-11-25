@@ -69,29 +69,37 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   void initState() {
     if (widgetList.isEmpty) {
       controller = CarouselController();
-      widgetBuilder();
+      initContents().then(
+        (v) {
+          widgetBuilder();
+        },
+      );
     }
     final contentController = Modular.get<ContentController>();
     if (contentController.loading) {
       contentController.init();
     } else {
-      initContents();
-      widgetBuilder();
+      initContents().then(
+        (v) {
+          widgetBuilder();
+        },
+      );
     }
     super.initState();
 
     contentController.addListener(() {
       if (!contentController.loading && !loaded) {
-        initContents();
-        widgetBuilder();
-        if (mounted) {
-          setState(() {});
-        }
+        initContents().then((v) {
+          widgetBuilder();
+          if (mounted) {
+            setState(() {});
+          }
+        });
       }
     });
   }
 
-  void initContents() {
+  Future<void> initContents() async {
     contents = [];
     final contentController = Modular.get<ContentController>();
     for (var i = widget.initialPage;
@@ -99,13 +107,12 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         i++) {
       final List<ContentModel> l = [];
       for (var j = 0; j < widget.contentCount; j++) {
-        final content = contentController.getContent(
+        ContentModel value = await contentController.getContent(
             widget.title, i * widget.contentCount + j);
-        l.add(content);
+        l.add(value);
       }
       contents.add(l.toList());
     }
-    //print('PRINT: $contents');
     loaded = true;
   }
 

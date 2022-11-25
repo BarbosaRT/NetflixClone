@@ -820,7 +820,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
             hover || almostFinished
                 ? Container()
                 : Positioned(
-                    top: size.height - 320,
+                    top: size.height - 321,
                     right: 70,
                     child: SkipWidget(
                       content: content,
@@ -836,7 +836,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
             hover || almostFinished
                 ? Container()
                 : Positioned(
-                    top: size.height - 550,
+                    top: size.height - 565,
                     right: 0,
                     child: EpisodesList(
                       videoController: videoController,

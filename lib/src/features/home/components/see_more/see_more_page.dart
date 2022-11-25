@@ -46,8 +46,6 @@ class _SeeMorePageState extends State<SeeMorePage> {
         _active.value = true;
       },
     );
-    //TODO: Usar o Image.file para acelerar o processo de compilação
-    //TODO: Comprimir os assets antes de usar
   }
 
   ContentListAnchor getAnchorFromValue(int index) {

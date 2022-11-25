@@ -59,7 +59,6 @@ class _ContentContainerState extends State<ContentContainer> {
   ValueNotifier<bool> added = ValueNotifier(false);
 
   VideoInterface videoController = YoutubeImpl();
-  //TODO: Fazer os widgets escalarem quando muda a resolução
   GestureDetector? button;
 
   void callback() {
@@ -138,6 +137,19 @@ class _ContentContainerState extends State<ContentContainer> {
     });
   }
 
+  void onClick() {
+    if (widget.content.hasDetailPage || widget.content.episodes != {}) {
+      if (widget.onDetail != null) {
+        widget.onDetail!(widget.content);
+      }
+    }
+  }
+
+  dynamic getImage() {
+    String image = widget.content.poster;
+    return widget.content.isOnline ? NetworkImage(image) : AssetImage(image);
+  }
+
   @override
   Widget build(BuildContext context) {
     final headline = AppFonts().headline7;
@@ -167,7 +179,7 @@ class _ContentContainerState extends State<ContentContainer> {
       borderRadius: const BorderRadius.all(Radius.circular(border)),
       //color: Colors.red,
       image: DecorationImage(
-        image: AssetImage(widget.content.poster),
+        image: getImage(),
         fit: BoxFit.cover,
       ),
     );
@@ -179,7 +191,7 @@ class _ContentContainerState extends State<ContentContainer> {
       ),
       //color: Colors.blue,
       image: DecorationImage(
-        image: AssetImage(widget.content.poster),
+        image: getImage(),
         fit: BoxFit.cover,
       ),
     );
@@ -302,13 +314,19 @@ class _ContentContainerState extends State<ContentContainer> {
                             //
                             // Play
                             //
-                            const Positioned(
+                            Positioned(
                               left: 15 + wDifference,
                               top: 70,
-                              child: Icon(
-                                Icons.play_circle,
-                                size: 45,
-                                color: Colors.white,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  onClick();
+                                },
+                                icon: const Icon(
+                                  Icons.play_circle,
+                                  size: 45,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             //
@@ -373,12 +391,7 @@ class _ContentContainerState extends State<ContentContainer> {
                                       headline6.copyWith(color: Colors.black),
                                 ),
                                 onClick: () {
-                                  if (widget.content.hasDetailPage ||
-                                      widget.content.episodes != {}) {
-                                    if (widget.onDetail != null) {
-                                      widget.onDetail!(widget.content);
-                                    }
-                                  }
+                                  onClick();
                                 },
                                 icon: const Icon(
                                   Icons.expand_more_rounded,

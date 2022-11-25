@@ -92,8 +92,13 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     for (var i = 0; i < 2; i++) {
       final id = controller.getKey(i);
       for (var j = 0; j < 15; j++) {
-        final ContentModel content = controller.getContent(id, j);
-        precacheImage(AssetImage(content.poster), context);
+        controller.getContent(id, j).then(
+          (value) {
+            if (!value.isOnline) {
+              precacheImage(AssetImage(value.poster), context);
+            }
+          },
+        );
       }
     }
   }
