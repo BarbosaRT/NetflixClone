@@ -141,21 +141,23 @@ class ContentController extends ChangeNotifier {
       return;
     }
     List<ContentModel> contents = [];
-    for (int l = 0; l < 2; l++) {
-      List<ContentModel> results = await getFilms();
-      contents += results.toList();
-    }
+
+    List<ContentModel> films = await getFilms();
+    contents += films.toList();
+
+    List<ContentModel> series = await getSeries();
+    contents += series.toList();
+
     //print('PRINT (getMixed): ${contents.length}, $tvPage, $id');
     _contentModel[id] = contents.toList();
     notifyListeners();
   }
 
-  //TODO: IMPLEMENTAR OS TRAILERS DO YOUTUBE
   Future<List<ContentModel>> getSeries() async {
     tvPage += 1;
     int page = tvPage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
-    String trailer = 'https://yewtu.be/watch?v=SPqNBE2xTUI';
+    String trailer = 'https://yewtu.be/watch?v=vDY_uZAaU7g';
     String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
@@ -201,6 +203,17 @@ class ContentController extends ChangeNotifier {
       } else if (onlyData['US'] != null) {
         onlyOnNetflix = onlyData['US']['flatrate'].length == 1;
       }
+      List<dynamic> trailerData = tvData['videos']['results'];
+      if (trailerData.isNotEmpty) {
+        if (trailerData[0]['site'] == 'YouTube') {
+          trailer = 'https://yewtu.be/watch?v=${trailerData[0]["key"]}';
+        } else {
+          trailer = await getTrailer(title);
+        }
+      } else {
+        trailer = await getTrailer(title);
+      }
+
       String poster = getPoster(i, tvData);
       ContentModel content = ContentModel(
           logo: logo,
@@ -224,7 +237,7 @@ class ContentController extends ChangeNotifier {
     moviePage += 1;
     int page = moviePage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
-    String trailer = 'https://yewtu.be/watch?v=ixJV1cpvmc8';
+    String trailer = 'https://yewtu.be/watch?v=vDY_uZAaU7g';
     String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
@@ -267,10 +280,10 @@ class ContentController extends ChangeNotifier {
         if (trailerData[0]['site'] == 'YouTube') {
           trailer = 'https://yewtu.be/watch?v=${trailerData[0]["key"]}';
         } else {
-          trailer = await getTrailer(title);
+          trailer = 'https://yewtu.be/watch?v=${await getTrailer(title)}';
         }
       } else {
-        trailer = await getTrailer(title);
+        trailer = 'https://yewtu.be/watch?v=${await getTrailer(title)}';
       }
 
       ContentModel content = ContentModel(
@@ -291,14 +304,22 @@ class ContentController extends ChangeNotifier {
     return output.toList();
   }
 
+  String urlEncode(String text) {
+    String output = text.toString();
+    output = output.replaceAll('#', '%23');
+    output = output.replaceAll('&', '%26');
+    output = output.replaceAll('/', '%2F');
+    output = output.replaceAll(' ', '+');
+    return output;
+  }
+
   Future<String> getTrailer(String title) async {
-    List<dynamic> results =
-        await getHttp('https://inv.riverside.rocks/api/v1/search?q=${title}');
+    List<dynamic> results = await getHttp(
+        'https://inv.riverside.rocks/api/v1/search?q=${urlEncode(title)}+trailer');
     return results[0]['videoId'];
   }
 
   ContentModel concate(String id, int index) {
-    //print('PRINT (concate): $id $index');
     if (index < 0) {
       index = 0;
     }
@@ -310,23 +331,34 @@ class ContentController extends ChangeNotifier {
     if (ind < 0) {
       ind = 0;
     }
-    // print('PRINT: $ind, $index, $i ,${_contentModel[i]!.length}');
-    // notifyListeners();
     return _contentModel[i]![ind];
   }
 
   Future<ContentModel> getContent(String id, int index) async {
     if (useOnline && _contentModel[id] == null) {
       switch (titles.indexOf(id) % 3) {
+        case 0:
+          await getMixed(id);
+          return concate(id, index);
+        case 1:
+          List<ContentModel> contents = [];
+          for (int k = 0; k <= 2; k++) {
+            List<ContentModel> films = await getFilms();
+            contents += films.toList();
+          }
+          _contentModel[id] = contents.toList();
+          return concate(id, index);
+        case 2:
+          List<ContentModel> contents = [];
+          for (int k = 0; k <= 2; k++) {
+            List<ContentModel> series = await getSeries();
+            contents += series.toList();
+          }
+          _contentModel[id] = contents.toList();
+          return concate(id, index);
         default:
           await getMixed(id);
           return concate(id, index);
-        // case 1:
-        //   getFilms();
-        //   break;
-        // case 2:
-        //   getSeries();
-        //   break;
       }
     } else {
       return concate(id, index);

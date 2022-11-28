@@ -158,7 +158,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
         GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.init(widget.playerModel!.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
-    videoController.defineThumbnail(widget.playerModel!.content.poster);
+    videoController.defineThumbnail(widget.playerModel!.content.poster,
+        widget.playerModel!.content.isOnline);
 
     super.initState();
   }
@@ -262,7 +263,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               callback: callback,
               positionStream: positionStream);
 
-          videoController.defineThumbnail(widget.playerModel!.content.poster);
+          videoController.defineThumbnail(widget.playerModel!.content.poster,
+              widget.playerModel!.content.isOnline);
           videoController.enableFrame(true);
           videoController.play();
           videoController.setVolume(0);

@@ -6,6 +6,7 @@ import 'package:dart_vlc/dart_vlc.dart';
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
+  bool _isOnline = false;
   bool _enableFrame = false;
   bool _isPlaying = true;
   String path = '';
@@ -28,6 +29,8 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
+    dynamic image =
+        _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     if (_enableFrame) {
       return !Platform.isWindows
           ? Video(
@@ -43,7 +46,7 @@ class PlayerImpl implements VideoInterface {
           : SizedBox(
               width: width,
               height: height,
-              child: Image.asset(_thumbnail, fit: BoxFit.cover));
+              child: Image(image: image, fit: BoxFit.cover));
     }
   }
 
@@ -52,7 +55,11 @@ class PlayerImpl implements VideoInterface {
       {double w = 1360,
       double h = 768,
       void Function()? callback,
-      void Function(Duration position)? positionStream}) {
+      void Function(Duration position)? positionStream,
+      bool? isOnline}) {
+    if (isOnline != null) {
+      _isOnline = isOnline;
+    }
     _controller.playbackStream.listen((event) {
       _isPlaying = event.isPlaying;
       callback?.call();
@@ -77,7 +84,7 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void load(String id, {void Function()? callback}) {
-    medias.add(Media.asset(id));
+    medias.add(_isOnline ? Media.network(id) : Media.asset(id));
     _controller.open(
         Playlist(
           medias: medias,
@@ -123,8 +130,9 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  void defineThumbnail(String path) {
+  void defineThumbnail(String path, bool isOnline) {
     _thumbnail = path;
+    _isOnline = isOnline;
   }
 
   @override

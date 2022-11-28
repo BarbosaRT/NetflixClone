@@ -193,7 +193,7 @@ class ListContentsState extends State<ListContents> {
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
       width: width,
-      height: 8000,
+      height: 3000,
       child: Stack(
         children: widgets,
       ),

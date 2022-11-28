@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
+  bool _isOnline = false;
   bool _enableFrame = false;
   String path = '';
   late VideoPlayerController _controller;
@@ -17,6 +18,8 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget frame() {
+    dynamic image =
+        _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     if (_isInitialized && _enableFrame) {
       return AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
@@ -28,7 +31,7 @@ class PlayerImpl implements VideoInterface {
           : SizedBox(
               width: width,
               height: height,
-              child: Image.asset(_thumbnail, fit: BoxFit.cover));
+              child: Image(image: image, fit: BoxFit.cover));
     }
   }
 
@@ -37,7 +40,11 @@ class PlayerImpl implements VideoInterface {
       {double w = 1360,
       double h = 768,
       void Function()? callback,
-      void Function(Duration position)? positionStream}) {
+      void Function(Duration position)? positionStream,
+      bool? isOnline}) {
+    if (isOnline != null) {
+      _isOnline = isOnline;
+    }
     load(video, callback: callback, positionStream: positionStream);
     path = video;
     width = w;
@@ -49,16 +56,24 @@ class PlayerImpl implements VideoInterface {
   void load(String id,
       {void Function()? callback,
       void Function(Duration position)? positionStream}) {
-    Future.delayed(
-      const Duration(milliseconds: 1000),
-    );
-    _controller = VideoPlayerController.asset(id)
-      ..initialize().then((value) {
-        _isInitialized = true;
-        if (callback != null) {
-          callback.call();
-        }
-      });
+    Future.delayed(const Duration(seconds: 1));
+    if (_isOnline) {
+      _controller = VideoPlayerController.network(id)
+        ..initialize().then((value) {
+          _isInitialized = true;
+          if (callback != null) {
+            callback.call();
+          }
+        });
+    } else {
+      _controller = VideoPlayerController.asset(id)
+        ..initialize().then((value) {
+          _isInitialized = true;
+          if (callback != null) {
+            callback.call();
+          }
+        });
+    }
     _controller.addListener(
       () {
         positionStream?.call(controller.value.position);
@@ -139,8 +154,9 @@ class PlayerImpl implements VideoInterface {
   }
 
   @override
-  void defineThumbnail(String path) {
+  void defineThumbnail(String path, bool isOnline) {
     _thumbnail = path;
+    _isOnline = isOnline;
   }
 
   @override

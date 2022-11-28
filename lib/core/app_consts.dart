@@ -27,6 +27,10 @@ class AppConsts {
     18: 'assets/images/classifications/18.png',
   };
 
+  dynamic getImage(String poster, bool isOnline) {
+    return isOnline ? NetworkImage(poster) : AssetImage(poster);
+  }
+
   Size getTextSize(String text, TextStyle style) {
     final textSpan = TextSpan(
       text: text,

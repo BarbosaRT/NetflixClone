@@ -4,6 +4,7 @@ import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:netflix/src/features/player/player_page.dart';
 
 class DetailContainer extends StatefulWidget {
   final ContentModel content;
@@ -91,8 +92,16 @@ class _DetailContainerState extends State<DetailContainer> {
                             return AnimatedOpacity(
                               duration: const Duration(milliseconds: 200),
                               opacity: value ? 1 : 0,
-                              child: const Icon(Icons.play_arrow,
-                                  size: 50, color: Colors.white),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  Modular.to.pushNamed('/video',
+                                      arguments:
+                                          PlayerModel(widget.content, 0));
+                                },
+                                icon: const Icon(Icons.play_arrow,
+                                    size: 50, color: Colors.white),
+                              ),
                             );
                           }),
                     ],

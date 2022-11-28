@@ -115,11 +115,15 @@ class _ContentContainerState extends State<ContentContainer> {
       widget.onPlay(true);
 
       if (videoController.runtimeType != GetImpl().getImpl().runtimeType) {
-        videoController =
-            GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
+        videoController = GetImpl()
+            .getImpl(id: myGlobals.random.nextInt(69420), isOnline: true);
         videoController.init(widget.content.trailer,
-            w: width * factor, h: height * factor, callback: callback);
-        videoController.defineThumbnail(widget.content.poster);
+            w: width * factor,
+            h: height * factor,
+            callback: callback,
+            isOnline: widget.content.isOnline);
+        videoController.defineThumbnail(
+            widget.content.poster, widget.content.isOnline);
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(trailerDelay).then((value) {
@@ -128,8 +132,10 @@ class _ContentContainerState extends State<ContentContainer> {
           }
           if (mounted) {
             setState(() {
+              videoController.isPlaying(enable: true);
               videoController.enableFrame(true);
               videoController.play();
+              videoController.setVolume(1);
             });
           }
         });
@@ -143,11 +149,6 @@ class _ContentContainerState extends State<ContentContainer> {
         widget.onDetail!(widget.content);
       }
     }
-  }
-
-  dynamic getImage() {
-    String image = widget.content.poster;
-    return widget.content.isOnline ? NetworkImage(image) : AssetImage(image);
   }
 
   @override
@@ -179,7 +180,8 @@ class _ContentContainerState extends State<ContentContainer> {
       borderRadius: const BorderRadius.all(Radius.circular(border)),
       //color: Colors.red,
       image: DecorationImage(
-        image: getImage(),
+        image: AppConsts()
+            .getImage(widget.content.poster, widget.content.isOnline),
         fit: BoxFit.cover,
       ),
     );
@@ -191,7 +193,8 @@ class _ContentContainerState extends State<ContentContainer> {
       ),
       //color: Colors.blue,
       image: DecorationImage(
-        image: getImage(),
+        image: AppConsts()
+            .getImage(widget.content.poster, widget.content.isOnline),
         fit: BoxFit.cover,
       ),
     );
@@ -338,6 +341,11 @@ class _ContentContainerState extends State<ContentContainer> {
                               child: ContentButton(
                                   onClick: () {
                                     added.value = !added.value;
+                                    setState(() {
+                                      videoController.enableFrame(true);
+                                      videoController.play();
+                                      videoController.setVolume(1);
+                                    });
                                   },
                                   text: ValueListenableBuilder(
                                     valueListenable: added,

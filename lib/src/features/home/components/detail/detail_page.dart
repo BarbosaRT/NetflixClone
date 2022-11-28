@@ -87,7 +87,8 @@ class _DetailPageState extends State<DetailPage> {
     });
     videoController.init(widget.content!.trailer,
         w: 1280, h: 720, callback: callback);
-    videoController.defineThumbnail(widget.content!.poster);
+    videoController.defineThumbnail(
+        widget.content!.poster, widget.content!.isOnline);
     _active.value = false;
     Future.delayed(transitionDuration).then(
       (value) {

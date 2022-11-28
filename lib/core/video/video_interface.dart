@@ -5,14 +5,15 @@ abstract class VideoInterface {
       {double w = 1360,
       double h = 768,
       void Function()? callback,
-      void Function(Duration position)? positionStream});
+      void Function(Duration position)? positionStream,
+      bool? isOnline});
   void play();
   void seek(Duration position);
   void pause();
   void stop();
   void load(String id, {void Function()? callback});
   void dispose();
-  void defineThumbnail(String path);
+  void defineThumbnail(String path, bool isOnline);
   double getVolume();
   void setVolume(double volume);
   void enableFrame(bool enable);

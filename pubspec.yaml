@@ -32,7 +32,6 @@ dependencies:
   carousel_slider: ^4.1.1
   flutter_layout_grid: ^2.0.1  
   desktop_window: ^0.4.0
-  
   dio: ^4.0.6
 
 dev_dependencies:

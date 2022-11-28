@@ -47,7 +47,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ListContentsState> _listKey = GlobalKey();
 
-  static const double height = 8000.0;
+  static const double height = 3250.0;
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
   static const delay = Duration(seconds: 10);
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     videoController.pause();
     videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
-    videoController.defineThumbnail(content.backdrop);
+    videoController.defineThumbnail(content.backdrop, content.isOnline);
     videoController.init(content.trailer, callback: callback);
     playTimer = Timer(delay, play);
 
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     videoController.init(content.trailer, callback: callback);
-    videoController.defineThumbnail(content.backdrop);
+    videoController.defineThumbnail(content.backdrop, content.isOnline);
 
     content.overview =
         "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia.";
@@ -491,46 +491,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     //
-                    // Contents
-                    //
-                    Positioned(
-                      top: 500,
-                      child: ListContents(
-                        key: _listKey,
-                        onDetail: (ContentModel content) {
-                          Modular.to
-                              .pushNamed('/home/detail', arguments: content);
-                          Future.delayed(const Duration(seconds: 1))
-                              .then((value) {
-                            playTimer.cancel();
-                            videoController.isPlaying(
-                              enable: false,
-                            );
-                            videoController.pause();
-                          });
-                        },
-                        onSeeMore: (String content) {
-                          playTimer.cancel();
-                          Modular.to
-                              .pushNamed('/home/seeMore', arguments: content);
-                          videoController.isPlaying(
-                            enable: false,
-                          );
-                          videoController.pause();
-                        },
-                        onPlay: (bool value) {
-                          if (!played) {
-                            playTimer = Timer(delay, play);
-                          }
-                          if (value) {
-                            videoController.pause();
-                          } else {
-                            videoController.play();
-                          }
-                        },
-                      ),
-                    ),
-                    //
                     // End Part
                     //
                     Positioned(
@@ -592,6 +552,46 @@ class _HomePageState extends State<HomePage> {
                             style: labelIntermedium,
                           ),
                         ],
+                      ),
+                    ),
+                    //
+                    // Contents
+                    //
+                    Positioned(
+                      top: 500,
+                      child: ListContents(
+                        key: _listKey,
+                        onDetail: (ContentModel content) {
+                          Modular.to
+                              .pushNamed('/home/detail', arguments: content);
+                          Future.delayed(const Duration(seconds: 1))
+                              .then((value) {
+                            playTimer.cancel();
+                            videoController.isPlaying(
+                              enable: false,
+                            );
+                            videoController.pause();
+                          });
+                        },
+                        onSeeMore: (String content) {
+                          playTimer.cancel();
+                          Modular.to
+                              .pushNamed('/home/seeMore', arguments: content);
+                          videoController.isPlaying(
+                            enable: false,
+                          );
+                          videoController.pause();
+                        },
+                        onPlay: (bool value) {
+                          if (!played) {
+                            playTimer = Timer(delay, play);
+                          }
+                          if (value) {
+                            videoController.pause();
+                          } else {
+                            videoController.play();
+                          }
+                        },
                       ),
                     ),
                     Positioned(
