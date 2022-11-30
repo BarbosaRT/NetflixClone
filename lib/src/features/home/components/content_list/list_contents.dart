@@ -43,40 +43,40 @@ class ListContentsState extends State<ListContents> {
   HomePages currentPage = HomePages.inicio;
 
   static const List<String> titles = [
-    'Herois e Outsiders',
+    'Outsiders',
     'Em Alta',
-    '1',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-    '24',
-    '25',
-    '26',
-    '27',
-    '28',
-    '29',
-    '30',
-    '31',
-    '32',
-    '33',
-    '34',
-    '35',
+    'Top 10 no Brasil',
+    'Só na Netflix',
+    'Séries de ação',
+    'Filmes para toda a familia',
+    'Assistir Novamente',
+    'Assistir Novamente',
+    'Assistir Novamente',
+    'Produções de Hollywood',
+    'Comédia',
+    'Populares na Netflix',
+    'Mundos épicos',
+    'Porque você viu Click',
+    'Porque você viu Breaking Bad',
+    'Dicas para você',
+    'Para maratonar',
+    'Futuro distopico',
+    'Elas dominam a tela',
+    'Principais escolhas para você',
+    'Filmes Empolgantes',
+    'Minha Lista',
+    'Novelas',
+    'Para assistir juntos: crianças mais velhas',
+    'Comédias teen',
+    'Recém adicionados',
+    'Séries sobre o crime',
+    'Filmes de ação',
+    'Produções Estrangeiras',
+    'Programas de ação',
+    'Dramas adolescentes',
+    'Lançamentos',
+    'Estrelas da semana',
+    'Ação e aventura',
   ];
   static const totalListCount = 33;
   static const listSize = totalListCount ~/ 3;
@@ -120,6 +120,9 @@ class ListContentsState extends State<ListContents> {
       widgets = [];
       for (int j = listSize - 1; j >= 0; j--) {
         int i = j * 3 + p;
+        if (i >= titles.length) {
+          i = titles.length - 1;
+        }
         widgets.add(
           Positioned(
             key: UniqueKey(),

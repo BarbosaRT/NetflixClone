@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void init(ContentController contentController,
-      {String list = 'Herois e Outsiders', int episode = 0}) {
+      {String list = 'Outsiders', int episode = 0}) {
     contentController.getContent(list, episode).then((value) {
       content = value;
     });
@@ -110,9 +110,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     videoController.init(content.trailer, callback: callback);
     videoController.defineThumbnail(content.backdrop, content.isOnline);
-
-    content.overview =
-        "     Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado \n     Com cancer ele se une com, Jesse Pinkman, um ex-aluno para\n     Produzir cristais de metafetamina e assegurar o futuro de sua familia.";
 
     playTimer = Timer(delay, play);
 
@@ -227,6 +224,13 @@ class _HomePageState extends State<HomePage> {
         'Entre em contato'
       ],
     ];
+
+    String overview = content.overview;
+    int overviewLength =
+        ContentModel.fromJson(AppConsts.placeholderJson).overview.length;
+    if (overview.length > overviewLength) {
+      overview = '${overview.substring(0, overviewLength)}...';
+    }
 
     return RawKeyboardListener(
       autofocus: true,
@@ -345,27 +349,31 @@ class _HomePageState extends State<HomePage> {
                           //
                           AnimatedPositioned(
                             top: videoController.isPlaying() ? 480 : 410,
-                            left: 32,
+                            left: 62,
                             duration: textDuration,
                             child: videoController.isPlaying()
-                                ? AnimatedTextKit(
-                                    animatedTexts: [
-                                      FadeAnimatedText(
-                                        content.overview,
-                                        textStyle: headline6,
-                                        duration: fadeInDuration,
-                                      ),
-                                    ],
-                                    totalRepeatCount: 1,
-                                    pause: const Duration(milliseconds: 0),
-                                    displayFullTextOnTap: true,
-                                    stopPauseOnTap: true,
-                                    repeatForever: false,
+                                ? SizedBox(
+                                    width: 650,
+                                    child: AnimatedTextKit(
+                                      animatedTexts: [
+                                        FadeAnimatedText(
+                                          overview,
+                                          textStyle: headline6,
+                                          duration: fadeInDuration,
+                                        ),
+                                      ],
+                                      totalRepeatCount: 1,
+                                      pause: const Duration(milliseconds: 0),
+                                      displayFullTextOnTap: true,
+                                      stopPauseOnTap: true,
+                                      repeatForever: false,
+                                    ),
                                   )
                                 : SizedBox(
                                     height: 70,
+                                    width: 650,
                                     child: Text(
-                                      content.overview,
+                                      overview,
                                       style: headline6,
                                     ),
                                   ),

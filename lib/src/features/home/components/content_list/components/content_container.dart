@@ -5,7 +5,6 @@ import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/video/get_impl.dart';
 import 'package:netflix/core/video/video_interface.dart';
-import 'package:netflix/core/video/youtube_impl.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
 import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
@@ -58,7 +57,7 @@ class _ContentContainerState extends State<ContentContainer> {
   bool hover = false;
   ValueNotifier<bool> added = ValueNotifier(false);
 
-  VideoInterface videoController = YoutubeImpl();
+  VideoInterface? videoController;
   GestureDetector? button;
 
   void callback() {
@@ -84,7 +83,7 @@ class _ContentContainerState extends State<ContentContainer> {
   }
 
   void onExit() {
-    videoController.seek(Duration.zero);
+    videoController?.seek(Duration.zero);
     if (widget.onExit != null) {
       widget.onExit!();
     }
@@ -93,8 +92,8 @@ class _ContentContainerState extends State<ContentContainer> {
     if (mounted) {
       setState(() {
         hover = false;
-        videoController.enableFrame(false);
-        videoController.pause();
+        videoController?.enableFrame(false);
+        videoController?.pause();
       });
     }
   }
@@ -117,12 +116,12 @@ class _ContentContainerState extends State<ContentContainer> {
       if (videoController.runtimeType != GetImpl().getImpl().runtimeType) {
         videoController = GetImpl()
             .getImpl(id: myGlobals.random.nextInt(69420), isOnline: true);
-        videoController.init(widget.content.trailer,
+        videoController?.init(widget.content.trailer,
             w: width * factor,
             h: height * factor,
             callback: callback,
             isOnline: widget.content.isOnline);
-        videoController.defineThumbnail(
+        videoController?.defineThumbnail(
             widget.content.poster, widget.content.isOnline);
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -132,10 +131,10 @@ class _ContentContainerState extends State<ContentContainer> {
           }
           if (mounted) {
             setState(() {
-              videoController.isPlaying(enable: true);
-              videoController.enableFrame(true);
-              videoController.play();
-              videoController.setVolume(1);
+              videoController?.isPlaying(enable: true);
+              videoController?.enableFrame(true);
+              videoController?.play();
+              videoController?.setVolume(1);
             });
           }
         });
@@ -158,15 +157,14 @@ class _ContentContainerState extends State<ContentContainer> {
     final screenWidth = MediaQuery.of(context).size.width;
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
+    final bool playing = videoController?.isPlaying() ?? false;
 
     button = GestureDetector(
       onTap: () {
         setState(() {
-          videoController.enableFrame(true);
+          videoController?.enableFrame(true);
 
-          videoController.isPlaying()
-              ? videoController.pause()
-              : videoController.play();
+          playing ? videoController?.pause() : videoController?.play();
         });
       },
       child: const Icon(
@@ -252,9 +250,9 @@ class _ContentContainerState extends State<ContentContainer> {
                       width: hover
                           ? width * factor / scale + 22 * (scale.toInt() - 1)
                           : width / scale,
-                      child: videoController.frame(),
+                      child: videoController?.frame(),
                     ),
-                    videoController.isPlaying() && hover
+                    playing && hover
                         ? Container(
                             height: height * factor / scale -
                                 10 +
@@ -342,9 +340,9 @@ class _ContentContainerState extends State<ContentContainer> {
                                   onClick: () {
                                     added.value = !added.value;
                                     setState(() {
-                                      videoController.enableFrame(true);
-                                      videoController.play();
-                                      videoController.setVolume(1);
+                                      videoController?.enableFrame(true);
+                                      videoController?.play();
+                                      videoController?.setVolume(1);
                                     });
                                   },
                                   text: ValueListenableBuilder(

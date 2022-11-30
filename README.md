@@ -8,15 +8,22 @@ PS: Netflix pls don't sue me :)
   
 Data Source: TMDB, uNoGs
 
+## Showcase
+
+![login](readme/Login.png)  
+![profile](readme/Profile.png)  
+![home](readme/Home.png)  
+![detail](readme/Detail.png)  
+![video](readme/Video.png)  
+
 ## Instructions 
 
 Requirements: python >= 3.6, dart >= 2.17  
 
-Python:  
+Python (Only needed to make it function offline):  
 ```
 pip install pytube, requests, json, unidecode
 ```
 
 ## Extras
-
-The use of api.py isn't the most appropriate, but this program was made to work offline, so yeah  
+original smooth_scroll by [dezso15](https://gitlab.com/dezso15/smoothscrollweb) 

@@ -5,16 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
-import 'package:dio/dio.dart';
-
-Future<dynamic> getHttp(String link) async {
-  try {
-    var response = await Dio().get(link);
-    return response.data;
-  } catch (e) {
-    rethrow;
-  }
-}
+import 'package:http/http.dart' as http;
 
 bool isNumeric(String s) {
   return double.tryParse(s) != null;
@@ -28,7 +19,11 @@ class ContentController extends ChangeNotifier {
   bool useOnline = true;
   int tvPage = 1;
   int moviePage = 1;
+  http.Client client = http.Client();
+
   final String apiKey = '456a2c767a26c3bd89a076ab4ec8f89b';
+
+  List<String> verifiedTitles = [];
 
   final List<String> _genres = [
     "Suspense No Ar",
@@ -43,19 +38,27 @@ class ContentController extends ChangeNotifier {
   final Random _random = Random(69);
   final List<String> titles = ListContentsState.titles;
 
-  void init() {
+  Future<dynamic> getHttp(String link) async {
+    try {
+      var response = jsonDecode((await client.get(Uri.parse(link))).body);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> init() async {
     if (!loading) {
       return;
     }
-    rootBundle.loadString('assets/data/contents.json').then((value) {
-      start(value);
-    });
+    var value = await rootBundle.loadString('assets/data/contents.json');
+    start(value);
   }
 
   void start(String response) {
     final Map<String, dynamic> data = json.decode(response);
 
-    List<String> keys = ['Herois e Outsiders', 'Em Alta'];
+    List<String> keys = ['Outsiders', 'Em Alta'];
     if (data.isNotEmpty) {
       keys = data.keys.toList();
 
@@ -69,16 +72,16 @@ class ContentController extends ChangeNotifier {
             int? age = int.tryParse(contents[contentsKeys[j]]['age']);
             contents[contentsKeys[j]]['age'] = age ?? 0;
           }
-          contentList.add(ContentModel.fromMap(contents[contentsKeys[j]]));
+          ContentModel content =
+              ContentModel.fromMap(contents[contentsKeys[j]]);
+          print(content.title);
+          contentList.add(content);
         }
         _contentModel[keys[i]] = contentList.toList();
       }
     }
-
-    if (_contentModel.isNotEmpty) {
-      loading = false;
-      notifyListeners();
-    }
+    loading = false;
+    notifyListeners();
   }
 
   String getKey(int index) {
@@ -157,7 +160,7 @@ class ContentController extends ChangeNotifier {
     tvPage += 1;
     int page = tvPage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
-    String trailer = 'https://yewtu.be/watch?v=vDY_uZAaU7g';
+    String trailer = '';
     String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
@@ -237,7 +240,7 @@ class ContentController extends ChangeNotifier {
     moviePage += 1;
     int page = moviePage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
-    String trailer = 'https://yewtu.be/watch?v=vDY_uZAaU7g';
+    String trailer = '';
     String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
@@ -316,7 +319,10 @@ class ContentController extends ChangeNotifier {
   Future<String> getTrailer(String title) async {
     List<dynamic> results = await getHttp(
         'https://inv.riverside.rocks/api/v1/search?q=${urlEncode(title)}+trailer');
-    return results[0]['videoId'];
+
+    String trailer = 'vDY_uZAaU7g';
+    trailer = results[0]['videoId'];
+    return trailer;
   }
 
   ContentModel concate(String id, int index) {
@@ -331,10 +337,24 @@ class ContentController extends ChangeNotifier {
     if (ind < 0) {
       ind = 0;
     }
+    //Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
     return _contentModel[i]![ind];
   }
 
   Future<ContentModel> getContent(String id, int index) async {
+    if (_contentModel[id] == null && !verifiedTitles.contains(id)) {
+      var response = await rootBundle.loadString('assets/data/contents.json');
+      Map<String, dynamic> data = jsonDecode(response);
+      if (data.keys.toList().contains(id)) {
+        if (!loading) {
+          await init();
+        }
+        verifiedTitles.add(id);
+        return concate(id, index);
+      } else {
+        verifiedTitles.add(id);
+      }
+    }
     if (useOnline && _contentModel[id] == null) {
       switch (titles.indexOf(id) % 3) {
         case 0:

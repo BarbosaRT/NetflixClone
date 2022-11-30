@@ -60,7 +60,9 @@ class _DetailPageState extends State<DetailPage> {
   );
 
   void callback() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -108,17 +110,16 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
-  void initContents() {
+  void initContents() async {
     contents = [];
     final contentController = Modular.get<ContentController>();
     for (var j = 0; j < 25; j++) {
-      contentController.getContent(contentController.getKey(1), j).then(
-        (value) {
-          contents.add(value);
-        },
-      );
+      contents.add(
+          await contentController.getContent(contentController.getKey(4), j));
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -695,18 +696,20 @@ class _DetailPageState extends State<DetailPage> {
                                                     scrollController.jumpTo(
                                                         startHeight / 2);
                                                   }
-                                                  setState(() {
-                                                    height = startHeight +
-                                                        410 *
-                                                            (_expanded.value
-                                                                ? 5
-                                                                : 0) +
-                                                        150.0 *
-                                                            widget
-                                                                .content!
-                                                                .episodes!
-                                                                .length;
-                                                  });
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      height = startHeight +
+                                                          410 *
+                                                              (_expanded.value
+                                                                  ? 5
+                                                                  : 0) +
+                                                          150.0 *
+                                                              widget
+                                                                  .content!
+                                                                  .episodes!
+                                                                  .length;
+                                                    });
+                                                  }
                                                 },
                                                 child: Container(
                                                   height: 40,

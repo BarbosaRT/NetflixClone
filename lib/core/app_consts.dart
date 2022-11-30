@@ -16,7 +16,7 @@ class AppConsts {
             "age": 18,
             "detail": "5 temporadas",
             "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": "Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado"
+            "overview": "Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado com cancer ele se une com, Jesse Pinkman, um ex-aluno para produzir cristais de metafetamina e assegurar o futuro de sua familia."
             }""";
   static const Map<int, String> classifications = {
     0: 'assets/images/classifications/L.png',

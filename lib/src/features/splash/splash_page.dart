@@ -7,6 +7,7 @@ import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/video/get_impl.dart';
 import 'package:netflix/models/content_model.dart';
+import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
 import 'package:netflix/src/features/splash/components/icon_painter.dart';
 import 'package:netflix/src/features/splash/splash_controller.dart';
@@ -26,6 +27,9 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   static const radius = 180.0;
   static const ypos = 90;
 
+  ValueNotifier<bool> textUpdate = ValueNotifier<bool>(false);
+  int ids = 0;
+
   final splashIcon = parseSvgPathData(
       'M 0 $ypos A 1 1 90 0 0 $stroke $ypos A 1 1 90 0 1 $radius $ypos A 1 1 90 0 0 0 $ypos');
 
@@ -44,6 +48,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     end: 0,
   );
 
+  final int totalTitles = ListContentsState.titles.length ~/ 3;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -52,11 +58,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Modular.get<ProfileController>().start();
-      Modular.get<SplashController>().startSplash(3);
-    });
-
     var splashNotifier = context.read<SplashController>();
     splashNotifier.addListener(() {
       if (splashNotifier.splashState == SplashState.finished) {
@@ -68,10 +69,12 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     final contentController = Modular.get<ContentController>();
     contentController.init();
-    contentController.addListener(() {
-      if (!contentController.loading) {
-        cacheImages();
-      }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Modular.get<ProfileController>().start();
+      load().then((v) {
+        Modular.get<SplashController>().startSplash(1);
+      });
     });
 
     final content = ContentModel.fromJson(AppConsts.placeholderJson);
@@ -84,22 +87,19 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     }
   }
 
-  void cacheImages() {
-    if (!mounted) {
-      return;
-    }
+  Future<void> load() async {
+    int i = 0;
     final controller = Modular.get<ContentController>();
-    for (var i = 0; i < 2; i++) {
-      final id = controller.getKey(i);
-      for (var j = 0; j < 15; j++) {
-        controller.getContent(id, j).then(
-          (value) {
-            if (!value.isOnline) {
-              precacheImage(AssetImage(value.poster), context);
-            }
-          },
-        );
+    List<String> keys = ListContentsState.titles;
+    for (var id in keys) {
+      if (i % 3 != 0) {
+        continue;
       }
+      await controller.getContent(id, 0);
+      ids += 1;
+      i += 1;
+      textUpdate.value = !textUpdate.value;
+      print('PRINT: $id');
     }
   }
 
@@ -176,14 +176,32 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                 width: 200,
                 child: Center(
                   child: profileController.profiles.isNotEmpty
-                      ? SizedBox(
-                          width: 75,
-                          child: Image.asset(profileController
-                              .profiles[profileController.selected].icon),
+                      ? IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            Modular.get<SplashController>().startSplash(1);
+                          },
+                          icon: SizedBox(
+                            width: 75,
+                            child: Image.asset(profileController
+                                .profiles[profileController.selected].icon),
+                          ),
                         )
                       : Container(),
                 )),
           ),
+          Positioned(
+              top: 250,
+              left: width / 2 + 10,
+              child: ValueListenableBuilder(
+                valueListenable: textUpdate,
+                builder: (context, value, child) {
+                  return Text(
+                    '$ids/$totalTitles',
+                    style: const TextStyle(color: Colors.white),
+                  );
+                },
+              ))
         ]),
       ),
     );
