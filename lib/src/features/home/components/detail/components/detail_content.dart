@@ -37,6 +37,16 @@ class _DetailContentState extends State<DetailContent> {
         .headline8
         .copyWith(color: const Color.fromRGBO(190, 190, 190, 1));
 
+    String overview = widget.content.overview;
+    if (overview.length > 153) {
+      overview = '${overview.substring(0, 153)}...';
+    }
+
+    bool isOnline = widget.content.isOnline;
+    String thumbnail = widget.content.poster;
+
+    dynamic image = isOnline ? NetworkImage(thumbnail) : AssetImage(thumbnail);
+
     return SizedBox(
         width: 300,
         height: 360,
@@ -57,7 +67,7 @@ class _DetailContentState extends State<DetailContent> {
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                 image: DecorationImage(
-                  image: AssetImage(widget.content.poster),
+                  image: image,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -159,7 +169,7 @@ class _DetailContentState extends State<DetailContent> {
               child: SizedBox(
                 width: 220,
                 child: Text(
-                  widget.content.overview,
+                  overview,
                   style: headline2,
                 ),
               ),

@@ -64,42 +64,51 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   List<Widget> widgetList = [];
   late CarouselController controller;
   int currentIndex = 0;
-
+  bool initialized = false;
   @override
   void initState() {
     if (widgetList.isEmpty) {
       controller = CarouselController();
-      initContents().then(
-        (v) {
-          widgetBuilder();
-        },
-      );
+      if (!initialized) {
+        initContents().then(
+          (v) {
+            widgetBuilder();
+          },
+        );
+      }
     }
     final contentController = Modular.get<ContentController>();
     if (contentController.loading) {
       contentController.init();
     } else {
-      initContents().then(
-        (v) {
-          widgetBuilder();
-        },
-      );
+      if (!initialized) {
+        initContents().then(
+          (v) {
+            widgetBuilder();
+          },
+        );
+      }
     }
     super.initState();
 
     contentController.addListener(() {
       if (!contentController.loading && !loaded) {
-        initContents().then((v) {
-          widgetBuilder();
-          if (mounted) {
-            setState(() {});
-          }
-        });
+        if (!initialized) {
+          initContents().then(
+            (v) {
+              widgetBuilder();
+              if (mounted) {
+                setState(() {});
+              }
+            },
+          );
+        }
       }
     });
   }
 
   Future<void> initContents() async {
+    initialized = true;
     contents = [];
     final contentController = Modular.get<ContentController>();
     for (var i = widget.initialPage;
@@ -176,11 +185,15 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     controller.previousPage(duration: duration, curve: curve);
   }
 
-  void activeLeft() {
+  void activeLeft() async {
     if (leftActive) {
       return;
     }
     leftActive = true;
+
+    final contentController = Modular.get<ContentController>();
+    await contentController.getContent(widget.title, 0);
+
     widgetBuilder();
     controller.jumpToPage(widget.listCount);
     Future.delayed(duration).then(

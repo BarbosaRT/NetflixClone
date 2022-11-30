@@ -99,7 +99,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       ids += 1;
       i += 1;
       textUpdate.value = !textUpdate.value;
-      print('PRINT: $id');
     }
   }
 
@@ -176,12 +175,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                 width: 200,
                 child: Center(
                   child: profileController.profiles.isNotEmpty
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
+                      ? GestureDetector(
+                          onTap: () {
                             Modular.get<SplashController>().startSplash(1);
                           },
-                          icon: SizedBox(
+                          child: SizedBox(
                             width: 75,
                             child: Image.asset(profileController
                                 .profiles[profileController.selected].icon),

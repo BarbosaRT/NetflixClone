@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 bool isNumeric(String s) {
@@ -74,7 +76,6 @@ class ContentController extends ChangeNotifier {
           }
           ContentModel content =
               ContentModel.fromMap(contents[contentsKeys[j]]);
-          print(content.title);
           contentList.add(content);
         }
         _contentModel[keys[i]] = contentList.toList();
@@ -123,6 +124,9 @@ class ContentController extends ChangeNotifier {
   }
 
   String getPoster(Map<String, dynamic> i, Map<String, dynamic> data) {
+    if (i["backdrop_path"] == null) {
+      i["backdrop_path"] = 'rCMuTyJGT2GJzXcvWeYAVHQQRFS';
+    }
     String poster = 'https://image.tmdb.org/t/p/w400${i["backdrop_path"]}';
     if (i['background_path'].toString().isEmpty) {
       poster =
@@ -146,12 +150,12 @@ class ContentController extends ChangeNotifier {
     List<ContentModel> contents = [];
 
     List<ContentModel> films = await getFilms();
-    contents += films.toList();
+    contents += films.sublist(0, 11).toList();
 
     List<ContentModel> series = await getSeries();
-    contents += series.toList();
+    contents += series.sublist(0, 15).toList();
 
-    //print('PRINT (getMixed): ${contents.length}, $tvPage, $id');
+    contents.shuffle();
     _contentModel[id] = contents.toList();
     notifyListeners();
   }
@@ -161,7 +165,6 @@ class ContentController extends ChangeNotifier {
     int page = tvPage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
     String trailer = '';
-    String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
         'https://api.themoviedb.org/4/discover/tv?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR');
@@ -196,20 +199,32 @@ class ContentController extends ChangeNotifier {
           break;
         }
       }
+      // Determines if the content is only on netflix
       Map<String, dynamic> onlyData = await getHttp(
           'https://api.themoviedb.org/3/tv/$tvId/watch/providers?api_key=$apiKey&language=pt-BR');
-      // Determines if the content is only on netflix
 
       bool onlyOnNetflix = false;
-      if (onlyData['BR'] != null) {
-        onlyOnNetflix = onlyData['BR']['flatrate'].length == 1;
-      } else if (onlyData['US'] != null) {
-        onlyOnNetflix = onlyData['US']['flatrate'].length == 1;
+      if (onlyData['results'] != null) {
+        onlyData = onlyData['results'];
       }
+      if (onlyData['BR'] != null) {
+        try {
+          onlyOnNetflix = onlyData['BR']['flatrate'].length == 1;
+        } catch (e) {
+          onlyOnNetflix = false;
+        }
+      } else if (onlyData['US'] != null) {
+        try {
+          onlyOnNetflix = onlyData['US']['flatrate'].length == 1;
+        } catch (e) {
+          onlyOnNetflix = false;
+        }
+      }
+
       List<dynamic> trailerData = tvData['videos']['results'];
       if (trailerData.isNotEmpty) {
         if (trailerData[0]['site'] == 'YouTube') {
-          trailer = 'https://yewtu.be/watch?v=${trailerData[0]["key"]}';
+          trailer = trailerConcate(trailerData[0]["key"]);
         } else {
           trailer = await getTrailer(title);
         }
@@ -227,9 +242,10 @@ class ContentController extends ChangeNotifier {
           rating: rating,
           trailer: trailer,
           poster: poster,
-          backdrop: backdrop,
+          backdrop: poster,
           title: title,
-          overview: overview);
+          overview: overview,
+          onlyOnNetflix: onlyOnNetflix);
       //print('CONTENT: $title $page');
       output.add(content);
     }
@@ -241,7 +257,6 @@ class ContentController extends ChangeNotifier {
     int page = moviePage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
     String trailer = '';
-    String backdrop = 'assets/data/backdrops/breaking_bad_backdrop.jpg';
     List<ContentModel> output = [];
     Map<String, dynamic> data = await getHttp(
         'https://api.themoviedb.org/4/discover/movie?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc');
@@ -276,17 +291,31 @@ class ContentController extends ChangeNotifier {
           break;
         }
       }
+      // Determines if the content is only on netflix
+      Map<String, dynamic> onlyData = await getHttp(
+          'https://api.themoviedb.org/3/movie/$movieId/watch/providers?api_key=$apiKey&language=pt-BR');
+
+      bool onlyOnNetflix = false;
+      if (onlyData['results'] != null) {
+        onlyData = onlyData['results'];
+      }
+      if (onlyData['BR'] != null) {
+        onlyOnNetflix = onlyData['BR']['flatrate'].length == 1;
+      } else if (onlyData['US'] != null) {
+        onlyOnNetflix = onlyData['US']['flatrate'].length == 1;
+      }
+
       String poster = getPoster(i, movieData);
 
       List<dynamic> trailerData = movieData['videos']['results'];
       if (trailerData.isNotEmpty) {
         if (trailerData[0]['site'] == 'YouTube') {
-          trailer = 'https://yewtu.be/watch?v=${trailerData[0]["key"]}';
+          trailer = trailerConcate(trailerData[0]["key"]);
         } else {
-          trailer = 'https://yewtu.be/watch?v=${await getTrailer(title)}';
+          trailer = await getTrailer(title);
         }
       } else {
-        trailer = 'https://yewtu.be/watch?v=${await getTrailer(title)}';
+        trailer = await getTrailer(title);
       }
 
       ContentModel content = ContentModel(
@@ -298,9 +327,10 @@ class ContentController extends ChangeNotifier {
           rating: rating,
           trailer: trailer,
           poster: poster,
-          backdrop: backdrop,
+          backdrop: poster,
           title: title,
-          overview: overview);
+          overview: overview,
+          onlyOnNetflix: onlyOnNetflix);
       //print('CONTENT: $title $page');
       output.add(content);
     }
@@ -316,16 +346,47 @@ class ContentController extends ChangeNotifier {
     return output;
   }
 
-  Future<String> getTrailer(String title) async {
-    List<dynamic> results = await getHttp(
-        'https://inv.riverside.rocks/api/v1/search?q=${urlEncode(title)}+trailer');
-
-    String trailer = 'vDY_uZAaU7g';
-    trailer = results[0]['videoId'];
-    return trailer;
+  String trailerConcate(String trailer) {
+    return 'https://yewtu.be/embed/$trailer?raw=1';
   }
 
-  ContentModel concate(String id, int index) {
+  Future<String> getTrailer(String title) async {
+    //_InternalLinkedHashMap<String, dynamic>
+    List<dynamic> placeholder = [
+      {
+        "type": "video",
+        "title": "Trailer Fight Club Legendado PT-BR (Clube da Luta)",
+        "videoId": "Fs0-4NLSO2Y"
+      }
+    ];
+    List<dynamic> results = [];
+    dynamic result;
+    try {
+      result = await getHttp(
+          'https://inv.riverside.rocks/api/v1/search?q=${urlEncode(title)}+trailer');
+      if (result.runtimeType == results.runtimeType) {
+        results = result.toList();
+      }
+    } catch (e) {
+      results = placeholder.toList();
+    }
+    if (results.isEmpty) {
+      results = placeholder.toList();
+    }
+    String? trailer = '';
+    try {
+      trailer = results[0]['videoId'];
+    } catch (e) {
+      trailer = 'vDY_uZAaU7g';
+    }
+    trailer ??= 'vDY_uZAaU7g';
+    return trailerConcate(trailer);
+  }
+
+  ContentModel returnContent(String id, int index) {
+    if (_contentModel.isEmpty) {
+      return ContentModel.fromJson(AppConsts.placeholderJson);
+    }
     if (index < 0) {
       index = 0;
     }
@@ -337,8 +398,11 @@ class ContentController extends ChangeNotifier {
     if (ind < 0) {
       ind = 0;
     }
-    //Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
-    return _contentModel[i]![ind];
+    try {
+      return _contentModel[i]![ind];
+    } on RangeError {
+      return ContentModel.fromJson(AppConsts.placeholderJson);
+    }
   }
 
   Future<ContentModel> getContent(String id, int index) async {
@@ -350,7 +414,7 @@ class ContentController extends ChangeNotifier {
           await init();
         }
         verifiedTitles.add(id);
-        return concate(id, index);
+        return returnContent(id, index);
       } else {
         verifiedTitles.add(id);
       }
@@ -359,7 +423,7 @@ class ContentController extends ChangeNotifier {
       switch (titles.indexOf(id) % 3) {
         case 0:
           await getMixed(id);
-          return concate(id, index);
+          return returnContent(id, index);
         case 1:
           List<ContentModel> contents = [];
           for (int k = 0; k <= 2; k++) {
@@ -367,7 +431,7 @@ class ContentController extends ChangeNotifier {
             contents += films.toList();
           }
           _contentModel[id] = contents.toList();
-          return concate(id, index);
+          return returnContent(id, index);
         case 2:
           List<ContentModel> contents = [];
           for (int k = 0; k <= 2; k++) {
@@ -375,13 +439,13 @@ class ContentController extends ChangeNotifier {
             contents += series.toList();
           }
           _contentModel[id] = contents.toList();
-          return concate(id, index);
+          return returnContent(id, index);
         default:
           await getMixed(id);
-          return concate(id, index);
+          return returnContent(id, index);
       }
     } else {
-      return concate(id, index);
+      return returnContent(id, index);
     }
   }
 }

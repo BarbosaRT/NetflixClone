@@ -11,6 +11,7 @@ class ContentModel {
   final String logo;
   final String title;
   final bool isOnline;
+  final bool onlyOnNetflix;
   String overview;
   bool hasDetailPage;
   List<dynamic>? cast;
@@ -20,6 +21,7 @@ class ContentModel {
     this.hasDetailPage = false,
     this.cast,
     this.episodes,
+    required this.onlyOnNetflix,
     required this.logo,
     required this.isOnline,
     required this.age,
@@ -52,5 +54,6 @@ class ContentModel {
       episodes: json["episodes"],
       age: json['age'] ?? 0,
       tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"],
-      isOnline: json["isOnline"] ?? false);
+      isOnline: json["isOnline"] ?? false,
+      onlyOnNetflix: json['onlyOnNetflix'] ?? false);
 }

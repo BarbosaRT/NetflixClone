@@ -52,6 +52,8 @@ class _HomePageState extends State<HomePage> {
   static const fadeInDuration = Duration(milliseconds: 700);
   static const delay = Duration(seconds: 10);
   static const double buttonWidth = 215.0;
+  static const int overviewStringLength = 230;
+  static const double overviewWidth = 669.0;
 
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
   VideoInterface videoController = GetImpl().getImpl(id: 69);
@@ -68,11 +70,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void init(ContentController contentController,
-      {String list = 'Outsiders', int episode = 0}) {
-    contentController.getContent(list, episode).then((value) {
-      content = value;
-    });
+  void init(ContentController contentController) async {
+    content = await contentController.getContent(getId(), 0);
     videoController.pause();
     videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
@@ -154,20 +153,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  String getId() {
+    switch (currentPage) {
+      case HomePages.inicio:
+        return ListContentsState.titles[0];
+      case HomePages.series:
+        return ListContentsState.titles[1];
+      case HomePages.filmes:
+        return ListContentsState.titles[2];
+    }
+  }
+
   void onChangePage(HomePages page) {
     final contentController = Modular.get<ContentController>();
     currentPage = page;
-    switch (page) {
-      case HomePages.inicio:
-        init(contentController);
-        break;
-      case HomePages.series:
-        init(contentController, list: 'Em Alta');
-        break;
-      case HomePages.filmes:
-        init(contentController, list: '1');
-        break;
-    }
+    init(contentController);
     _listKey.currentState!.rebuild(page);
   }
 
@@ -226,10 +226,8 @@ class _HomePageState extends State<HomePage> {
     ];
 
     String overview = content.overview;
-    int overviewLength =
-        ContentModel.fromJson(AppConsts.placeholderJson).overview.length;
-    if (overview.length > overviewLength) {
-      overview = '${overview.substring(0, overviewLength)}...';
+    if (overview.length > overviewStringLength) {
+      overview = '${overview.substring(0, overviewStringLength)}...';
     }
 
     return RawKeyboardListener(
@@ -349,11 +347,11 @@ class _HomePageState extends State<HomePage> {
                           //
                           AnimatedPositioned(
                             top: videoController.isPlaying() ? 480 : 410,
-                            left: 62,
+                            left: 55,
                             duration: textDuration,
                             child: videoController.isPlaying()
                                 ? SizedBox(
-                                    width: 650,
+                                    width: overviewWidth,
                                     child: AnimatedTextKit(
                                       animatedTexts: [
                                         FadeAnimatedText(
@@ -371,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                                   )
                                 : SizedBox(
                                     height: 70,
-                                    width: 650,
+                                    width: overviewWidth,
                                     child: Text(
                                       overview,
                                       style: headline6,

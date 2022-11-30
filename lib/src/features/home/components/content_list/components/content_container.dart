@@ -129,17 +129,22 @@ class _ContentContainerState extends State<ContentContainer> {
           if (!isHover) {
             return;
           }
-          if (mounted) {
-            setState(() {
-              videoController?.isPlaying(enable: true);
-              videoController?.enableFrame(true);
-              videoController?.play();
-              videoController?.setVolume(1);
-            });
-          }
+          startTrailer();
         });
       });
     });
+  }
+
+  void startTrailer() {
+    if (mounted) {
+      setState(() {
+        videoController?.isPlaying(enable: true);
+        videoController?.enableFrame(true);
+        videoController?.play();
+        videoController?.setVolume(1);
+        videoController?.enableFrame(true);
+      });
+    }
   }
 
   void onClick() {
@@ -158,21 +163,6 @@ class _ContentContainerState extends State<ContentContainer> {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
     final bool playing = videoController?.isPlaying() ?? false;
-
-    button = GestureDetector(
-      onTap: () {
-        setState(() {
-          videoController?.enableFrame(true);
-
-          playing ? videoController?.pause() : videoController?.play();
-        });
-      },
-      child: const Icon(
-        Icons.expand_more_rounded,
-        size: 25,
-        color: Colors.white,
-      ),
-    );
 
     final decoration = BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(border)),
@@ -266,6 +256,16 @@ class _ContentContainerState extends State<ContentContainer> {
                               iconOff: Icons.volume_off,
                             ),
                           )
+                        : Container(),
+                    widget.content.onlyOnNetflix
+                        ? Positioned(
+                            top: 5,
+                            left: 10,
+                            child: Image.asset(
+                              'assets/images/icon.png',
+                              width: 15,
+                            ),
+                          )
                         : Container()
                   ],
                 ),
@@ -339,11 +339,7 @@ class _ContentContainerState extends State<ContentContainer> {
                               child: ContentButton(
                                   onClick: () {
                                     added.value = !added.value;
-                                    setState(() {
-                                      videoController?.enableFrame(true);
-                                      videoController?.play();
-                                      videoController?.setVolume(1);
-                                    });
+                                    startTrailer();
                                   },
                                   text: ValueListenableBuilder(
                                     valueListenable: added,
