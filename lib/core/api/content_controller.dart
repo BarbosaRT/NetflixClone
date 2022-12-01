@@ -23,7 +23,7 @@ class ContentController extends ChangeNotifier {
   int moviePage = 1;
   http.Client client = http.Client();
 
-  final String apiKey = '456a2c767a26c3bd89a076ab4ec8f89b';
+  final String apiKey = 'PLACE_YOUR_API_KEY_HERE';
 
   List<String> verifiedTitles = [];
 
