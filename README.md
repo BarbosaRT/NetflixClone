@@ -30,7 +30,7 @@ Access the directory:
 ```
 cd NetflixClone
 ```
-You will need a TMDB api key, you can get one [here](https://developers.themoviedb.org/3/getting-started/introduction), after that replace the apiKey variable in the lib/core/api/content_controller.dart 
+You will need a TMDB api key, you can get one [here](https://developers.themoviedb.org/3/getting-started/introduction), after that replace the apiKey variable in lib/core/api/content_controller.dart and in lib/scripts/api.py
 
 Now install the dependencies:
 ```
