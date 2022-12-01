@@ -7,7 +7,7 @@ import json
 import pytube
 import unidecode
 
-API_KEY = '456a2c767a26c3bd89a076ab4ec8f89b'
+API_KEY = 'PLACE_YOUR_API_KEY_HERE'
 DELAY = 0.0
 POSTER = 'assets/data/posters/breaking_bad_poster.jpg'
 TRAILER = 'assets/data/trailers/breaking_bad_trailer.mp4'
