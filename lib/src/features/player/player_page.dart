@@ -30,8 +30,7 @@ class PlayerModel {
 
 // ignore: must_be_immutable
 class PlayerPage extends StatefulWidget {
-  PlayerModel? playerModel;
-  PlayerPage({super.key, this.playerModel});
+  const PlayerPage({super.key});
 
   @override
   State<PlayerPage> createState() => _PlayerPageState();
@@ -140,8 +139,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    widget.playerModel ??=
-        PlayerModel(ContentModel.fromJson(AppConsts.placeholderJson), 0);
+    var playerNotifier = Modular.get<PlayerNotifier>();
+    PlayerModel playerModel = playerNotifier.playerModel;
 
     _nextController = AnimationController(
       duration: const Duration(seconds: 5),
@@ -156,10 +155,10 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     finishDetected = false;
     VideoInterface videoController =
         GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
-    videoController.init(widget.playerModel!.content.trailer,
+    videoController.init(playerModel.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
-    videoController.defineThumbnail(widget.playerModel!.content.poster,
-        widget.playerModel!.content.isOnline);
+    videoController.defineThumbnail(
+        playerModel.content.poster, playerModel.content.isOnline);
 
     super.initState();
   }
@@ -240,8 +239,12 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final episode = widget.playerModel!.episode;
-    final episodes = widget.playerModel!.content.episodes!;
+
+    var playerNotifier = Modular.get<PlayerNotifier>();
+    PlayerModel playerModel = playerNotifier.playerModel;
+
+    final episode = playerModel.episode;
+    final episodes = playerModel.content.episodes!;
     final episodeContent =
         ContentModel.fromMap(episodes[episodes.keys.toList()[episode]]);
     final nextEpisode = episode < episodes.length - 1 ? episode + 1 : 0;
@@ -263,8 +266,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               callback: callback,
               positionStream: positionStream);
 
-          videoController.defineThumbnail(widget.playerModel!.content.poster,
-              widget.playerModel!.content.isOnline);
+          videoController.defineThumbnail(
+              playerModel.content.poster, playerModel.content.isOnline);
           videoController.enableFrame(true);
           videoController.play();
           videoController.setVolume(0);
@@ -301,7 +304,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
     final redColor = colorController.currentScheme.loginButtonColor;
-    final content = widget.playerModel!.content;
+    final content = playerModel.content;
     final color = colorController.currentScheme.loginButtonColor;
 
     final headline6 = AppFonts().headline8;
@@ -415,8 +418,10 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                       padding: const EdgeInsets.only(left: 5, right: 0),
                       onPressed: () {
                         videoController.stop();
-                        Modular.to.popAndPushNamed('/video',
-                            arguments: PlayerModel(content, nextEpisode));
+                        var playerNotifier = Modular.get<PlayerNotifier>();
+                        playerNotifier.playerModel =
+                            PlayerModel(content, nextEpisode);
+                        Modular.to.popAndPushNamed('/video');
                       },
                     )
                   : SizedBox(
@@ -429,9 +434,11 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                             builder: (context, child) {
                               if (nextAnimation.value >= 0.99) {
                                 videoController.stop();
-                                Modular.to.popAndPushNamed('/video',
-                                    arguments:
-                                        PlayerModel(content, nextEpisode));
+                                var playerNotifier =
+                                    Modular.get<PlayerNotifier>();
+                                playerNotifier.playerModel =
+                                    PlayerModel(content, nextEpisode);
+                                Modular.to.popAndPushNamed('/video');
                               }
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
@@ -1034,8 +1041,11 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                       padding: const EdgeInsets.only(left: 5, right: 0),
                       onPressed: () {
                         videoController.stop();
-                        Modular.to.popAndPushNamed('/video',
-                            arguments: PlayerModel(content, nextEpisode));
+
+                        var playerNotifier = Modular.get<PlayerNotifier>();
+                        playerNotifier.playerModel =
+                            PlayerModel(content, nextEpisode);
+                        Modular.to.popAndPushNamed('/video');
                       },
                     )
                   : SizedBox(
@@ -1048,9 +1058,11 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                             builder: (context, child) {
                               if (nextAnimation.value >= 0.99) {
                                 videoController.stop();
-                                Modular.to.popAndPushNamed('/video',
-                                    arguments:
-                                        PlayerModel(content, nextEpisode));
+                                var playerNotifier =
+                                    Modular.get<PlayerNotifier>();
+                                playerNotifier.playerModel =
+                                    PlayerModel(content, nextEpisode);
+                                Modular.to.popAndPushNamed('/video');
                               }
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
@@ -1115,6 +1127,8 @@ class PlayerNotifier extends ChangeNotifier {
   double _selectedSpeed = 1;
   int _selectedCaption = 0;
   int _selectedTranslation = 0;
+  PlayerModel playerModel =
+      PlayerModel(ContentModel.fromJson(AppConsts.placeholderJson), 0);
 
   void changeSelected(int selected) {
     _selectedButton = selected;

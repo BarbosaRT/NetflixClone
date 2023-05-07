@@ -23,7 +23,7 @@ class ContentController extends ChangeNotifier {
   int moviePage = 1;
   http.Client client = http.Client();
 
-  final String apiKey = 'PLACE_YOUR_API_KEY_HERE';
+  final String apiKey = 'PLACE-YOUR-API-KEY-HERE';
 
   List<String> verifiedTitles = [];
 
@@ -47,6 +47,11 @@ class ContentController extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  void log(String message) {
+    String datetime = DateTime.now().toString();
+    print('[$datetime]: $message');
   }
 
   Future<void> init() async {
@@ -165,21 +170,29 @@ class ContentController extends ChangeNotifier {
     int page = tvPage;
     String logo = 'assets/data/logos/breaking_bad_logo.png';
     String trailer = '';
-    List<ContentModel> output = [];
+    List<ContentModel> output = List.generate(
+      40,
+      (index) => ContentModel.fromJson(AppConsts.placeholderJson),
+    );
     Map<String, dynamic> data = await getHttp(
         'https://api.themoviedb.org/4/discover/tv?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR');
+    log('data');
     for (int k = 0; k < data['results'].length; k++) {
       var i = data['results'][k];
       String tvId = i['id'].toString();
       Map<String, dynamic> tvData = await getHttp(
           'https://api.themoviedb.org/3/tv/$tvId?api_key=$apiKey&language=pt-BR&include_image_language=en,pt&append_to_response=release_dates,videos,images');
+
       int rating = (i['vote_average'] * 10).toInt();
+
       String title = i['name'];
+
       List<String> tvGenres = [];
       tvData['genres'].forEach((element) {
         tvGenres.add(element['name'].toString());
       });
       List<String> genres = getGenre(tvGenres);
+
       String details = tvData['number_of_seasons'].toString();
       String detail =
           details + ((details.length > 1) ? ' Temporadas' : ' Temporada');
@@ -188,6 +201,7 @@ class ContentController extends ChangeNotifier {
       Map<String, dynamic> ageData = await getHttp(
           'https://api.themoviedb.org/3/tv/$tvId/content_ratings?api_key=$apiKey&language=pt-BR');
       int age = 0;
+
       for (var a in ageData['results']) {
         String ageRating = a['rating'].toString();
         if (!isNumeric(ageRating)) {
@@ -246,7 +260,6 @@ class ContentController extends ChangeNotifier {
           title: title,
           overview: overview,
           onlyOnNetflix: onlyOnNetflix);
-      //print('CONTENT: $title $page');
       output.add(content);
     }
     return output.toList();
@@ -331,7 +344,6 @@ class ContentController extends ChangeNotifier {
           title: title,
           overview: overview,
           onlyOnNetflix: onlyOnNetflix);
-      //print('CONTENT: $title $page');
       output.add(content);
     }
     return output.toList();
@@ -422,23 +434,21 @@ class ContentController extends ChangeNotifier {
     if (useOnline && _contentModel[id] == null) {
       switch (titles.indexOf(id) % 3) {
         case 0:
-          await getMixed(id);
-          return returnContent(id, index);
-        case 1:
           List<ContentModel> contents = [];
-          for (int k = 0; k <= 2; k++) {
-            List<ContentModel> films = await getFilms();
-            contents += films.toList();
-          }
-          _contentModel[id] = contents.toList();
-          return returnContent(id, index);
-        case 2:
-          List<ContentModel> contents = [];
-          for (int k = 0; k <= 2; k++) {
+          for (int k = 0; k <= 1; k++) {
             List<ContentModel> series = await getSeries();
             contents += series.toList();
           }
           _contentModel[id] = contents.toList();
+          //await getMixed(id);
+          return returnContent(id, index);
+        case 1:
+          List<ContentModel> films = await getFilms();
+          _contentModel[id] = films.toList();
+          return returnContent(id, index);
+        case 2:
+          List<ContentModel> series = await getSeries();
+          _contentModel[id] = series.toList();
           return returnContent(id, index);
         default:
           await getMixed(id);

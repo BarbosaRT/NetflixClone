@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 
 void main() async {
-  await DartVLC.initialize(useFlutterNativeView: true);
+  DartVLC.initialize();
   runApp(const DartVLCExample());
 }
 
@@ -20,7 +20,6 @@ class DartVLCExampleState extends State<DartVLCExample> {
   Player player = Player(
     id: 0,
     videoDimensions: const VideoDimensions(640, 360),
-    registerTexture: !Platform.isWindows,
   );
   MediaType mediaType = MediaType.file;
   CurrentState current = CurrentState();
@@ -103,23 +102,14 @@ class DartVLCExampleState extends State<DartVLCExample> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Platform.isWindows
-                    ? NativeVideo(
-                        player: player,
-                        width: isPhone ? 320 : 640,
-                        height: isPhone ? 180 : 360,
-                        volumeThumbColor: Colors.blue,
-                        volumeActiveColor: Colors.blue,
-                        showControls: !isPhone,
-                      )
-                    : Video(
-                        player: player,
-                        width: isPhone ? 320 : 640,
-                        height: isPhone ? 180 : 360,
-                        volumeThumbColor: Colors.blue,
-                        volumeActiveColor: Colors.blue,
-                        showControls: !isPhone,
-                      ),
+                Video(
+                  player: player,
+                  width: isPhone ? 320 : 640,
+                  height: isPhone ? 180 : 360,
+                  volumeThumbColor: Colors.blue,
+                  volumeActiveColor: Colors.blue,
+                  showControls: !isPhone,
+                ),
               ],
             ),
             Row(
@@ -285,8 +275,6 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                             player.open(
                                               Playlist(
                                                 medias: medias,
-                                                playlistMode:
-                                                    PlaylistMode.single,
                                               ),
                                             );
                                           },

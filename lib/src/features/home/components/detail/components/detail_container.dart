@@ -37,6 +37,9 @@ class _DetailContainerState extends State<DetailContainer> {
         AppFonts().labelIntermedium.copyWith(color: Colors.grey.shade300);
     final onColor = Colors.grey.shade800;
 
+    final episodeContent = ContentModel.fromMap(widget.content
+        .episodes![widget.content.episodes!.keys.toList()[widget.index]]);
+
     return HoverWidget(
       useNotification: false,
       delayOut: Duration.zero,
@@ -83,7 +86,7 @@ class _DetailContainerState extends State<DetailContainer> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: Image.asset(widget.content.poster,
+                        child: Image.asset(episodeContent.poster,
                             fit: BoxFit.cover),
                       ),
                       ValueListenableBuilder(
@@ -95,9 +98,11 @@ class _DetailContainerState extends State<DetailContainer> {
                               child: IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  Modular.to.pushNamed('/video',
-                                      arguments:
-                                          PlayerModel(widget.content, 0));
+                                  var playerNotifier =
+                                      Modular.get<PlayerNotifier>();
+                                  playerNotifier.playerModel =
+                                      PlayerModel(widget.content, widget.index);
+                                  Modular.to.pushNamed('/video');
                                 },
                                 icon: const Icon(Icons.play_arrow,
                                     size: 50, color: Colors.white),
@@ -119,7 +124,7 @@ class _DetailContainerState extends State<DetailContainer> {
                         child: Row(
                           children: [
                             Text(
-                              widget.content.title,
+                              episodeContent.title,
                               style: headline2,
                             ),
                             const Spacer(),
@@ -137,7 +142,7 @@ class _DetailContainerState extends State<DetailContainer> {
                           width: 450,
                           height: 65,
                           child:
-                              Text(widget.content.overview, style: headline3)),
+                              Text(episodeContent.overview, style: headline3)),
                     ],
                   )
                 ],

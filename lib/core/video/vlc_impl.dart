@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:netflix/core/video/video_interface.dart';
 import 'package:dart_vlc/dart_vlc.dart';
@@ -23,7 +21,6 @@ class PlayerImpl implements VideoInterface {
     _controller = Player(
       id: id,
       videoDimensions: const VideoDimensions(640, 360),
-      registerTexture: !Platform.isWindows,
     );
   }
 
@@ -32,14 +29,12 @@ class PlayerImpl implements VideoInterface {
     dynamic image =
         _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     if (_enableFrame) {
-      return !Platform.isWindows
-          ? Video(
-              player: _controller,
-              width: width,
-              height: height,
-              showControls: false,
-            )
-          : NativeVideo(player: _controller, height: height, width: width);
+      return Video(
+        player: _controller,
+        width: width,
+        height: height,
+        showControls: false,
+      );
     } else {
       return _thumbnail.isEmpty
           ? Container()
@@ -88,7 +83,6 @@ class PlayerImpl implements VideoInterface {
     _controller.open(
         Playlist(
           medias: medias,
-          playlistMode: PlaylistMode.single,
         ),
         autoStart: false);
   }

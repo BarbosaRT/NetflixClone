@@ -55,8 +55,11 @@ class _SkipWidgetState extends State<SkipWidget> {
       icon: GestureDetector(
         onTap: () {
           widget.videoController.stop();
-          Modular.to.popAndPushNamed('/video',
-              arguments: PlayerModel(widget.content, widget.nextEpisode));
+
+          var playerNotifier = Modular.get<PlayerNotifier>();
+          playerNotifier.playerModel =
+              PlayerModel(widget.content, widget.nextEpisode);
+          Modular.to.popAndPushNamed('/video');
         },
         child: ValueListenableBuilder(
           valueListenable: _skipHover,
@@ -98,9 +101,11 @@ class _SkipWidgetState extends State<SkipWidget> {
                 child: GestureDetector(
                   onTap: () {
                     widget.videoController.stop();
-                    Modular.to.popAndPushNamed('/video',
-                        arguments:
-                            PlayerModel(widget.content, widget.nextEpisode));
+
+                    var playerNotifier = Modular.get<PlayerNotifier>();
+                    playerNotifier.playerModel =
+                        PlayerModel(widget.content, widget.nextEpisode);
+                    Modular.to.popAndPushNamed('/video');
                   },
                   child: Container(
                     width: 550,

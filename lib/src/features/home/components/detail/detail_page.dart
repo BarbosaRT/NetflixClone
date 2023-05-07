@@ -278,8 +278,13 @@ class _DetailPageState extends State<DetailPage> {
                                   videoController.setVolume(0);
                                   videoController.stop();
                                 });
-                                Modular.to.pushNamed('/video',
-                                    arguments: PlayerModel(widget.content!, 0));
+                                var playerNotifier =
+                                    Modular.get<PlayerNotifier>();
+                                playerNotifier.playerModel =
+                                    PlayerModel(widget.content!, 0);
+                                Modular.to.pushNamed(
+                                  '/video',
+                                );
                               },
                             ),
                           ),
@@ -550,10 +555,7 @@ class _DetailPageState extends State<DetailPage> {
                                     scale: width / 1360,
                                     child: DetailContainer(
                                       key: UniqueKey(),
-                                      content: ContentModel.fromMap(
-                                          widget.content!.episodes![widget
-                                              .content!.episodes!.keys
-                                              .toList()[e]]),
+                                      content: widget.content!,
                                       index: e,
                                     ),
                                   ),
@@ -564,55 +566,60 @@ class _DetailPageState extends State<DetailPage> {
                           // Titulos Semelhantes
                           //
                           Positioned(
-                              top: 835 +
-                                  150.0 * widget.content!.episodes!.length,
-                              left: 300 * width / 1360,
-                              child: ValueListenableBuilder(
-                                  valueListenable: _expanded,
-                                  builder: (context, bool value, child) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                            top: 835 + 150.0 * widget.content!.episodes!.length,
+                            left: 300 * width / 1360,
+                            child: ValueListenableBuilder(
+                              valueListenable: _expanded,
+                              builder: (context, bool value, child) {
+                                if (contents.isEmpty) {
+                                  initContents();
+                                  return Container(color: Colors.red);
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 750,
+                                      child: Text('Titulos Semelhantes ',
+                                          style: headline5),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Column(
                                       children: [
-                                        SizedBox(
-                                          width: 750,
-                                          child: Text('Titulos Semelhantes ',
-                                              style: headline5),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Column(
-                                          children: [
-                                            for (int o = 0;
-                                                o < (value ? 8 : 3);
-                                                o++)
-                                              SizedBox(
-                                                width: 1000,
-                                                height: 380,
-                                                child: Stack(
-                                                  children: [
-                                                    for (int c = 0; c < 3; c++)
-                                                      Positioned(
-                                                          left:
-                                                              c * 236 + c * 20,
-                                                          child:
-                                                              Transform.scale(
-                                                            scale: width / 1360,
-                                                            child:
-                                                                DetailContent(
-                                                              content: contents[
-                                                                  3 * o + c],
-                                                            ),
-                                                          )),
-                                                  ].reversed.toList(),
-                                                ),
-                                              ),
-                                          ],
-                                        )
+                                        for (int o = 0;
+                                            o < (value ? 8 : 3);
+                                            o++)
+                                          SizedBox(
+                                            width: 1000,
+                                            height: 380,
+                                            child: Stack(
+                                              children: [
+                                                for (int c = 0; c < 3; c++)
+                                                  Positioned(
+                                                    left: c * 236 + c * 20,
+                                                    child: Transform.scale(
+                                                      scale: width / 1360,
+                                                      child:
+                                                          // Problema quando tenta voltar, fica tudo preto
+                                                          // TODO: RangeError (index): Invalid value: Valid value range is empty: 0
+                                                          DetailContent(
+                                                        content:
+                                                            contents[3 * o + c],
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ].reversed.toList(),
+                                            ),
+                                          ),
                                       ],
-                                    );
-                                  })),
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
                           //
                           // About
                           //

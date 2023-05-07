@@ -37,9 +37,7 @@ class AppModule extends Module {
         ChildRoute('/splash', child: (context, args) => const SplashPage()),
         ChildRoute(
           '/video',
-          child: (context, args) => PlayerPage(
-            playerModel: args.data,
-          ),
+          child: (context, args) => const PlayerPage(),
         ),
         RedirectRoute('/', to: '/profile'),
         ChildRoute(

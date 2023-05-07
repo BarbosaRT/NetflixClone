@@ -109,9 +109,11 @@ class _EpisodesListState extends State<EpisodesList> {
                       EpisodeContainer(
                           onClick: (episode) {
                             widget.videoController.stop();
-                            Modular.to.popAndPushNamed('/video',
-                                arguments:
-                                    PlayerModel(widget.content, episode));
+
+                            var playerNotifier = Modular.get<PlayerNotifier>();
+                            playerNotifier.playerModel =
+                                PlayerModel(widget.content, episode);
+                            Modular.to.popAndPushNamed('/video');
                           },
                           currentEpisode: widget.episode,
                           episode: c,

@@ -123,6 +123,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       contents.add(l.toList());
     }
     loaded = true;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

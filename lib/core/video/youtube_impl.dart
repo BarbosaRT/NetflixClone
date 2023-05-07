@@ -9,11 +9,8 @@ class YoutubeImpl implements VideoInterface {
   double height = 768;
   bool _enableFrame = true;
   YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: '65yL42CwR8Q',
     params: const YoutubePlayerParams(
-      startAt: Duration(seconds: 0),
       enableJavaScript: false,
-      desktopMode: true,
       showControls: false,
       showVideoAnnotations: false,
       showFullscreenButton: false,
@@ -28,11 +25,8 @@ class YoutubeImpl implements VideoInterface {
       void Function(Duration position)? positionStream,
       bool? isOnline}) async {
     _controller = YoutubePlayerController(
-      initialVideoId: video.replaceAll('https://yewtu.be/watch?v=', ''),
       params: const YoutubePlayerParams(
-        startAt: Duration(seconds: 0),
         enableJavaScript: false,
-        desktopMode: true,
         showControls: false,
         showVideoAnnotations: false,
         showFullscreenButton: false,
@@ -46,18 +40,21 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   void load(String videoId, {void Function()? callback}) {
-    _controller
-        .load(videoId.replaceAll('https://www.youtube.com/watch?v=', ''));
+    _controller.load(
+      params: YoutubePlayerParams(
+        origin: videoId.replaceAll('https://www.youtube.com/watch?v=', ''),
+      ),
+    );
   }
 
   @override
   void pause() {
-    _controller.pause();
+    _controller.pauseVideo();
   }
 
   @override
   void play() {
-    _controller.play();
+    _controller.playVideo();
   }
 
   @override
@@ -67,17 +64,17 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   void seek(Duration position) {
-    _controller.seekTo(position);
+    _controller.seekTo(seconds: position.inMilliseconds / 1000);
   }
 
   @override
   bool isPlaying({bool? enable}) {
-    return enable ?? _controller.value.hasPlayed;
+    return enable ?? _controller.value.playerState == PlayerState.playing;
   }
 
   @override
   void stop() {
-    _controller.stop();
+    _controller.stopVideo();
   }
 
   @override
@@ -88,7 +85,7 @@ class YoutubeImpl implements VideoInterface {
         ? SizedBox(
             width: width,
             height: height,
-            child: YoutubePlayerIFrame(
+            child: YoutubePlayer(
               controller: _controller,
               aspectRatio: 16 / 9,
             ),
@@ -112,7 +109,8 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   double getVolume() {
-    return _controller.value.volume / 100;
+    return 1;
+    // return (await _controller.volume) / 100;
   }
 
   @override
@@ -122,7 +120,8 @@ class YoutubeImpl implements VideoInterface {
 
   @override
   Duration getPosition() {
-    return _controller.value.position;
+    return Duration(seconds: _controller.metadata.duration.inSeconds - 1);
+    //return Duration(seconds: (await _controller.currentTime).toInt());
   }
 
   @override

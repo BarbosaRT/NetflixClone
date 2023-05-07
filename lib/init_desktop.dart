@@ -5,5 +5,5 @@ void init() async {
   WidgetsFlutterBinding.ensureInitialized();
   //await FlutterNativeView.ensureInitialized();
   //useFlutterNativeView: io.Platform.isWindows
-  await DartVLC.initialize(useFlutterNativeView: true);
+  DartVLC.initialize();
 }

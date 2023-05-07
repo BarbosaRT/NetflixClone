@@ -8,7 +8,7 @@ import 'package:netflix/src/features/home/home_page.dart';
 enum ContentListAnchor { top, middle, bottom }
 
 class ListContentController extends ChangeNotifier {
-  final List<int> _pages = List.generate(36, (index) => 1);
+  final List<int> _pages = List.generate(18, (index) => 1);
 
   void setPage(int index, int page) {
     _pages[index] = page;
@@ -58,27 +58,9 @@ class ListContentsState extends State<ListContents> {
     'Mundos épicos',
     'Porque você viu Click',
     'Porque você viu Breaking Bad',
-    'Dicas para você',
     'Para maratonar',
-    'Futuro distopico',
-    'Elas dominam a tela',
-    'Principais escolhas para você',
-    'Filmes Empolgantes',
-    'Minha Lista',
-    'Novelas',
-    'Para assistir juntos: crianças mais velhas',
-    'Comédias teen',
-    'Recém adicionados',
-    'Séries sobre o crime',
-    'Filmes de ação',
-    'Produções Estrangeiras',
-    'Programas de ação',
-    'Dramas adolescentes',
-    'Lançamentos',
-    'Estrelas da semana',
-    'Ação e aventura',
   ];
-  static const totalListCount = 33;
+  static const totalListCount = 15;
   static const listSize = totalListCount ~/ 3;
 
   @override
@@ -119,9 +101,11 @@ class ListContentsState extends State<ListContents> {
     for (int p = 0; p <= 3; p++) {
       widgets = [];
       for (int j = listSize - 1; j >= 0; j--) {
-        int i = j * 3 + p;
-        if (i >= titles.length) {
-          i = titles.length - 1;
+        int i = j * 3 + 0;
+        // If I == realindex than it will put different content to each page
+        int realIndex = j * 3 + p;
+        if (realIndex >= titles.length) {
+          realIndex = titles.length - 1;
         }
         widgets.add(
           Positioned(
@@ -130,7 +114,7 @@ class ListContentsState extends State<ListContents> {
             child: ContentListWidget(
               key: UniqueKey(),
               index: j,
-              title: titles[i],
+              title: titles[realIndex],
               anchor: getAnchorFromValue(i),
               onHover: () {
                 onHover(j);
@@ -196,7 +180,7 @@ class ListContentsState extends State<ListContents> {
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
       width: width,
-      height: 3000,
+      height: 2000,
       child: Stack(
         children: widgets,
       ),

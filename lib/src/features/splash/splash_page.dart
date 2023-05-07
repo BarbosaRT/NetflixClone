@@ -93,9 +93,14 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     List<String> keys = ListContentsState.titles;
     for (var id in keys) {
       if (i % 3 != 0) {
+        i += 1;
         continue;
       }
-      await controller.getContent(id, 0);
+      if (i == keys.length - 3) {
+        await controller.getContent(id, 0);
+      } else {
+        controller.getContent(id, 0);
+      }
       ids += 1;
       i += 1;
       textUpdate.value = !textUpdate.value;
@@ -124,71 +129,73 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
-        body: Stack(children: [
-          // Background
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: backgroundColor,
-          ),
-          //
-          // Logo
-          //
-          Padding(
-            padding: const EdgeInsets.only(left: 55, top: 21),
-            child: SizedBox(
-                width: width * 0.07,
-                child: Image.asset('assets/images/logo.png')),
-          ),
-          //
-          // Loading
-          //
-          Padding(
-            padding:
-                EdgeInsets.only(left: (width - 130) / 2, top: height * 0.18),
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(math.pi),
-              child: RotationTransition(
-                turns: turnsTween.animate(_animation),
-                child: CustomPaint(
-                  painter: IconPainter(
-                    path: splashIcon,
-                    color: color,
-                  ),
-                  child: Container(
-                    height: radius,
-                    width: radius,
-                    color: Colors.transparent,
+        body: Stack(
+          children: [
+            // Background
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: backgroundColor,
+            ),
+            //
+            // Logo
+            //
+            Padding(
+              padding: const EdgeInsets.only(left: 55, top: 21),
+              child: SizedBox(
+                  width: width * 0.07,
+                  child: Image.asset('assets/images/logo.png')),
+            ),
+            //
+            // Loading
+            //
+            Padding(
+              padding:
+                  EdgeInsets.only(left: (width - 130) / 2, top: height * 0.18),
+              child: Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.rotationY(math.pi),
+                child: RotationTransition(
+                  turns: turnsTween.animate(_animation),
+                  child: CustomPaint(
+                    painter: IconPainter(
+                      path: splashIcon,
+                      color: color,
+                    ),
+                    child: Container(
+                      height: radius,
+                      width: radius,
+                      color: Colors.transparent,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          //
-          // Icon
-          //
-          Padding(
-            padding: EdgeInsets.only(left: (width - 150) / 2, top: height / 6),
-            child: SizedBox(
-                height: 200,
-                width: 200,
-                child: Center(
-                  child: profileController.profiles.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () {
-                            Modular.get<SplashController>().startSplash(1);
-                          },
-                          child: SizedBox(
-                            width: 75,
-                            child: Image.asset(profileController
-                                .profiles[profileController.selected].icon),
-                          ),
-                        )
-                      : Container(),
-                )),
-          ),
-          Positioned(
+            //
+            // Icon
+            //
+            Padding(
+              padding:
+                  EdgeInsets.only(left: (width - 150) / 2, top: height / 6),
+              child: SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: Center(
+                    child: profileController.profiles.isNotEmpty
+                        ? GestureDetector(
+                            onTap: () {
+                              Modular.get<SplashController>().startSplash(1);
+                            },
+                            child: SizedBox(
+                              width: 75,
+                              child: Image.asset(profileController
+                                  .profiles[profileController.selected].icon),
+                            ),
+                          )
+                        : Container(),
+                  )),
+            ),
+            Positioned(
               top: 250,
               left: width / 2 + 10,
               child: ValueListenableBuilder(
@@ -199,8 +206,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     style: const TextStyle(color: Colors.white),
                   );
                 },
-              ))
-        ]),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
