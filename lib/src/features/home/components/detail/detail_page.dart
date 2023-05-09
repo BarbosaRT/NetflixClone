@@ -54,11 +54,6 @@ class _DetailPageState extends State<DetailPage> {
   final double containerWidth = 1000;
   final VideoInterface videoController = GetImpl().getImpl(id: 2);
 
-  List<ContentModel> contents = List.generate(
-    24,
-    (index) => ContentModel.fromJson(AppConsts.placeholderJson),
-  );
-
   void callback() {
     if (mounted) {
       setState(() {});
@@ -71,17 +66,14 @@ class _DetailPageState extends State<DetailPage> {
     final contentController = Modular.get<ContentController>();
     if (contentController.loading) {
       contentController.init();
-    } else {
-      initContents();
     }
     height = startHeight +
-        410 * (_expanded.value ? 5 : 0) +
+        410 * (_expanded.value ? 2 : 0) +
         150.0 * widget.content!.episodes!.length;
     super.initState();
 
     contentController.addListener(() {
       if (!contentController.loading) {
-        initContents();
         if (mounted) {
           setState(() {});
         }
@@ -110,20 +102,10 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
-  void initContents() async {
-    contents = [];
-    final contentController = Modular.get<ContentController>();
-    for (var j = 0; j < 25; j++) {
-      contents.add(
-          await contentController.getContent(contentController.getKey(4), j));
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final contentController = Modular.get<ContentController>();
+
     double width = MediaQuery.of(context).size.width;
     final headline = AppFonts().headline6;
     final headline2 = AppFonts().headline8;
@@ -177,6 +159,59 @@ class _DetailPageState extends State<DetailPage> {
           textStyle: headline4,
           text: t));
     }
+
+    Widget similarTitles = ValueListenableBuilder(
+      valueListenable: _expanded,
+      builder: (context, bool value, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 750,
+              child: Text('Titulos Semelhantes ', style: headline5),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            StreamBuilder<List<ContentModel>>(
+              stream: contentController
+                  .getListContent(contentController.getKey(4))
+                  .asBroadcastStream(),
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Container();
+                }
+                List<ContentModel> contents = snapshot.data!;
+                return Column(
+                  children: [
+                    for (int o = 0; o < (value ? 6 : 3); o++)
+                      SizedBox(
+                        width: 1000,
+                        height: 380,
+                        child: Stack(
+                          children: [
+                            for (int c = 0; c < 3; c++)
+                              Positioned(
+                                left: c * 236 + c * 20,
+                                child: Transform.scale(
+                                  scale: width / 1360,
+                                  child: DetailContent(
+                                    content: contents[3 * o + c],
+                                  ),
+                                ),
+                              ),
+                          ].reversed.toList(),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            )
+          ],
+        );
+      },
+    );
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
@@ -568,57 +603,7 @@ class _DetailPageState extends State<DetailPage> {
                           Positioned(
                             top: 835 + 150.0 * widget.content!.episodes!.length,
                             left: 300 * width / 1360,
-                            child: ValueListenableBuilder(
-                              valueListenable: _expanded,
-                              builder: (context, bool value, child) {
-                                if (contents.isEmpty) {
-                                  initContents();
-                                  return Container(color: Colors.red);
-                                }
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 750,
-                                      child: Text('Titulos Semelhantes ',
-                                          style: headline5),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Column(
-                                      children: [
-                                        for (int o = 0;
-                                            o < (value ? 8 : 3);
-                                            o++)
-                                          SizedBox(
-                                            width: 1000,
-                                            height: 380,
-                                            child: Stack(
-                                              children: [
-                                                for (int c = 0; c < 3; c++)
-                                                  Positioned(
-                                                    left: c * 236 + c * 20,
-                                                    child: Transform.scale(
-                                                      scale: width / 1360,
-                                                      child:
-                                                          // Problema quando tenta voltar, fica tudo preto
-                                                          // TODO: RangeError (index): Invalid value: Valid value range is empty: 0
-                                                          DetailContent(
-                                                        content:
-                                                            contents[3 * o + c],
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ].reversed.toList(),
-                                            ),
-                                          ),
-                                      ],
-                                    )
-                                  ],
-                                );
-                              },
-                            ),
+                            child: similarTitles,
                           ),
                           //
                           // About
@@ -629,7 +614,7 @@ class _DetailPageState extends State<DetailPage> {
                               return Positioned(
                                 top: 1900 +
                                     150.0 * widget.content!.episodes!.length +
-                                    400 * (value ? 5 : 0),
+                                    400 * (value ? 3 : 0),
                                 child: Stack(
                                   children: [
                                     //
@@ -708,7 +693,7 @@ class _DetailPageState extends State<DetailPage> {
                                                       height = startHeight +
                                                           410 *
                                                               (_expanded.value
-                                                                  ? 5
+                                                                  ? 3
                                                                   : 0) +
                                                           150.0 *
                                                               widget

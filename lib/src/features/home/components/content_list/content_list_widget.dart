@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,7 @@ class ContentListWidget extends StatefulWidget {
     this.onSeeMore,
     this.disable = false,
     this.contentCount = 5,
-    this.listCount = 5,
+    this.listCount = 4,
     this.initialPage = 0,
     this.onPlay,
   });
@@ -53,14 +55,6 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   bool leftActive = false;
   bool loaded = false;
 
-  List<List<ContentModel>> contents = List.generate(
-    36,
-    (index) => List.generate(
-      40,
-      (index) => ContentModel.fromJson(AppConsts.placeholderJson),
-    ),
-  );
-
   List<Widget> widgetList = [];
   late CarouselController controller;
   int currentIndex = 0;
@@ -70,11 +64,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     if (widgetList.isEmpty) {
       controller = CarouselController();
       if (!initialized) {
-        initContents().then(
-          (v) {
-            widgetBuilder();
-          },
-        );
+        widgetBuilder();
       }
     }
     final contentController = Modular.get<ContentController>();
@@ -82,11 +72,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       contentController.init();
     } else {
       if (!initialized) {
-        initContents().then(
-          (v) {
-            widgetBuilder();
-          },
-        );
+        widgetBuilder();
       }
     }
     super.initState();
@@ -94,38 +80,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     contentController.addListener(() {
       if (!contentController.loading && !loaded) {
         if (!initialized) {
-          initContents().then(
-            (v) {
-              widgetBuilder();
-              if (mounted) {
-                setState(() {});
-              }
-            },
-          );
+          widgetBuilder();
+          if (mounted) {
+            setState(() {});
+          }
         }
       }
     });
-  }
-
-  Future<void> initContents() async {
-    initialized = true;
-    contents = [];
-    final contentController = Modular.get<ContentController>();
-    for (var i = widget.initialPage;
-        i < widget.listCount + widget.initialPage;
-        i++) {
-      final List<ContentModel> l = [];
-      for (var j = 0; j < widget.contentCount; j++) {
-        ContentModel value = await contentController.getContent(
-            widget.title, i * widget.contentCount + j);
-        l.add(value);
-      }
-      contents.add(l.toList());
-    }
-    loaded = true;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -146,6 +107,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void widgetBuilder() {
+    final contentController = Modular.get<ContentController>();
     widgetList = [];
     if (!leftActive) {
       widgetList.add(const SizedBox(
@@ -153,27 +115,48 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         height: 100,
       ));
     }
+
     // Widgets itself :)
     for (int i = 0; i < widget.listCount; i++) {
       widgetList.add(
-        ContentInnerWidget(
-            key: UniqueKey(),
-            id: widget.title,
-            index: i,
-            contentCount: widget.contentCount,
-            contents: contents[i],
-            onPlay: (bool value) {
-              if (widget.onPlay != null) {
-                widget.onPlay!(value);
+        StreamBuilder<List<ContentModel>>(
+            stream: contentController
+                .getListContent(widget.title)
+                .asBroadcastStream(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                if (widget.title == "Assistir Novamente") {
+                  print("yes");
+                }
+                return Container();
               }
-            },
-            onHover: (value) {
-              onWidgetChanging(value);
-            },
-            onDetail: (ContentModel content) {
-              if (widget.onDetail != null) {
-                widget.onDetail!(content);
+              List<ContentModel> contents = snapshot.data!;
+              if (widget.title == "Assistir Novamente") {
+                for (var item in contents) {
+                  print('${item.title}, ${contents.length}');
+                }
               }
+
+              return ContentInnerWidget(
+                key: UniqueKey(),
+                id: widget.title,
+                index: i,
+                contents: contents,
+                contentCount: widget.contentCount,
+                onPlay: (bool value) {
+                  if (widget.onPlay != null) {
+                    widget.onPlay!(value);
+                  }
+                },
+                onHover: (value) {
+                  onWidgetChanging(value);
+                },
+                onDetail: (ContentModel content) {
+                  if (widget.onDetail != null) {
+                    widget.onDetail!(content);
+                  }
+                },
+              );
             }),
       );
     }
@@ -189,15 +172,16 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void activeLeft() async {
+    widgetBuilder();
     if (leftActive) {
       return;
     }
     leftActive = true;
 
-    final contentController = Modular.get<ContentController>();
-    await contentController.getContent(widget.title, 0);
+    //final contentController = Modular.get<ContentController>();
+    //contentController.getContent(widget.title, 0);
 
-    widgetBuilder();
+    //widgetBuilder();
     controller.jumpToPage(widget.listCount);
     Future.delayed(duration).then(
       (value) {

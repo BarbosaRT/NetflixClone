@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void init(ContentController contentController) async {
-    content = await contentController.getContent(getId(), 0);
+    content = await contentController.getHomeContent(getId(), 0);
     videoController.pause();
     videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));

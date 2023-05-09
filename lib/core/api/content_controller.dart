@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -39,6 +40,8 @@ class ContentController extends ChangeNotifier {
   ];
   final Random _random = Random(69);
   final List<String> titles = ListContentsState.titles;
+
+  final Map<String, int> _pages = {};
 
   Future<dynamic> getHttp(String link) async {
     try {
@@ -148,35 +151,36 @@ class ContentController extends ChangeNotifier {
     return poster;
   }
 
-  Future<void> getMixed(String id) async {
-    if (_contentModel.containsKey(id)) {
-      return;
-    }
+  Stream<List<ContentModel>> getMixed(int page) async* {
     List<ContentModel> contents = [];
 
-    List<ContentModel> films = await getFilms();
-    contents += films.sublist(0, 11).toList();
+    List<ContentModel> films = [];
+    getFilms(page).listen(
+      (event) {
+        films = event.toList();
+      },
+    );
+    contents += films.sublist(0, 10).toList();
 
-    List<ContentModel> series = await getSeries();
-    contents += series.sublist(0, 15).toList();
-
+    List<ContentModel> series = [];
+    getSeries(page).listen((event) {
+      series = event.toList();
+    });
+    contents += series.sublist(0, 10).toList();
     contents.shuffle();
-    _contentModel[id] = contents.toList();
-    notifyListeners();
+    yield contents;
   }
 
-  Future<List<ContentModel>> getSeries() async {
-    tvPage += 1;
-    int page = tvPage;
+  Stream<List<ContentModel>> getSeries(int page) async* {
     String logo = 'assets/data/logos/breaking_bad_logo.png';
     String trailer = '';
     List<ContentModel> output = List.generate(
-      40,
+      20,
       (index) => ContentModel.fromJson(AppConsts.placeholderJson),
     );
     Map<String, dynamic> data = await getHttp(
         'https://api.themoviedb.org/4/discover/tv?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR');
-    log('data');
+
     for (int k = 0; k < data['results'].length; k++) {
       var i = data['results'][k];
       String tvId = i['id'].toString();
@@ -260,17 +264,19 @@ class ContentController extends ChangeNotifier {
           title: title,
           overview: overview,
           onlyOnNetflix: onlyOnNetflix);
-      output.add(content);
+      output[k] = content;
+      print(content.title);
+      yield output.toList();
     }
-    return output.toList();
   }
 
-  Future<List<ContentModel>> getFilms() async {
-    moviePage += 1;
-    int page = moviePage;
+  Stream<List<ContentModel>> getFilms(int page) async* {
     String logo = 'assets/data/logos/breaking_bad_logo.png';
     String trailer = '';
-    List<ContentModel> output = [];
+    List<ContentModel> output = List.generate(
+      20,
+      (index) => ContentModel.fromJson(AppConsts.placeholderJson),
+    );
     Map<String, dynamic> data = await getHttp(
         'https://api.themoviedb.org/4/discover/movie?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc');
     for (int k = 0; k < data['results'].length; k++) {
@@ -344,9 +350,9 @@ class ContentController extends ChangeNotifier {
           title: title,
           overview: overview,
           onlyOnNetflix: onlyOnNetflix);
-      output.add(content);
+      output[k] = content;
+      yield output.toList();
     }
-    return output.toList();
   }
 
   String urlEncode(String text) {
@@ -417,7 +423,7 @@ class ContentController extends ChangeNotifier {
     }
   }
 
-  Future<ContentModel> getContent(String id, int index) async {
+  Future<ContentModel> getHomeContent(String id, int index) async {
     if (_contentModel[id] == null && !verifiedTitles.contains(id)) {
       var response = await rootBundle.loadString('assets/data/contents.json');
       Map<String, dynamic> data = jsonDecode(response);
@@ -431,31 +437,57 @@ class ContentController extends ChangeNotifier {
         verifiedTitles.add(id);
       }
     }
+    return returnContent(id, index);
+  }
+
+  Stream<List<ContentModel>> getListContent(String id) {
+    if (_contentModel[id] == null && !verifiedTitles.contains(id)) {
+      rootBundle.loadString('assets/data/contents.json').then((value) async {
+        var response = value;
+        Map<String, dynamic> data = jsonDecode(response);
+        if (data.keys.toList().contains(id)) {
+          if (!loading) {
+            await init();
+          }
+          verifiedTitles.add(id);
+          return Stream.value(_contentModel[id]!);
+        } else {
+          verifiedTitles.add(id);
+        }
+      });
+    }
+
     if (useOnline && _contentModel[id] == null) {
+      if (_pages[id] == null) {
+        tvPage += 1;
+        _pages[id] = tvPage;
+      }
+
+      int page = _pages[id] ?? 1;
       switch (titles.indexOf(id) % 3) {
         case 0:
-          List<ContentModel> contents = [];
-          for (int k = 0; k <= 1; k++) {
-            List<ContentModel> series = await getSeries();
-            contents += series.toList();
-          }
-          _contentModel[id] = contents.toList();
-          //await getMixed(id);
-          return returnContent(id, index);
+          return getSeries(page).asyncExpand((event) {
+            _contentModel[id] = event.toList();
+            return Stream.value(event);
+          });
         case 1:
-          List<ContentModel> films = await getFilms();
-          _contentModel[id] = films.toList();
-          return returnContent(id, index);
+          return getFilms(page).asyncExpand((event) {
+            _contentModel[id] = event.toList();
+            return Stream.value(event);
+          });
         case 2:
-          List<ContentModel> series = await getSeries();
-          _contentModel[id] = series.toList();
-          return returnContent(id, index);
+          return getSeries(page).asyncExpand((event) {
+            _contentModel[id] = event.toList();
+            return Stream.value(event);
+          });
         default:
-          await getMixed(id);
-          return returnContent(id, index);
+          return getMixed(page).asyncExpand((event) {
+            _contentModel[id] = event.toList();
+            return Stream.value(event);
+          });
       }
     } else {
-      return returnContent(id, index);
+      return Stream.value(_contentModel[id]!);
     }
   }
 }

@@ -72,9 +72,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Modular.get<ProfileController>().start();
-      load().then((v) {
-        Modular.get<SplashController>().startSplash(1);
-      });
+      Modular.get<SplashController>().startSplash(1);
     });
 
     final content = ContentModel.fromJson(AppConsts.placeholderJson);
@@ -84,26 +82,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       videoController.play();
       Future.delayed(const Duration(seconds: 1))
           .then((value) => videoController.pause());
-    }
-  }
-
-  Future<void> load() async {
-    int i = 0;
-    final controller = Modular.get<ContentController>();
-    List<String> keys = ListContentsState.titles;
-    for (var id in keys) {
-      if (i % 3 != 0) {
-        i += 1;
-        continue;
-      }
-      if (i == keys.length - 3) {
-        await controller.getContent(id, 0);
-      } else {
-        controller.getContent(id, 0);
-      }
-      ids += 1;
-      i += 1;
-      textUpdate.value = !textUpdate.value;
     }
   }
 
@@ -195,19 +173,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                         : Container(),
                   )),
             ),
-            Positioned(
-              top: 250,
-              left: width / 2 + 10,
-              child: ValueListenableBuilder(
-                valueListenable: textUpdate,
-                builder: (context, value, child) {
-                  return Text(
-                    '$ids/$totalTitles',
-                    style: const TextStyle(color: Colors.white),
-                  );
-                },
-              ),
-            )
           ],
         ),
       ),
