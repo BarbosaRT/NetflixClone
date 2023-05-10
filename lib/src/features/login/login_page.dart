@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height * 0.9;
     double totalHeight = height > 720 ? height * 1.35 : height * 1.7;
 
     const double textFieldWidth = 315;

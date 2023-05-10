@@ -39,7 +39,7 @@ class AppModule extends Module {
           '/video',
           child: (context, args) => const PlayerPage(),
         ),
-        RedirectRoute('/', to: '/profile'),
+        RedirectRoute('/', to: '/login'),
         ChildRoute(
           '/home',
           child: (context, args) => const HomePage(),
