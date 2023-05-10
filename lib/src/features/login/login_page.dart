@@ -25,7 +25,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height * 0.9;
-    double totalHeight = height > 720 ? height * 1.35 : height * 1.7;
+    print(height);
+    double totalHeight = height > 720 ? height * 1.35 : height * 1.75;
 
     const double textFieldWidth = 315;
 
@@ -71,17 +72,19 @@ class _LoginPageState extends State<LoginPage> {
             physics: const NeverScrollableScrollPhysics(),
             controller: scrollController,
             child: SizedBox(
-              width: 1360,
+              width: width,
               height: totalHeight,
               child: Stack(
                 children: [
                   // Background
-                  Image.asset('assets/images/login_background.jpg',
-                      width: 1360,
-                      height: totalHeight,
-                      fit: BoxFit.none,
-                      color: Colors.black.withOpacity(0.5),
-                      colorBlendMode: BlendMode.darken),
+                  Image.asset(
+                    'assets/images/login_background.jpg',
+                    width: width,
+                    height: totalHeight,
+                    fit: BoxFit.cover,
+                    color: Colors.black.withOpacity(0.5),
+                    colorBlendMode: BlendMode.darken,
+                  ),
                   //
                   // Gradient
                   //
