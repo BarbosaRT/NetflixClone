@@ -43,6 +43,10 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   void widgetBuilder() {
     widgets = [];
     for (int i = widget.contentCount - 1; i >= 0; i--) {
+      int index = widget.index * widget.contentCount + i;
+      if (index > widget.contents.length - 1) {
+        index = widget.contents.length - 1;
+      }
       widgets.add(
         Positioned(
           key: UniqueKey(),
@@ -57,7 +61,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
               },
               anchor: getAnchor(i),
               localIndex: i,
-              content: widget.contents[i],
+              content: widget.contents[index],
               onDetail: (ContentModel content) {
                 if (widget.onDetail != null) {
                   widget.onDetail!(content);

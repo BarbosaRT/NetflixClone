@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
-import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/models/content_model.dart';
@@ -117,25 +115,15 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     }
 
     // Widgets itself :)
-    for (int i = 0; i < widget.listCount; i++) {
+    for (int i = 0; i <= widget.listCount; i++) {
       widgetList.add(
         StreamBuilder<List<ContentModel>>(
             stream: contentController
                 .getListContent(widget.title)
                 .asBroadcastStream(),
             builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                if (widget.title == "Assistir Novamente") {
-                  print("yes");
-                }
-                return Container();
-              }
-              List<ContentModel> contents = snapshot.data!;
-              if (widget.title == "Assistir Novamente") {
-                for (var item in contents) {
-                  print('${item.title}, ${contents.length}');
-                }
-              }
+              List<ContentModel> contents = snapshot.data ??
+                  contentController.returnContentList(widget.title);
 
               return ContentInnerWidget(
                 key: UniqueKey(),
@@ -160,6 +148,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             }),
       );
     }
+    widgetList = widgetList.sublist(0, 4);
   }
 
   void onWidgetChanging(bool value) {
@@ -172,7 +161,6 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void activeLeft() async {
-    widgetBuilder();
     if (leftActive) {
       return;
     }
@@ -181,7 +169,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     //final contentController = Modular.get<ContentController>();
     //contentController.getContent(widget.title, 0);
 
-    //widgetBuilder();
+    widgetBuilder();
     controller.jumpToPage(widget.listCount);
     Future.delayed(duration).then(
       (value) {

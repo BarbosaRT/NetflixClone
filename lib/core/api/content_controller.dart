@@ -24,7 +24,7 @@ class ContentController extends ChangeNotifier {
   int moviePage = 1;
   http.Client client = http.Client();
 
-  final String apiKey = 'PLACE-YOUR-API-KEY-HERE';
+  final String apiKey = 'de68efad85c838eb7d891efd136dbb6d';
 
   List<String> verifiedTitles = [];
 
@@ -50,11 +50,6 @@ class ContentController extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
-  }
-
-  void log(String message) {
-    String datetime = DateTime.now().toString();
-    print('[$datetime]: $message');
   }
 
   Future<void> init() async {
@@ -265,7 +260,6 @@ class ContentController extends ChangeNotifier {
           overview: overview,
           onlyOnNetflix: onlyOnNetflix);
       output[k] = content;
-      print(content.title);
       yield output.toList();
     }
   }
@@ -420,6 +414,24 @@ class ContentController extends ChangeNotifier {
       return _contentModel[i]![ind];
     } on RangeError {
       return ContentModel.fromJson(AppConsts.placeholderJson);
+    }
+  }
+
+  List<ContentModel> returnContentList(String id) {
+    List<ContentModel> placeholder = List.generate(
+      20,
+      (index) => ContentModel.fromJson(AppConsts.placeholderJson),
+    );
+    if (_contentModel.isEmpty) {
+      return placeholder.toList();
+    }
+    final keys = _contentModel.keys.toList();
+    final String i = _contentModel[id] == null ? keys[0] : id;
+
+    try {
+      return _contentModel[i]!;
+    } on RangeError {
+      return placeholder.toList();
     }
   }
 
