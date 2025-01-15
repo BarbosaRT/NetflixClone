@@ -43,5 +43,6 @@ flutter run
 
 
 # Extras
+- The UI works better in 1366x768, when I made this clone I didn't need it to be responsive, so I lock it to my monitor resolution.
 - Original smooth_scroll by [dezso15](https://gitlab.com/dezso15/smoothscrollweb)   
 - Data Sources: TMDB, uNoGs      
