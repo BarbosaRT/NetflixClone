@@ -93,7 +93,7 @@ class ListContentsState extends State<ListContents> {
     switch (index) {
       case 0:
         return ContentListAnchor.top;
-      case listSize - 1:
+      case const (listSize - 1):
         return ContentListAnchor.bottom;
       default:
         return ContentListAnchor.middle;

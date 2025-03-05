@@ -32,11 +32,11 @@ class _HomeButtonState extends State<HomeButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-          padding: MaterialStateProperty.all(EdgeInsets.zero),
-          overlayColor: MaterialStateProperty.all(Colors.transparent),
-          backgroundColor: MaterialStateProperty.all(
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          overlayColor: WidgetStateProperty.all(Colors.transparent),
+          backgroundColor: WidgetStateProperty.all(
               hovered ? widget.overlayColor : widget.buttonColor),
-          elevation: MaterialStateProperty.all(0),
+          elevation: WidgetStateProperty.all(0),
         ),
         onHover: (value) => setState(() {
               hovered = value;

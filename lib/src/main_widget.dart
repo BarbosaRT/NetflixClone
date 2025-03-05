@@ -103,8 +103,7 @@ class AppWidget extends StatelessWidget {
       title: 'Netflix',
       theme: ThemeData(
         scrollbarTheme: ScrollbarThemeData(
-            trackVisibility:
-                MaterialStateProperty.resolveWith((states) => true)),
+            trackVisibility: WidgetStateProperty.resolveWith((states) => true)),
         primarySwatch: Colors.blue,
       ),
       routeInformationParser: Modular.routeInformationParser,

@@ -116,7 +116,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                   ),
                   SizedBox(
                     width: 200,
-                    height: 450,
+                    height: 440,
                     child: Scrollbar(
                       trackVisibility: true,
                       thumbVisibility: true,

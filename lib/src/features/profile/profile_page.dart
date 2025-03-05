@@ -55,12 +55,12 @@ class _ProfilePageState extends State<ProfilePage> {
       ));
     }
 
-    return RawKeyboardListener(
+    return KeyboardListener(
       autofocus: true,
       focusNode: FocusNode(),
-      onKey: (value) async {
-        if (value is RawKeyDownEvent && !kIsWeb) {
-          if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+      onKeyEvent: (value) async {
+        if (value is KeyDownEvent && !kIsWeb) {
+          if (value.logicalKey == LogicalKeyboardKey.f11) {
             await DesktopWindow.toggleFullScreen();
           }
         }

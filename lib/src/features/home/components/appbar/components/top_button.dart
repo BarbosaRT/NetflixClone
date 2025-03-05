@@ -25,9 +25,9 @@ class _TopButtonState extends State<TopButton> {
   Widget build(BuildContext context) {
     return TextButton(
       style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(Colors.transparent),
-        backgroundColor: MaterialStateProperty.all(Colors.transparent),
-        elevation: MaterialStateProperty.all(0),
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+        elevation: WidgetStateProperty.all(0),
       ),
       onHover: (v) {
         setState(() {

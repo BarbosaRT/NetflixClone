@@ -385,8 +385,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               width: 215,
               child: HomeButton(
                 textStyle: headline6,
-                overlayColor: Colors.grey.shade700.withOpacity(0.7),
-                buttonColor: Colors.grey.shade700.withOpacity(0.9),
+                overlayColor: Colors.grey.shade700.withValues(alpha: 0.7),
+                buttonColor: Colors.grey.shade700.withValues(alpha: 0.9),
                 icon: Icons.info_outline,
                 iconSize: 25,
                 spacing: 10,
@@ -411,7 +411,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               child: hover
                   ? HomeButton(
                       textStyle: blackHeadline6,
-                      overlayColor: Colors.grey.shade300.withOpacity(0.5),
+                      overlayColor: Colors.grey.shade300.withValues(alpha: 0.5),
                       buttonColor: Colors.white,
                       icon: Icons.play_arrow,
                       text: 'Próximo Episodio',
@@ -443,8 +443,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: LinearProgressIndicator(
-                                  backgroundColor:
-                                      Colors.grey.shade300.withOpacity(0.7),
+                                  backgroundColor: Colors.grey.shade300
+                                      .withValues(alpha: 0.7),
                                   color: Colors.white,
                                   minHeight: 40,
                                   value: nextAnimation.value,
@@ -491,12 +491,12 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
       ),
     );
 
-    final loadedPage = RawKeyboardListener(
+    final loadedPage = KeyboardListener(
       autofocus: true,
       focusNode: FocusNode(),
-      onKey: (value) {
-        if (value is RawKeyDownEvent) {
-          if (value.isKeyPressed(LogicalKeyboardKey.space)) {
+      onKeyEvent: (value) {
+        if (value is KeyDownEvent) {
+          if (value.logicalKey == LogicalKeyboardKey.space) {
             videoController.isPlaying()
                 ? videoController.pause()
                 : videoController.play();
@@ -533,8 +533,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                       duration: _ageAnimation,
                       width: 230,
                       height: animationEnd ? 50 : 0,
-                      color: backgroundColor
-                          .withOpacity(animationEnd ? 0.22 : 0.0),
+                      color: backgroundColor.withValues(
+                          alpha: animationEnd ? 0.22 : 0.0),
                     ),
                     Row(
                       crossAxisAlignment: animationEnd
@@ -736,7 +736,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                                 child: Container(
                                   width: 40,
                                   height: 40,
-                                  color: Colors.blue.withOpacity(0.0),
+                                  color: Colors.blue.withValues(alpha: 0.0),
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     icon: Icon(volumeIcon,
@@ -759,7 +759,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                             width: 35,
                             height: 120,
                             alignment: Alignment.topLeft,
-                            color: Colors.amber.withOpacity(0),
+                            color: Colors.amber.withValues(alpha: 0),
                             child: Container(
                               width: 30,
                               height: 120,
@@ -1034,7 +1034,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
               child: hover
                   ? HomeButton(
                       textStyle: blackHeadline6,
-                      overlayColor: Colors.grey.shade300.withOpacity(0.5),
+                      overlayColor: Colors.grey.shade300.withValues(alpha: 0.5),
                       buttonColor: Colors.white,
                       icon: Icons.play_arrow,
                       text: 'Próximo Episodio',
@@ -1067,8 +1067,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: LinearProgressIndicator(
-                                  backgroundColor:
-                                      Colors.grey.shade300.withOpacity(0.7),
+                                  backgroundColor: Colors.grey.shade300
+                                      .withValues(alpha: 0.7),
                                   color: Colors.white,
                                   minHeight: 40,
                                   value: nextAnimation.value,
@@ -1108,12 +1108,12 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     currentPage = loaded ? loadedPage : loadingPage;
     currentPage = almostFinished ? almostFinishedPage : currentPage;
     currentPage = finished ? finishPage : currentPage;
-    return RawKeyboardListener(
+    return KeyboardListener(
         autofocus: true,
         focusNode: FocusNode(),
-        onKey: (value) async {
-          if (value is RawKeyDownEvent && !kIsWeb) {
-            if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+        onKeyEvent: (value) async {
+          if (value is KeyDownEvent && !kIsWeb) {
+            if (value.logicalKey == LogicalKeyboardKey.f11) {
               await DesktopWindow.toggleFullScreen();
             }
           }

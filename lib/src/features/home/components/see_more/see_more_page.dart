@@ -52,7 +52,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
     switch (index) {
       case 0:
         return ContentListAnchor.top;
-      case listCount - 1:
+      case const (listCount - 1):
         return ContentListAnchor.bottom;
       default:
         return ContentListAnchor.middle;
@@ -168,7 +168,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
                           Container(
                             width: width,
                             height: height,
-                            color: backgroundColor.withOpacity(0.5),
+                            color: backgroundColor.withValues(alpha: 0.5),
                           ),
                           Container(
                               margin: const EdgeInsets.only(top: 50),

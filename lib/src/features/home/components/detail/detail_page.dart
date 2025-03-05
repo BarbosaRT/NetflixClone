@@ -245,7 +245,7 @@ class _DetailPageState extends State<DetailPage> {
                           Container(
                             width: width,
                             height: height + 50,
-                            color: backgroundColor.withOpacity(0.5),
+                            color: backgroundColor.withValues(alpha: 0.5),
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 50),
@@ -279,7 +279,7 @@ class _DetailPageState extends State<DetailPage> {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    backgroundColor.withOpacity(0),
+                                    backgroundColor.withAlpha(0),
                                     backgroundColor,
                                     backgroundColor,
                                   ],
@@ -405,6 +405,7 @@ class _DetailPageState extends State<DetailPage> {
                           Positioned(
                             top: 580,
                             left: 300,
+                            width: width - 500,
                             child: Row(
                               children: [
                                 //
@@ -480,8 +481,8 @@ class _DetailPageState extends State<DetailPage> {
                                         height: 100,
                                         width: 480,
                                         child: Text(
-                                          //widget.content!.overview,
-                                          overview,
+                                          widget.content!.overview,
+                                          //overview,
                                           style: headline2,
                                         ),
                                       ),
@@ -494,6 +495,7 @@ class _DetailPageState extends State<DetailPage> {
                                 const SizedBox(
                                   width: 20,
                                 ),
+                                const Spacer(),
                                 SizedBox(
                                   width: 300,
                                   height: 300,
@@ -633,7 +635,7 @@ class _DetailPageState extends State<DetailPage> {
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              backgroundColor.withOpacity(0),
+                                              backgroundColor.withAlpha(0),
                                               backgroundColor
                                             ]),
                                       ),
@@ -713,10 +715,11 @@ class _DetailPageState extends State<DetailPage> {
                                                       shape: BoxShape.circle,
                                                       color: value
                                                           ? Colors.grey.shade700
-                                                              .withOpacity(0.1)
+                                                              .withValues(
+                                                                  alpha: 0.1)
                                                           : Colors.grey.shade900
-                                                              .withOpacity(
-                                                                  0.1)),
+                                                              .withValues(
+                                                                  alpha: 0.1)),
                                                   child: const Icon(
                                                       Icons.expand_more_rounded,
                                                       color: Colors.white),

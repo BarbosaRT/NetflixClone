@@ -230,12 +230,12 @@ class _HomePageState extends State<HomePage> {
       overview = '${overview.substring(0, overviewStringLength)}...';
     }
 
-    return RawKeyboardListener(
+    return KeyboardListener(
       autofocus: true,
       focusNode: FocusNode(),
-      onKey: (value) async {
-        if (value is RawKeyDownEvent && !kIsWeb) {
-          if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+      onKeyEvent: (value) async {
+        if (value is KeyDownEvent && !kIsWeb) {
+          if (value.logicalKey == LogicalKeyboardKey.f11) {
             await DesktopWindow.toggleFullScreen();
           }
         }
@@ -275,7 +275,7 @@ class _HomePageState extends State<HomePage> {
                               Container(
                                 height: 768,
                                 width: 1360,
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                               ),
                             ],
                           ),
@@ -295,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              backgroundColor.withOpacity(0),
+                              backgroundColor.withValues(alpha: 0),
                               backgroundColor,
                               backgroundColor,
                             ],
@@ -312,8 +312,8 @@ class _HomePageState extends State<HomePage> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.75),
-                              Colors.black.withOpacity(0)
+                              Colors.black.withValues(alpha: 0.75),
+                              Colors.black.withValues(alpha: 0)
                             ]),
                       ),
                     ),
@@ -403,10 +403,10 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(width: 10),
                                   HomeButton(
                                     textStyle: headline6,
-                                    overlayColor:
-                                        Colors.grey.shade700.withOpacity(0.3),
-                                    buttonColor:
-                                        Colors.grey.shade700.withOpacity(0.5),
+                                    overlayColor: Colors.grey.shade700
+                                        .withValues(alpha: 0.3),
+                                    buttonColor: Colors.grey.shade700
+                                        .withValues(alpha: 0.5),
                                     icon: Icons.info_outline,
                                     iconSize: 25,
                                     spacing: 10,
@@ -460,7 +460,8 @@ class _HomePageState extends State<HomePage> {
                                     height: 32,
                                     width: 400,
                                     decoration: BoxDecoration(
-                                      color: backgroundColor.withOpacity(0.5),
+                                      color: backgroundColor.withValues(
+                                          alpha: 0.5),
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
@@ -666,7 +667,7 @@ class _VolumeButtonState extends State<VolumeButton> {
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.white, width: pressed ? 2 : 1),
                 shape: BoxShape.circle,
-                color: Colors.grey.withOpacity(hover ? 0.1 : 0.0)),
+                color: Colors.grey.withValues(alpha: hover ? 0.1 : 0.0)),
             child: IconButton(
                 onPressed: () {
                   if (widget.onClick != null) {

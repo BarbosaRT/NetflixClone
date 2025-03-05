@@ -528,7 +528,7 @@ class _ContentContainerState extends State<ContentContainer> {
                     //
                     width: hover ? width * factor : width,
                     //
-                    color: Colors.yellow.withOpacity(0.0)),
+                    color: Colors.yellow.withValues(alpha: 0.0)),
               ),
             ),
           ],

@@ -258,7 +258,7 @@ class NotificationBar extends StatelessWidget {
               width: 401,
               height: containerHeight,
               decoration: BoxDecoration(
-                color: Colors.grey.shade800.withOpacity(0.6),
+                color: Colors.grey.shade800.withValues(alpha: 0.6),
                 border: const Border(
                     left: BorderSide(width: 1.0, color: Colors.white),
                     top: BorderSide(width: 2.0, color: Colors.white)),
@@ -356,7 +356,7 @@ class _NotificationContainerState extends State<NotificationContainer> {
             margin: const EdgeInsets.only(bottom: 2),
             width: 387,
             height: 100,
-            color: Colors.black.withOpacity(_hover ? 0.8 : 0.6),
+            color: Colors.black.withValues(alpha: _hover ? 0.8 : 0.6),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(

@@ -58,7 +58,7 @@ class PlayerImpl implements VideoInterface {
       void Function(Duration position)? positionStream}) {
     Future.delayed(const Duration(seconds: 1));
     if (_isOnline) {
-      _controller = VideoPlayerController.network(id)
+      _controller = VideoPlayerController.networkUrl(Uri(path: id))
         ..initialize().then((value) {
           _isInitialized = true;
           if (callback != null) {

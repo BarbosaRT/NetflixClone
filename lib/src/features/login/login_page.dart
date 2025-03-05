@@ -49,12 +49,12 @@ class _LoginPageState extends State<LoginPage> {
 
     final Color buttonColor = colorController.currentScheme.loginButtonColor;
 
-    return RawKeyboardListener(
+    return KeyboardListener(
       autofocus: true,
       focusNode: FocusNode(),
-      onKey: (value) async {
-        if (value is RawKeyDownEvent && !kIsWeb) {
-          if (value.isKeyPressed(LogicalKeyboardKey.f11)) {
+      onKeyEvent: (value) async {
+        if (value is KeyDownEvent && !kIsWeb) {
+          if (value.logicalKey == LogicalKeyboardKey.f11) {
             await DesktopWindow.toggleFullScreen();
           }
         }
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: width,
                     height: totalHeight,
                     fit: BoxFit.cover,
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     colorBlendMode: BlendMode.darken,
                   ),
                   //
@@ -96,8 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withOpacity(0.5),
-                            Colors.black.withOpacity(0)
+                            Colors.black.withValues(alpha: 0.5),
+                            Colors.black.withValues(alpha: 0)
                           ]),
                     ),
                   ),
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             width: 450,
                             height: 600,
-                            color: Colors.black.withOpacity(0.75),
+                            color: Colors.black.withValues(alpha: 0.75),
                             child: Padding(
                               padding: const EdgeInsets.only(top: 60, left: 65),
                               child: Column(
@@ -185,7 +185,8 @@ class _LoginPageState extends State<LoginPage> {
                                       margin: const EdgeInsets.only(left: 5),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(2),
-                                        color: buttonColor.withOpacity(0.5),
+                                        color:
+                                            buttonColor.withValues(alpha: 0.5),
                                       ),
                                       child: Center(
                                           child: SizedBox(
@@ -193,7 +194,8 @@ class _LoginPageState extends State<LoginPage> {
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2.0,
-                                          color: Colors.white.withOpacity(0.8),
+                                          color: Colors.white
+                                              .withValues(alpha: 0.8),
                                         ),
                                       )),
                                     )
@@ -214,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                                         },
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all(
+                                              WidgetStateProperty.all(
                                                   loginController.canLog()
                                                       ? buttonColor
                                                       : const Color.fromARGB(
@@ -333,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
                   Positioned(
                     top: 780,
                     child: Container(
-                      color: Colors.black.withOpacity(0.75),
+                      color: Colors.black.withValues(alpha: 0.75),
                       width: width * 0.99,
                       height: 500,
                       child: Padding(

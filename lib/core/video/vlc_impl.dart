@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:netflix/core/video/video_interface.dart';
-import 'package:dart_vlc/dart_vlc.dart';
+import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
+import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 
 class PlayerImpl implements VideoInterface {
   String _thumbnail = '';
@@ -9,19 +10,18 @@ class PlayerImpl implements VideoInterface {
   bool _isPlaying = true;
   String path = '';
   int id = 0;
-  late Player _controller;
+  late Player _player;
   double width = 1360;
   double height = 768;
   Duration _position = Duration.zero;
   Duration _duration = const Duration(seconds: 2);
   List<Media> medias = <Media>[];
-  Player get controller => _controller;
+  Player get player => _player;
+  late VideoController _controller;
 
   PlayerImpl({required this.id}) {
-    _controller = Player(
-      id: id,
-      videoDimensions: const VideoDimensions(640, 360),
-    );
+    _player = Player();
+    _controller = VideoController(_player);
   }
 
   @override
@@ -30,11 +30,10 @@ class PlayerImpl implements VideoInterface {
         _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     if (_enableFrame) {
       return Video(
-        player: _controller,
-        width: width,
-        height: height,
-        showControls: false,
-      );
+          controller: _controller,
+          width: width,
+          height: height,
+          controls: NoVideoControls);
     } else {
       return _thumbnail.isEmpty
           ? Container()
@@ -55,21 +54,20 @@ class PlayerImpl implements VideoInterface {
     if (isOnline != null) {
       _isOnline = isOnline;
     }
-    _controller.playbackStream.listen((event) {
-      _isPlaying = event.isPlaying;
+    _player.stream.playing.listen((bool playing) {
+      _isPlaying = playing;
       callback?.call();
     });
-    _controller.positionStream.listen((event) {
-      if (event.position != null) {
-        _position = event.position!;
-        positionStream?.call(_position);
-        callback?.call();
-      }
 
-      if (event.duration != null) {
-        _duration = event.duration!;
-        callback?.call();
-      }
+    _player.stream.duration.listen((Duration duration) {
+      _duration = duration;
+      callback?.call();
+    });
+
+    _player.stream.position.listen((Duration position) {
+      _position = position;
+      positionStream?.call(_position);
+      callback?.call();
     });
     load(video, callback: callback);
     path = video;
@@ -79,37 +77,33 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void load(String id, {void Function()? callback}) {
-    medias.add(_isOnline ? Media.network(id) : Media.asset(id));
-    _controller.open(
-        Playlist(
-          medias: medias,
-        ),
-        autoStart: false);
+    medias.add(Media(id));
+    _player.open(Playlist(medias), play: false);
   }
 
   @override
   void pause() {
-    _controller.pause();
+    _player.pause();
   }
 
   @override
   void play() {
-    _controller.play();
+    _player.play();
   }
 
   @override
   void seek(Duration position) {
-    _controller.seek(position);
+    _player.seek(position);
   }
 
   @override
   void stop() {
-    _controller.stop();
+    _player.stop();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _player.dispose();
   }
 
   @override
@@ -131,12 +125,12 @@ class PlayerImpl implements VideoInterface {
 
   @override
   double getVolume() {
-    return _controller.general.volume;
+    return _player.state.volume / 100;
   }
 
   @override
   void setVolume(double volume) {
-    _controller.setVolume(volume);
+    _player.setVolume(volume * 100);
   }
 
   @override
@@ -154,7 +148,7 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void changeSpeed(double speed) {
-    _controller.setRate(speed);
+    _player.setRate(speed);
   }
 
   @override

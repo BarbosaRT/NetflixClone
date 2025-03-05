@@ -140,7 +140,7 @@ class _ProfileIconState extends State<ProfileIcon> {
                   child: Container(
                       height: 4,
                       width: width,
-                      color: Colors.grey.withOpacity(0.2))),
+                      color: Colors.grey.withValues(alpha: 0.2))),
               Positioned(
                 top: 300,
                 child: ProfileButton(

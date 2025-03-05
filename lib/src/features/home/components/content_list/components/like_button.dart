@@ -60,7 +60,7 @@ class _LikeButtonState extends State<LikeButton> {
     );
   }
 
-  // Widget withOpacity(Widget widget, EdgeInsets padding) {
+  // Widget withValues(alpha: Widget widget, EdgeInsets padding) {
   //   return AnimatedOpacity(
   //     opacity: hover ? 1 : 0,
   //     duration: delay,

@@ -18,10 +18,10 @@ class _ManagerButtonState extends State<ManagerButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(Colors.transparent),
-            backgroundColor: MaterialStateProperty.all(Colors.transparent),
-            elevation: MaterialStateProperty.all(0),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            overlayColor: WidgetStateProperty.all(Colors.transparent),
+            backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            elevation: WidgetStateProperty.all(0),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(1.0),
                     side: BorderSide(

@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart' as carousel;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/colors/color_controller.dart';
@@ -54,13 +54,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   bool loaded = false;
 
   List<Widget> widgetList = [];
-  late CarouselController controller;
+  late carousel.CarouselSliderController controller;
   int currentIndex = 0;
   bool initialized = false;
   @override
   void initState() {
     if (widgetList.isEmpty) {
-      controller = CarouselController();
+      controller = carousel.CarouselSliderController();
       if (!initialized) {
         widgetBuilder();
       }
@@ -191,7 +191,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     final headline6 = AppFonts().headline6;
     final seeMoreStyle = headline6.copyWith(
       fontSize: headline6.fontSize! - 5,
-      color: Colors.blue,
+      color: material.Colors.blue,
     );
     final contentController = Modular.get<ListContentController>();
     final colorController = Modular.get<ColorController>();
@@ -273,7 +273,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                         opacity: value ? 1 : 0,
                                         child: const Icon(
                                             CupertinoIcons.forward,
-                                            color: Colors.blue,
+                                            color: material.Colors.blue,
                                             size: 20),
                                       );
                                     },
@@ -300,8 +300,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                         width: 13,
                                         height: 2,
                                         color: i == currentIndex
-                                            ? Colors.grey
-                                            : Colors.grey.shade800,
+                                            ? material.Colors.grey
+                                            : material.Colors.grey.shade800,
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 1),
                                       ),
@@ -316,10 +316,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               SizedBox(
                 width: width,
                 height: 500,
-                child: CarouselSlider(
+                child: carousel.CarouselSlider(
                   items: widgetList,
                   carouselController: controller,
-                  options: CarouselOptions(
+                  options: carousel.CarouselOptions(
                       initialPage: contentController.getPage(widget.index),
                       viewportFraction: 0.926,
                       onPageChanged: (index, reason) {
@@ -349,16 +349,17 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                     height: 145,
                                     width: 50,
                                     color: leftActive
-                                        ? Colors.black.withOpacity(0.3)
+                                        ? material.Colors.black
+                                            .withValues(alpha: 0.3)
                                         : backgroundColor,
                                     child: leftActive && val
-                                        ? IconButton(
+                                        ? material.IconButton(
                                             onPressed: () {
                                               moveBackward();
                                             },
                                             icon: const Icon(
-                                                Icons.arrow_back_ios,
-                                                color: Colors.white),
+                                                material.Icons.arrow_back_ios,
+                                                color: material.Colors.white),
                                           )
                                         : Container(),
                                   ),
@@ -366,15 +367,17 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                   Container(
                                     height: 145,
                                     width: 50,
-                                    color: Colors.black.withOpacity(0.3),
+                                    color: material.Colors.black
+                                        .withValues(alpha: 0.3),
                                     child: val
-                                        ? IconButton(
+                                        ? material.IconButton(
                                             onPressed: () {
                                               moveForward();
                                             },
                                             icon: const Icon(
-                                                Icons.arrow_forward_ios,
-                                                color: Colors.white),
+                                                material
+                                                    .Icons.arrow_forward_ios,
+                                                color: material.Colors.white),
                                           )
                                         : Container(),
                                   ),
@@ -399,7 +402,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   child: Container(
                       width: 1360,
                       height: 185,
-                      color: Colors.green.withOpacity(0.0)),
+                      color: material.Colors.green.withValues(alpha: 0.0)),
                 ),
               ),
               //
@@ -417,7 +420,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                     _seeMoreSelected.value = false;
                   },
                   // For Debugging
-                  child: TextButton(
+                  child: material.TextButton(
                     onPressed: () {
                       if (widget.onSeeMore != null) {
                         widget.onSeeMore!(widget.title);
@@ -426,7 +429,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                     child: Container(
                         width: textSize.width + 69,
                         height: 20,
-                        color: Colors.blueGrey.withOpacity(0.0)),
+                        color: material.Colors.blueGrey.withValues(alpha: 0.0)),
                   ),
                 ),
               ),
@@ -463,7 +466,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                       child: Container(
                         width: 1360,
                         height: 140,
-                        color: Colors.purple.withOpacity(0.0),
+                        color: material.Colors.purple.withValues(alpha: 0.0),
                       ))),
             ],
           )),

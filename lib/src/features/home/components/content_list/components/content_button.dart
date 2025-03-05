@@ -89,7 +89,7 @@ class _ContentButtonState extends State<ContentButton> {
                           : widget.circleColor,
                       width: 1),
                   shape: BoxShape.circle,
-                  color: widget.buttonColor.withOpacity(widget.opacity),
+                  color: widget.buttonColor.withValues(alpha: widget.opacity),
                 ),
                 child: widget.icon),
           ),

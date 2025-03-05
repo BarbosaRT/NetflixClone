@@ -102,11 +102,11 @@ class _DetailContentState extends State<DetailContent> {
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
                         colors: [
-                          Colors.black.withOpacity(0.75),
-                          Colors.black.withOpacity(0.5),
-                          Colors.black.withOpacity(0.0),
-                          Colors.black.withOpacity(0),
-                          Colors.black.withOpacity(0),
+                          Colors.black.withValues(alpha: 0.75),
+                          Colors.black.withValues(alpha: 0.5),
+                          Colors.black.withValues(alpha: 0.0),
+                          Colors.black.withValues(alpha: 0),
+                          Colors.black.withValues(alpha: 0),
                         ]),
                   ),
                   child: Padding(
