@@ -47,6 +47,9 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
       if (index > widget.contents.length - 1) {
         index = widget.contents.length - 1;
       }
+      if (index < 0) {
+        index = 0;
+      }
       widgets.add(
         Positioned(
           key: UniqueKey(),
