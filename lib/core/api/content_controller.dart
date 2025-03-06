@@ -174,8 +174,8 @@ class ContentController extends ChangeNotifier {
       (index) => ContentModel.fromJson(AppConsts.placeholderJson),
     );
     Map<String, dynamic> data = await getHttp(
-        'https://api.themoviedb.org/4/discover/tv?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR');
-
+        'https://api.themoviedb.org/3/discover/tv?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR');
+    //print(data);
     for (int k = 0; k < data['results'].length; k++) {
       var i = data['results'][k];
       String tvId = i['id'].toString();
@@ -272,7 +272,7 @@ class ContentController extends ChangeNotifier {
       (index) => ContentModel.fromJson(AppConsts.placeholderJson),
     );
     Map<String, dynamic> data = await getHttp(
-        'https://api.themoviedb.org/4/discover/movie?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc');
+        'https://api.themoviedb.org/3/discover/movie?api_key=$apiKey&language=pt-BR&page=$page&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc');
     for (int k = 0; k < data['results'].length; k++) {
       var i = data['results'][k];
       String movieId = i['id'].toString();

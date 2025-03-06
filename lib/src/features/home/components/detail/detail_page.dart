@@ -67,9 +67,10 @@ class _DetailPageState extends State<DetailPage> {
     if (contentController.loading) {
       contentController.init();
     }
-    height = startHeight +
-        410 * (_expanded.value ? 2 : 0) +
-        150.0 * widget.content!.episodes!.length;
+    final episodes = (widget.content!.episodes != null)
+        ? widget.content!.episodes!.length
+        : 0;
+    height = startHeight + 410 * (_expanded.value ? 2 : 0) + 150.0 * episodes;
     super.initState();
 
     contentController.addListener(() {
@@ -117,11 +118,18 @@ class _DetailPageState extends State<DetailPage> {
         headline.copyWith(color: Colors.black, fontWeight: FontWeight.w900);
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
-    const overview =
-        'Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado com cancer ele se une com, Jesse Pinkman, um ex-aluno para produzir cristais de metafetamina e assegurar o futuro de sua familia.';
+    //const overview =
+    //    'Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado com cancer ele se une com, Jesse Pinkman, um ex-aluno para produzir cristais de metafetamina e assegurar o futuro de sua familia.';
 
     List<ProfileButton> castWidgets = [];
-    for (int c = 0; c < widget.content!.cast!.length; c++) {
+    final episodes = (widget.content!.episodes != null)
+        ? widget.content!.episodes!.length
+        : 0;
+
+    final cast =
+        (widget.content!.cast != null) ? widget.content!.cast!.length : 0;
+
+    for (int c = 0; c < cast; c++) {
       final text = widget.content!.cast![c] + ', ';
       final textSpan = TextSpan(
         text: text,
@@ -139,9 +147,27 @@ class _DetailPageState extends State<DetailPage> {
           textStyle: headline4,
           text: text));
     }
-
+    if (cast == 0) {
+      const text = "Blueberries";
+      final textSpan = TextSpan(
+        text: text,
+        style: headline4,
+      );
+      final tp = TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+      tp.layout();
+      castWidgets.add(ProfileButton(
+          width: tp.width,
+          showPicture: false,
+          textColor: Colors.white,
+          alignment: Alignment.centerLeft,
+          height: 20,
+          underline: 2,
+          textStyle: headline4,
+          text: text));
+    }
+    final tags = (widget.content != null) ? widget.content!.tags.length : 0;
     List<ProfileButton> genreWidgets = [];
-    for (int g = 0; g < widget.content!.tags.length; g++) {
+    for (int g = 0; g < tags; g++) {
       final t = widget.content!.tags[g] + ', ';
       final tSpan = TextSpan(
         text: t,
@@ -184,22 +210,25 @@ class _DetailPageState extends State<DetailPage> {
                 List<ContentModel> contents = snapshot.data!;
                 return Column(
                   children: [
-                    for (int o = 0; o < (value ? 6 : 3); o++)
+                    for (int o = 0;
+                        o < (value ? 6 : 3) && 3 * o < contents.length;
+                        o++)
                       SizedBox(
                         width: 1000,
                         height: 380,
                         child: Stack(
                           children: [
                             for (int c = 0; c < 3; c++)
-                              Positioned(
-                                left: c * 236 + c * 20,
-                                child: Transform.scale(
-                                  scale: width / 1360,
-                                  child: DetailContent(
-                                    content: contents[3 * o + c],
+                              if (3 * o + c < contents.length)
+                                Positioned(
+                                  left: c * 236 + c * 20,
+                                  child: Transform.scale(
+                                    scale: width / 1360,
+                                    child: DetailContent(
+                                      content: contents[3 * o + c],
+                                    ),
                                   ),
                                 ),
-                              ),
                           ].reversed.toList(),
                         ),
                       ),
@@ -585,9 +614,7 @@ class _DetailPageState extends State<DetailPage> {
                             left: 280 * width / 1360,
                             child: Column(
                               children: [
-                                for (int e = 0;
-                                    e < widget.content!.episodes!.length;
-                                    e++)
+                                for (int e = 0; e < episodes; e++)
                                   Transform.scale(
                                     scale: width / 1360,
                                     child: DetailContainer(
@@ -603,7 +630,7 @@ class _DetailPageState extends State<DetailPage> {
                           // Titulos Semelhantes
                           //
                           Positioned(
-                            top: 835 + 150.0 * widget.content!.episodes!.length,
+                            top: 835 + 150.0 * episodes,
                             left: 300 * width / 1360,
                             child: similarTitles,
                           ),
@@ -615,7 +642,7 @@ class _DetailPageState extends State<DetailPage> {
                             builder: (context, bool value, child) {
                               return Positioned(
                                 top: 1900 +
-                                    150.0 * widget.content!.episodes!.length +
+                                    150.0 * episodes +
                                     400 * (value ? 3 : 0),
                                 child: Stack(
                                   children: [
@@ -697,11 +724,7 @@ class _DetailPageState extends State<DetailPage> {
                                                               (_expanded.value
                                                                   ? 3
                                                                   : 0) +
-                                                          150.0 *
-                                                              widget
-                                                                  .content!
-                                                                  .episodes!
-                                                                  .length;
+                                                          150.0 * episodes;
                                                     });
                                                   }
                                                 },

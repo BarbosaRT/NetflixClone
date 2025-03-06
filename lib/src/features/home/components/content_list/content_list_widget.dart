@@ -211,7 +211,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     return MouseRegion(
       opaque: false,
       child: SizedBox(
-          width: 1360,
+          width: width,
           height: 450,
           child: Stack(
             children: [
@@ -222,7 +222,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 top: distanceToTop,
                 left: 50,
                 child: SizedBox(
-                  width: 1360,
+                  width: width,
                   height: 50,
                   child: Stack(
                     children: [
@@ -400,7 +400,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   },
                   // For Debugging
                   child: Container(
-                      width: 1360,
+                      width: width,
                       height: 185,
                       color: material.Colors.green.withValues(alpha: 0.0)),
                 ),
@@ -464,7 +464,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                       },
                       // For debugging
                       child: Container(
-                        width: 1360,
+                        width: width,
                         height: 140,
                         color: material.Colors.purple.withValues(alpha: 0.0),
                       ))),

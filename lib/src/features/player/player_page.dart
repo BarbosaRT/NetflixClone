@@ -47,6 +47,8 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
   static const Duration _ageAnimation = Duration(milliseconds: 200);
   static const Duration _ageDuration = Duration(seconds: 3);
 
+  final FocusNode _focusNode = FocusNode();
+
   final ValueNotifier<bool> _playHover = ValueNotifier(false);
   final ValueNotifier<bool> _rewindHover = ValueNotifier(false);
   final ValueNotifier<bool> _forwardHover = ValueNotifier(false);
@@ -493,7 +495,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
 
     final loadedPage = KeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _focusNode,
       onKeyEvent: (value) {
         if (value is KeyDownEvent) {
           if (value.logicalKey == LogicalKeyboardKey.space) {
@@ -1110,7 +1112,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     currentPage = finished ? finishPage : currentPage;
     return KeyboardListener(
         autofocus: true,
-        focusNode: FocusNode(),
+        focusNode: _focusNode,
         onKeyEvent: (value) async {
           if (value is KeyDownEvent && !kIsWeb) {
             if (value.logicalKey == LogicalKeyboardKey.f11) {

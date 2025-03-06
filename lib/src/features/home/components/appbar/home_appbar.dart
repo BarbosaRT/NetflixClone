@@ -60,6 +60,8 @@ class _HomeAppBarState extends State<HomeAppBar> {
     final selectedlabelLarge =
         labelLarge.copyWith(fontWeight: FontWeight.bold, color: Colors.white);
 
+    const profile = ProfileIcon();
+
     final child = Stack(children: [
       Positioned(
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -113,18 +115,20 @@ class _HomeAppBarState extends State<HomeAppBar> {
       // Search
       //
       Positioned(
-        top: 10,
-        left: width * 0.8,
-        child: const Icon(
-          Icons.search,
-          color: Colors.white,
+        left: width - ProfileIcon.iconWidth * 4 - ProfileIcon.iconArrowSize * 4,
+        child: const Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
         ),
       ),
       //
       // Infantil
       //
       Positioned(
-        left: width * 0.826,
+        left: width - ProfileIcon.iconWidth * 3 - ProfileIcon.iconArrowSize * 4,
         child: TopButton(
             selectedStyle: selectedlabelLarge,
             unselectedStyle: labelLarge,
@@ -134,15 +138,19 @@ class _HomeAppBarState extends State<HomeAppBar> {
       // Notifications
       //
       Positioned(
-        left: width * 0.606,
+        top: 2,
+        left: width -
+            NotificationBar.containerWidth -
+            ProfileIcon.iconWidth * 2 -
+            ProfileIcon.iconArrowSize,
         child: const NotificationBar(),
       ),
       //
       // Profiles
       //
       Positioned(
-        left: width * 0.653,
-        child: const ProfileIcon(),
+        left: width - ProfileIcon.width * 2,
+        child: profile,
       ),
     ]);
 
@@ -187,6 +195,7 @@ class NotificationBar extends StatelessWidget {
   const NotificationBar({super.key});
 
   static const double containerHeight = 330;
+  static const double containerWidth = 400;
   static final _scrollController = ScrollController();
 
   static final notifications = [
@@ -248,14 +257,14 @@ class NotificationBar extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.bottomRight,
-            width: 400,
+            width: containerWidth,
             height: 20,
             child:
                 const Icon(Icons.arrow_drop_up, size: 30, color: Colors.white),
           ),
           Container(
               margin: const EdgeInsets.only(top: 17),
-              width: 401,
+              width: containerWidth + 1,
               height: containerHeight,
               decoration: BoxDecoration(
                 color: Colors.grey.shade800.withValues(alpha: 0.6),
@@ -385,7 +394,7 @@ class _NotificationContainerState extends State<NotificationContainer> {
                           style: textStyle,
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 7,
                         ),
                         Text(
                           widget.detail,

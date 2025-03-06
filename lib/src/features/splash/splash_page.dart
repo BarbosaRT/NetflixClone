@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   static const stroke = 17;
   static const radius = 180.0;
   static const ypos = 90;
-
+  final FocusNode _focusNode = FocusNode();
   ValueNotifier<bool> textUpdate = ValueNotifier<bool>(false);
   int ids = 0;
 
@@ -98,7 +98,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     return KeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _focusNode,
       onKeyEvent: (value) async {
         if (value is KeyDownEvent && !kIsWeb) {
           if (value.logicalKey == LogicalKeyboardKey.f11) {

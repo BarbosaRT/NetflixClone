@@ -17,6 +17,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -57,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return KeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _focusNode,
       onKeyEvent: (value) async {
         if (value is KeyDownEvent && !kIsWeb) {
           if (value.logicalKey == LogicalKeyboardKey.f11) {

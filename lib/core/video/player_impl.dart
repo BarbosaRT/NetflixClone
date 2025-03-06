@@ -8,13 +8,19 @@ class PlayerImpl implements VideoInterface {
   bool _enableFrame = false;
   String path = '';
   late VideoPlayerController _controller;
-  double width = 1360;
-  double height = 768;
+  double _width = 1360;
+  double _height = 768;
   bool _isInitialized = false;
   VideoPlayerController get controller => _controller;
   int id = 0;
 
   PlayerImpl({required this.id});
+
+  @override
+  void changeSize(double width, double height) {
+    _width = width;
+    _height = height;
+  }
 
   @override
   Widget frame() {
@@ -29,8 +35,8 @@ class PlayerImpl implements VideoInterface {
       return _thumbnail.isEmpty
           ? Container()
           : SizedBox(
-              width: width,
-              height: height,
+              width: _width,
+              height: _height,
               child: Image(image: image, fit: BoxFit.cover));
     }
   }
@@ -47,8 +53,8 @@ class PlayerImpl implements VideoInterface {
     }
     load(video, callback: callback, positionStream: positionStream);
     path = video;
-    width = w;
-    height = h;
+    _width = w;
+    _height = h;
     // _controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')..initialize();
   }
 

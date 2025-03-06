@@ -11,8 +11,8 @@ class PlayerImpl implements VideoInterface {
   String path = '';
   int id = 0;
   late Player _player;
-  double width = 1360;
-  double height = 768;
+  double _width = 1360;
+  double _height = 768;
   Duration _position = Duration.zero;
   Duration _duration = const Duration(seconds: 2);
   List<Media> medias = <Media>[];
@@ -22,6 +22,13 @@ class PlayerImpl implements VideoInterface {
   PlayerImpl({required this.id}) {
     _player = Player();
     _controller = VideoController(_player);
+    //print("yeah");
+  }
+
+  @override
+  void changeSize(double width, double height) {
+    _width = width;
+    _height = height;
   }
 
   @override
@@ -31,15 +38,15 @@ class PlayerImpl implements VideoInterface {
     if (_enableFrame) {
       return Video(
           controller: _controller,
-          width: width,
-          height: height,
+          width: _width,
+          height: _height,
           controls: NoVideoControls);
     } else {
       return _thumbnail.isEmpty
           ? Container()
           : SizedBox(
-              width: width,
-              height: height,
+              width: _width,
+              height: _height,
               child: Image(image: image, fit: BoxFit.cover));
     }
   }
@@ -71,8 +78,8 @@ class PlayerImpl implements VideoInterface {
     });
     load(video, callback: callback);
     path = video;
-    width = w;
-    height = h;
+    _width = w;
+    _height = h;
   }
 
   @override

@@ -20,12 +20,12 @@ class _LoginPageState extends State<LoginPage> {
   bool _lembrar = true;
   TextEditingController email = TextEditingController();
   TextEditingController senha = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height * 0.9;
-    print(height);
     double totalHeight = height > 720 ? height * 1.35 : height * 1.75;
 
     const double textFieldWidth = 315;
@@ -51,10 +51,10 @@ class _LoginPageState extends State<LoginPage> {
 
     return KeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _focusNode,
       onKeyEvent: (value) async {
         if (value is KeyDownEvent && !kIsWeb) {
-          if (value.logicalKey == LogicalKeyboardKey.f11) {
+          if (value.logicalKey == (LogicalKeyboardKey.f11)) {
             await DesktopWindow.toggleFullScreen();
           }
         }

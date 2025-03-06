@@ -5,8 +5,8 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 class YoutubeImpl implements VideoInterface {
   String _thumbnail = '';
   bool _isOnline = false;
-  double width = 1360;
-  double height = 768;
+  double _width = 1360;
+  double _height = 768;
   bool _enableFrame = true;
   YoutubePlayerController _controller = YoutubePlayerController(
     params: const YoutubePlayerParams(
@@ -16,6 +16,11 @@ class YoutubeImpl implements VideoInterface {
       showFullscreenButton: false,
     ),
   );
+  @override
+  void changeSize(double width, double height) {
+    _width = width;
+    _height = height;
+  }
 
   @override
   void init(String video,
@@ -33,8 +38,8 @@ class YoutubeImpl implements VideoInterface {
       ),
     );
     // load(video, callback: callback);
-    width = w;
-    height = h;
+    _width = w;
+    _height = h;
     play();
   }
 
@@ -83,8 +88,8 @@ class YoutubeImpl implements VideoInterface {
         _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     return _enableFrame
         ? SizedBox(
-            width: width,
-            height: height,
+            width: _width,
+            height: _height,
             child: YoutubePlayer(
               controller: _controller,
               aspectRatio: 16 / 9,
@@ -93,8 +98,8 @@ class YoutubeImpl implements VideoInterface {
         : _thumbnail.isEmpty
             ? Container(width: 5, height: 5, color: Colors.transparent)
             : SizedBox(
-                width: width,
-                height: height,
+                width: _width,
+                height: _height,
                 child: Image(image: image, fit: BoxFit.cover));
   }
 

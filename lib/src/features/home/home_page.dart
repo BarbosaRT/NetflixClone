@@ -55,6 +55,8 @@ class _HomePageState extends State<HomePage> {
   static const int overviewStringLength = 230;
   static const double overviewWidth = 669.0;
 
+  final FocusNode _focusNode = FocusNode();
+
   ContentModel content = ContentModel.fromJson(AppConsts.placeholderJson);
   VideoInterface videoController = GetImpl().getImpl(id: 69);
   final scrollController = ScrollController(initialScrollOffset: 0);
@@ -174,6 +176,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    videoController.changeSize(width, screenHeight);
 
     final colorController = Modular.get<ColorController>();
 
@@ -232,7 +237,7 @@ class _HomePageState extends State<HomePage> {
 
     return KeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _focusNode,
       onKeyEvent: (value) async {
         if (value is KeyDownEvent && !kIsWeb) {
           if (value.logicalKey == LogicalKeyboardKey.f11) {
@@ -273,8 +278,8 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               videoController.frame(),
                               Container(
-                                height: 768,
-                                width: 1360,
+                                height: height,
+                                width: width,
                                 color: Colors.black.withValues(alpha: 0.2),
                               ),
                             ],
@@ -289,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                         top: 400,
                         child: Container(
                           height: 400,
-                          width: 1360,
+                          width: width,
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
                             begin: Alignment.topCenter,

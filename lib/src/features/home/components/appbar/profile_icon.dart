@@ -7,6 +7,9 @@ import 'package:netflix/src/features/profile/controllers/profile_controller.dart
 
 class ProfileIcon extends StatefulWidget {
   const ProfileIcon({super.key});
+  static const width = 215.0;
+  static const iconWidth = 32.0;
+  static const iconArrowSize = 25.0;
 
   @override
   State<ProfileIcon> createState() => _ProfileIconState();
@@ -16,7 +19,6 @@ class _ProfileIconState extends State<ProfileIcon> {
   bool _hover = false;
 
   static const duration = Duration(milliseconds: 400);
-  static const width = 215.0;
   static const height = 340.0;
 
   void onHover() {
@@ -43,7 +45,7 @@ class _ProfileIconState extends State<ProfileIcon> {
     return Row(
       children: [
         Container(
-          width: 32,
+          width: ProfileIcon.iconWidth,
           height: 30,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
@@ -60,7 +62,8 @@ class _ProfileIconState extends State<ProfileIcon> {
         AnimatedRotation(
           turns: _hover ? 0 : 0.5,
           duration: duration,
-          child: const Icon(Icons.arrow_drop_up, size: 25, color: Colors.white),
+          child: const Icon(Icons.arrow_drop_up,
+              size: ProfileIcon.iconArrowSize, color: Colors.white),
         ),
       ],
     );
@@ -88,7 +91,7 @@ class _ProfileIconState extends State<ProfileIcon> {
           profileController.select(i);
           Modular.to.pushNamed('/splash');
         },
-        width: width,
+        width: ProfileIcon.width,
         picture: Image.asset(
           profileController.profiles[i].icon,
           fit: BoxFit.fill,
@@ -98,7 +101,7 @@ class _ProfileIconState extends State<ProfileIcon> {
     }
     for (int i = 0; i < options.length; i++) {
       items.add(ProfileButton(
-        width: width,
+        width: ProfileIcon.width,
         picture: optionsWidgets[i],
         text: options[i],
       ));
@@ -112,13 +115,13 @@ class _ProfileIconState extends State<ProfileIcon> {
     final child = Stack(children: [
       Container(
         alignment: Alignment.bottomRight,
-        width: width - 20,
+        width: ProfileIcon.width - 20,
         height: 20,
         child: const Icon(Icons.arrow_drop_up, size: 30, color: Colors.white),
       ),
       Container(
           margin: const EdgeInsets.only(top: 17),
-          width: width + 1,
+          width: ProfileIcon.width + 1,
           height: height,
           decoration: const BoxDecoration(
             color: Colors.black,
@@ -139,7 +142,7 @@ class _ProfileIconState extends State<ProfileIcon> {
                   top: 300,
                   child: Container(
                       height: 4,
-                      width: width,
+                      width: ProfileIcon.width,
                       color: Colors.grey.withValues(alpha: 0.2))),
               Positioned(
                 top: 300,
@@ -149,7 +152,7 @@ class _ProfileIconState extends State<ProfileIcon> {
                     Modular.to.pushNamed('/login');
                   },
                   showPicture: false,
-                  width: width,
+                  width: ProfileIcon.width,
                   picture: null,
                   text: 'Sair da Netflix',
                 ),

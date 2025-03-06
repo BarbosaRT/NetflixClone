@@ -43,13 +43,14 @@ class _ContentContainerState extends State<ContentContainer> {
   static const delay = Duration(milliseconds: 400);
   static const trailerDelay = Duration(milliseconds: 3000);
   static const double realWidth = 325;
-  static const double width = 245;
+  double width = 245;
   static const double wDifference = 60;
-  static const double height = 132;
+  static const double originalHeight = 132;
+  double height = 132;
   static const double factor = 1.5;
   static const double padding = 140;
 
-  static const double infoHeight = width * factor - height * factor;
+  double infoHeight = 566;
   static const double border = 5;
   static const double hoverBorder = 10;
 
@@ -160,9 +161,14 @@ class _ContentContainerState extends State<ContentContainer> {
     final headline = AppFonts().headline7;
     final headline6 = AppFonts().headline6;
     final screenWidth = MediaQuery.of(context).size.width;
+    //final screenHeight = MediaQuery.of(context).size.width;
     final colorController = Modular.get<ColorController>();
     final backgroundColor = colorController.currentScheme.containerColor;
     final bool playing = videoController?.isPlaying() ?? false;
+
+    final double scale = screenWidth / 1400;
+    height = originalHeight + 10 * scale;
+    infoHeight = width * factor - height * factor;
 
     final decoration = BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(border)),
@@ -193,7 +199,6 @@ class _ContentContainerState extends State<ContentContainer> {
         bottomLeft: Radius.circular(hoverBorder),
       ),
     );
-    final double scale = screenWidth / 1360;
 
     return Transform.scale(
       scale: scale,
@@ -225,10 +230,8 @@ class _ContentContainerState extends State<ContentContainer> {
             AnimatedContainer(
               curve: curve,
               duration: duration,
-              width: hover
-                  ? width * factor / scale + 22 * (scale.toInt() - 1)
-                  : width / scale,
-              height: hover ? height * factor / scale : height / scale,
+              width: hover ? width * factor : width,
+              height: hover ? height * factor : height,
               decoration: hover ? movieDecoraion : decoration,
               child: SingleChildScrollView(
                 child: Stack(
@@ -236,18 +239,14 @@ class _ContentContainerState extends State<ContentContainer> {
                     AnimatedContainer(
                       curve: curve,
                       duration: duration,
-                      height: hover ? height * factor / scale : height / scale,
-                      width: hover
-                          ? width * factor / scale + 22 * (scale.toInt() - 1)
-                          : width / scale,
+                      height: hover ? height * factor : height,
+                      width: hover ? width * factor : width,
                       child: videoController?.frame(),
                     ),
                     playing && hover
                         ? Container(
-                            height: height * factor / scale -
-                                10 +
-                                10 * (scale.toInt() - 1),
-                            width: width * factor / scale - 8,
+                            height: height * factor - 10,
+                            width: width * factor - 8,
                             alignment: Alignment.bottomRight,
                             child: VolumeButton(
                               scale: 8 / 7,
