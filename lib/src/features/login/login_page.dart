@@ -181,10 +181,10 @@ class _LoginPageState extends State<LoginPage> {
                                   if (loginController.isLogged)
                                     Container(
                                       width: 316,
-                                      height: 48,
+                                      height: 50,
                                       margin: const EdgeInsets.only(left: 5),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(2),
+                                        borderRadius: BorderRadius.circular(30),
                                         color:
                                             buttonColor.withValues(alpha: 0.5),
                                       ),
@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           255, 190, 0, 0)),
                                         ),
                                         child: SizedBox(
-                                          width: textFieldWidth - 32,
+                                          width: textFieldWidth - 32 - 13,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 13),

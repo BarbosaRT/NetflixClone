@@ -42,7 +42,7 @@ class ContentListWidget extends StatefulWidget {
 }
 
 class _ContentListWidgetState extends State<ContentListWidget> {
-  static const double distanceToTop = 90;
+  static double distanceToTop = 90;
   static const duration = Duration(milliseconds: 500);
   static const seeMoreDuration = Duration(milliseconds: 200);
   static const Curve curve = Curves.easeInOut;
@@ -152,8 +152,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void onWidgetChanging(bool value) {
-    // canDetectList = !value;
-    // _listSelected.value = !value;
+    // Oculta setas e desabilita detecção da lista enquanto um card está expandido
+    //canDetectList = !value;
+    //_listSelected.value = !value;
   }
 
   void moveBackward() {
@@ -169,7 +170,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     //final contentController = Modular.get<ContentController>();
     //contentController.getContent(widget.title, 0);
 
-    widgetBuilder();
+    widgetBuilder(); // Usar versão sem MediaQuery
     controller.jumpToPage(widget.listCount);
     Future.delayed(duration).then(
       (value) {
@@ -188,11 +189,28 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final headline6 = AppFonts().headline6;
+
+    // Responsive spacing
+    distanceToTop = width < 600
+        ? 60
+        : width < 1200
+            ? 75
+            : 90;
+
+    // Responsive font sizes
+    final headline6 = AppFonts().headline6.copyWith(
+          fontSize: width < 600
+              ? 16.0
+              : width < 1200
+                  ? 18.0
+                  : 20.0,
+        );
+
     final seeMoreStyle = headline6.copyWith(
       fontSize: headline6.fontSize! - 5,
       color: material.Colors.blue,
     );
+
     final contentController = Modular.get<ListContentController>();
     final colorController = Modular.get<ColorController>();
 
@@ -208,11 +226,24 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         textDirection: TextDirection.ltr);
     seeMoreSize.layout();
 
+    // Responsive heights
+    final containerHeight = width < 600
+        ? 350.0
+        : width < 1200
+            ? 400.0
+            : 450.0;
+
+    final listHeight = width < 600
+        ? 300.0
+        : width < 1200
+            ? 350.0
+            : 400.0;
+
     return MouseRegion(
       opaque: false,
       child: SizedBox(
           width: width,
-          height: 450,
+          height: containerHeight,
           child: Stack(
             children: [
               //
@@ -315,7 +346,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               //
               SizedBox(
                 width: width,
-                height: 500,
+                height: listHeight,
                 child: carousel.CarouselSlider(
                   items: widgetList,
                   carouselController: controller,

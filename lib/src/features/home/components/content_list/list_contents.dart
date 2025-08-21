@@ -36,7 +36,7 @@ class ListContents extends StatefulWidget {
 
 class ListContentsState extends State<ListContents> {
   static const Duration duration = Duration(milliseconds: 300);
-  static const double spacing = 220.0;
+  static double spacing = 220.0;
   int current = 0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
@@ -85,8 +85,8 @@ class ListContentsState extends State<ListContents> {
   void initState() {
     final controller = Modular.get<ContentController>();
     controller.init();
-    widgetBuilder();
     super.initState();
+    widgetBuilder();
   }
 
   ContentListAnchor getAnchorFromValue(int index) {
@@ -127,6 +127,8 @@ class ListContentsState extends State<ListContents> {
           Positioned(
             key: UniqueKey(),
             top: spacing * j,
+            left: 0,
+            right: 0,
             child: ContentListWidget(
               key: UniqueKey(),
               index: j,
@@ -194,6 +196,15 @@ class ListContentsState extends State<ListContents> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    //final height = MediaQuery.of(context).size.height;
+
+    // Adjust spacing based on screen width
+    spacing = width < 600
+        ? 180.0
+        : width < 1200
+            ? 200.0
+            : 220.0;
+
     return SizedBox(
       width: width,
       height: 3000,
