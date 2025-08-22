@@ -192,10 +192,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
 
     // Responsive spacing
     distanceToTop = width < 600
-        ? 60
+        ? 80
         : width < 1200
-            ? 75
-            : 90;
+            ? 95
+            : 100;
 
     // Responsive font sizes
     final headline6 = AppFonts().headline6.copyWith(
@@ -238,6 +238,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
         : width < 1200
             ? 350.0
             : 400.0;
+
+    final viewport = (width - 80) / width;
 
     return MouseRegion(
       opaque: false,
@@ -344,21 +346,23 @@ class _ContentListWidgetState extends State<ContentListWidget> {
               //
               // List
               //
-              SizedBox(
-                width: width,
-                height: listHeight,
-                child: carousel.CarouselSlider(
-                  items: widgetList,
-                  carouselController: controller,
-                  options: carousel.CarouselOptions(
-                      initialPage: contentController.getPage(widget.index),
-                      viewportFraction: 0.926,
-                      onPageChanged: (index, reason) {
-                        contentController.setPage(widget.index, index);
-                        setState(() {
-                          currentIndex = index;
-                        });
-                      }),
+              Positioned(
+                child: SizedBox(
+                  width: width,
+                  height: listHeight,
+                  child: carousel.CarouselSlider(
+                    items: widgetList,
+                    carouselController: controller,
+                    options: carousel.CarouselOptions(
+                        initialPage: contentController.getPage(widget.index),
+                        viewportFraction: viewport,
+                        onPageChanged: (index, reason) {
+                          contentController.setPage(widget.index, index);
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        }),
+                  ),
                 ),
               ),
               //
@@ -370,7 +374,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                       valueListenable: _listSelected,
                       builder: (BuildContext context, bool val, Widget? child) {
                         return Positioned(
-                          top: 120,
+                          top: 145,
                           child: SizedBox(
                               width: width,
                               height: 140,

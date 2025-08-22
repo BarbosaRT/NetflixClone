@@ -78,7 +78,7 @@ class ListContentsState extends State<ListContents> {
     'Estrelas da semana',
     'Ação e aventura',
   ];
-  static const totalListCount = 33;
+  static const totalListCount = 12;
   static const listSize = totalListCount ~/ 3;
 
   @override

@@ -291,12 +291,12 @@ class _HomePageState extends State<HomePage> {
                     // Video Gradient
                     //
                     Positioned(
-                        top: 400,
-                        child: Container(
-                          height: 400,
-                          width: width,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
+                      top: 400,
+                      child: Container(
+                        height: 400,
+                        width: width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
@@ -304,8 +304,19 @@ class _HomePageState extends State<HomePage> {
                               backgroundColor,
                               backgroundColor,
                             ],
-                          )),
-                        )),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: 800,
+                      child: Container(
+                        width: width,
+                        height: 500,
+                        color: backgroundColor,
+                      ),
+                    ),
                     //
                     // Gradient
                     //

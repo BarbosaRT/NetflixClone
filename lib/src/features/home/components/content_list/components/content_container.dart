@@ -47,7 +47,7 @@ class _ContentContainerState extends State<ContentContainer> {
   static const double wDifference = 60;
   static const double originalHeight = 132;
   double height = 132;
-  static const double factor = 1.5;
+  static const double factor = 1.47;
   static const double padding = 140;
 
   double infoHeight = 566;
@@ -166,7 +166,7 @@ class _ContentContainerState extends State<ContentContainer> {
     final backgroundColor = colorController.currentScheme.containerColor;
     final bool playing = videoController?.isPlaying() ?? false;
 
-    final double scale = screenWidth / 1400;
+    final double scale = (screenWidth / 1366).clamp(0.9, 1.07);
     height = originalHeight + 10 * scale;
     infoHeight = width * factor - height * factor;
 
@@ -218,7 +218,7 @@ class _ContentContainerState extends State<ContentContainer> {
                       -padding / 2 - wDifference + 5,
                       -padding - wDifference + 15)
                   : 0,
-              hover ? 0 : 120,
+              hover ? 20 : 140,
               0),
         ),
         child: Stack(

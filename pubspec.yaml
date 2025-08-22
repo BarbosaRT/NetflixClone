@@ -25,7 +25,7 @@ dependencies:
   media_kit_libs_audio: ^1.0.6 # Native audio dependencies
   flutter_native_view: ^0.0.2
 
-  flutter_modular: ^5.0.3
+  flutter_modular: ^6.4.1
 
   animated_text_kit: ^4.2.2
 

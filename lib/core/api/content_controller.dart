@@ -403,15 +403,22 @@ class ContentController extends ChangeNotifier {
       index = 0;
     }
     final keys = _contentModel.keys.toList();
+    if (keys.isEmpty) {
+      return ContentModel.fromJson(AppConsts.placeholderJson);
+    }
     final String i = _contentModel[id] == null ? keys[0] : id;
-    int ind = index > _contentModel[i]!.length - 1
-        ? _contentModel[i]!.length - 1
+    final contentList = _contentModel[i];
+    if (contentList == null || contentList.isEmpty) {
+      return ContentModel.fromJson(AppConsts.placeholderJson);
+    }
+    int ind = index > contentList.length - 1
+        ? contentList.length - 1
         : index;
     if (ind < 0) {
       ind = 0;
     }
     try {
-      return _contentModel[i]![ind];
+      return contentList[ind];
     } on RangeError {
       return ContentModel.fromJson(AppConsts.placeholderJson);
     }
@@ -426,10 +433,13 @@ class ContentController extends ChangeNotifier {
       return placeholder.toList();
     }
     final keys = _contentModel.keys.toList();
+    if (keys.isEmpty) {
+      return placeholder.toList();
+    }
     final String i = _contentModel[id] == null ? keys[0] : id;
 
     try {
-      return _contentModel[i]!;
+      return _contentModel[i] ?? placeholder.toList();
     } on RangeError {
       return placeholder.toList();
     }
@@ -462,7 +472,7 @@ class ContentController extends ChangeNotifier {
             await init();
           }
           verifiedTitles.add(id);
-          return Stream.value(_contentModel[id]!);
+          return Stream.value(_contentModel[id] ?? []);
         } else {
           verifiedTitles.add(id);
         }
@@ -499,7 +509,7 @@ class ContentController extends ChangeNotifier {
           });
       }
     } else {
-      return Stream.value(_contentModel[id]!);
+      return Stream.value(_contentModel[id] ?? []);
     }
   }
 }

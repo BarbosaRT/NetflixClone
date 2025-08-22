@@ -4,7 +4,7 @@ import 'package:netflix/src/features/home/components/content_list/components/con
 
 enum ContentContainerAnchor { left, center, right }
 
-// Responsible for putting one widget on top of another
+// Responsible for putting one widget on top of another with adaptive container count
 class ContentInnerWidget extends StatefulWidget {
   final int index;
   final String id;
@@ -12,7 +12,7 @@ class ContentInnerWidget extends StatefulWidget {
   final void Function(ContentModel content)? onDetail;
   final void Function(bool value)? onHover;
   final void Function(bool value) onPlay;
-  final int contentCount;
+  final int contentCount; // This becomes the base/default count
   const ContentInnerWidget(
       {Key? key,
       this.index = 0,
@@ -30,30 +30,93 @@ class ContentInnerWidget extends StatefulWidget {
 
 class _ContentInnerWidgetState extends State<ContentInnerWidget> {
   static const Duration duration = Duration(milliseconds: 300);
-  static const double spacing = 252.0;
   int current = 0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
-  int width = 1280;
+  int screenWidth = 1280;
+  int adaptiveContentCount = 5; // This will change based on screen size
+
   @override
   void initState() {
     super.initState();
   }
 
+  // Get actual container dimensions accounting for scaling
+  double getScaledContainerWidth(double screenWidth) {
+    final double scale = (screenWidth / 1366).clamp(0.9, 1.07);
+    return 245 * scale; // Base width from ContentContainer
+  }
+
+  // Calculate how many containers can fit with proper spacing (5-25px)
+  int calculateAdaptiveContentCount(double screenWidth) {
+    double availableWidth = screenWidth; // Account for margins/arrows
+    double scaledContainerWidth = getScaledContainerWidth(screenWidth);
+
+    // Try different container counts and see what fits with good spacing
+    for (int count = 6; count >= 4; count--) {
+      double remainingWidth = availableWidth - (scaledContainerWidth * count);
+      double spacingNeeded = remainingWidth / (count - 1);
+
+      // Check if spacing is within our desired range (5-25px)
+      if (spacingNeeded >= 5 && spacingNeeded <= 25) {
+        return count;
+      }
+    }
+
+    // Fallback: calculate based on minimum spacing
+    double minSpacing = 5; // Minimum 8px spacing
+    int maxContainers =
+        ((availableWidth + minSpacing) / (scaledContainerWidth + minSpacing))
+            .floor();
+    return maxContainers.clamp(4, 6);
+  }
+
+  // Calculate optimal spacing between containers
+  double calculateSpacing(int containerCount, double screenWidth) {
+    if (containerCount <= 1) return 0;
+
+    double availableWidth = screenWidth;
+    double scaledContainerWidth = getScaledContainerWidth(screenWidth);
+    double totalContainerWidth = scaledContainerWidth * containerCount;
+    double remainingWidth = availableWidth - totalContainerWidth;
+
+    // Distribute remaining width evenly between containers
+    double spacing = remainingWidth / (containerCount - 1);
+
+    // Clamp spacing to our desired range
+    return spacing.clamp(5.0, 25.0);
+  }
+
   void widgetBuilder() {
     widgets = [];
-    for (int i = widget.contentCount - 1; i >= 0; i--) {
-      int index = widget.index * widget.contentCount + i;
-      if (index > widget.contents.length - 1) {
-        index = widget.contents.length - 1;
+    adaptiveContentCount =
+        calculateAdaptiveContentCount(screenWidth.toDouble());
+    double spacing =
+        calculateSpacing(adaptiveContentCount, screenWidth.toDouble());
+    double scaledContainerWidth =
+        getScaledContainerWidth(screenWidth.toDouble());
+    double adaptiveSpacing = scaledContainerWidth + spacing;
+
+    for (int i = adaptiveContentCount - 1; i >= 0; i--) {
+      int contentIndex = widget.index * adaptiveContentCount + i;
+
+      // Handle content bounds
+      if (contentIndex > widget.contents.length - 1) {
+        contentIndex = widget.contents.length - 1;
       }
-      if (index < 0) {
-        index = 0;
+      if (contentIndex < 0) {
+        contentIndex = 0;
       }
+
+      // Handle case where we don't have enough content
+      if (contentIndex >= widget.contents.length) {
+        continue;
+      }
+
       widgets.add(
         Positioned(
           key: UniqueKey(),
-          left: (spacing * width ~/ 1360) * i * 1.0,
+          left: adaptiveSpacing * i + 25,
           child: ContentContainer(
               key: UniqueKey(),
               onHover: onHover,
@@ -62,9 +125,9 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
               onExit: () {
                 onChangeValue(false);
               },
-              anchor: getAnchor(i),
+              anchor: getAnchor(i, adaptiveContentCount),
               localIndex: i,
-              content: widget.contents[index],
+              content: widget.contents[contentIndex],
               onDetail: (ContentModel content) {
                 if (widget.onDetail != null) {
                   widget.onDetail!(content);
@@ -76,19 +139,26 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     oldWidgets = widgets.toList();
   }
 
-  ContentContainerAnchor getAnchor(int i) {
-    int v = i >= widget.contentCount
-        ? i - widget.contentCount * (i ~/ widget.contentCount)
-        : i;
+  // Modified to accept dynamic container count
+  ContentContainerAnchor getAnchor(int i, int containerCount) {
+    int v =
+        i >= containerCount ? i - containerCount * (i ~/ containerCount) : i;
 
     List<ContentContainerAnchor> anchors = [
       ContentContainerAnchor.left,
     ];
-    for (int i = 0; i < widget.contentCount - 2; i++) {
+
+    // Add center anchors for middle containers
+    for (int j = 0; j < containerCount - 2; j++) {
       anchors.add(ContentContainerAnchor.center);
     }
-    anchors.add(ContentContainerAnchor.right);
-    return anchors[v];
+
+    // Add right anchor for last container (if more than 1 container)
+    if (containerCount > 1) {
+      anchors.add(ContentContainerAnchor.right);
+    }
+
+    return anchors[v.clamp(0, anchors.length - 1)];
   }
 
   void onChangeValue(bool value) {
@@ -103,16 +173,16 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     }
     current = index;
     onChangeValue(true);
-    switch (getAnchor(index)) {
+
+    switch (getAnchor(index, adaptiveContentCount)) {
       case ContentContainerAnchor.center:
         Future.delayed(duration).then((v) {
-          //
           widgets = oldWidgets.toList();
           if (widgets.length - index < 0) {
             return;
           }
           Widget element = widgets[widgets.length - index];
-          //
+
           widgets.removeAt(widgets.length - index);
           widgets.insert(widgets.length - index, element);
 
@@ -144,14 +214,23 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width.toInt();
-    if (width != screenWidth) {
-      width = screenWidth;
+    final currentScreenWidth = MediaQuery.of(context).size.width.toInt();
+
+    int newAdaptiveCount =
+        calculateAdaptiveContentCount(currentScreenWidth.toDouble());
+
+    if (screenWidth != currentScreenWidth ||
+        adaptiveContentCount != newAdaptiveCount) {
+      screenWidth = currentScreenWidth;
       widgetBuilder();
     }
-    return SizedBox(
-      width: (spacing * screenWidth / 1360) * widget.contentCount,
-      height: 500,
+
+    Color test = Color.fromRGBO(widget.index * 50, widget.index * 50, 0, 1);
+
+    return Container(
+      width: currentScreenWidth.toDouble() + 500,
+      height: 540,
+      color: test,
       child: Stack(
         children: widgets,
       ),

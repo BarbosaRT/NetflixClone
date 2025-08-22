@@ -18,79 +18,73 @@ import 'package:netflix/src/features/splash/splash_page.dart';
 
 class AppModule extends Module {
   @override
-  List<Bind> get binds => [
-        Bind((i) => ProfileController()),
-        Bind((i) => SplashController()),
-        Bind((i) => HomeAppBarController()),
-        Bind((i) => HoverNotification()),
-        Bind((i) => ColorController()),
-        Bind((i) => LoginController()),
-        Bind((i) => ListContentController()),
-        Bind((i) => ContentController()),
-        Bind((i) => PlayerNotifier()),
-      ];
+  void binds(i) {
+    i.addSingleton(ProfileController.new);
+    i.addSingleton(SplashController.new);
+    i.addSingleton(HomeAppBarController.new);
+    i.addSingleton(HoverNotification.new);
+    i.addSingleton(ColorController.new);
+    i.addSingleton(LoginController.new);
+    i.addSingleton(ListContentController.new);
+    i.addSingleton(ContentController.new);
+    i.addSingleton(PlayerNotifier.new);
+  }
 
   @override
-  List<ModularRoute> get routes => [
-        ChildRoute('/login', child: (context, args) => const LoginPage()),
-        ChildRoute('/profile', child: (context, args) => const ProfilePage()),
-        ChildRoute('/splash', child: (context, args) => const SplashPage()),
-        ChildRoute(
-          '/video',
-          child: (context, args) => const PlayerPage(),
-        ),
-        RedirectRoute('/', to: '/login'),
-        ChildRoute(
-          '/home',
-          child: (context, args) => const HomePage(),
-        ),
-        ChildRoute(
-          '/home/seeMore',
-          child: (context, args) => SeeMorePage(
-            title: args.data,
-          ),
-          transition: TransitionType.custom,
-          customTransition: CustomTransition(
-              opaque: false,
-              transitionBuilder: (context, anim1, anim2, child) {
-                const double begin = 0.9;
-                const double end = 1;
-                final tween = Tween(begin: begin, end: end);
-                final offsetAnimation = anim1.drive(tween);
+  void routes(r) {
+    r.child('/login', child: (context) => const LoginPage());
+    r.child('/profile', child: (context) => const ProfilePage());
+    r.child('/splash', child: (context) => const SplashPage());
+    r.child('/video', child: (context) => const PlayerPage());
+    r.redirect('/', to: '/login');
+    r.child('/home', child: (context) => const HomePage());
+    r.child(
+      '/home/seeMore',
+      child: (context) => SeeMorePage(
+        title: r.args.data,
+      ),
+      transition: TransitionType.custom,
+      customTransition: CustomTransition(
+          opaque: false,
+          transitionBuilder: (context, anim1, anim2, child) {
+            const double begin = 0.9;
+            const double end = 1;
+            final tween = Tween(begin: begin, end: end);
+            final offsetAnimation = anim1.drive(tween);
 
-                return FadeTransition(
-                  opacity: anim1,
-                  child: ScaleTransition(
-                    scale: offsetAnimation,
-                    child: child,
-                  ),
-                );
-              }),
-        ),
-        ChildRoute(
-          '/home/detail',
-          child: (context, args) => DetailPage(
-            content: args.data,
-          ),
-          transition: TransitionType.custom,
-          customTransition: CustomTransition(
-              opaque: false,
-              transitionBuilder: (context, anim1, anim2, child) {
-                const double begin = 0.9;
-                const double end = 1;
-                final tween = Tween(begin: begin, end: end);
-                final offsetAnimation = anim1.drive(tween);
+            return FadeTransition(
+              opacity: anim1,
+              child: ScaleTransition(
+                scale: offsetAnimation,
+                child: child,
+              ),
+            );
+          }),
+    );
+    r.child(
+      '/home/detail',
+      child: (context) => DetailPage(
+        content: r.args.data,
+      ),
+      transition: TransitionType.custom,
+      customTransition: CustomTransition(
+          opaque: false,
+          transitionBuilder: (context, anim1, anim2, child) {
+            const double begin = 0.9;
+            const double end = 1;
+            final tween = Tween(begin: begin, end: end);
+            final offsetAnimation = anim1.drive(tween);
 
-                return FadeTransition(
-                  opacity: anim1,
-                  child: ScaleTransition(
-                    scale: offsetAnimation,
-                    child: child,
-                  ),
-                );
-              }),
-        ),
-      ];
+            return FadeTransition(
+              opacity: anim1,
+              child: ScaleTransition(
+                scale: offsetAnimation,
+                child: child,
+              ),
+            );
+          }),
+    );
+  }
 }
 
 class AppWidget extends StatelessWidget {
@@ -106,8 +100,7 @@ class AppWidget extends StatelessWidget {
             trackVisibility: WidgetStateProperty.resolveWith((states) => true)),
         primarySwatch: Colors.blue,
       ),
-      routeInformationParser: Modular.routeInformationParser,
-      routerDelegate: Modular.routerDelegate,
+      routerConfig: Modular.routerConfig,
     );
   }
 }
