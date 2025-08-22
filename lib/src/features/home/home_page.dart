@@ -183,6 +183,11 @@ class _HomePageState extends State<HomePage> {
     final colorController = Modular.get<ColorController>();
 
     final backgroundColor = colorController.currentScheme.darkBackgroundColor;
+    final lighterBackgroundColor = backgroundColor.withValues(
+      red: backgroundColor.r + 5 / 255,
+      green: backgroundColor.g + 5 / 255,
+      blue: backgroundColor.b + 5 / 255,
+    );
 
     final headline6 = AppFonts().headline6;
 
@@ -246,26 +251,27 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
-          extendBodyBehindAppBar: true,
-          backgroundColor: backgroundColor,
-          appBar: homeAppBar,
-          key: myGlobals.scaffoldKey,
-          body: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: Scrollbar(
-              trackVisibility: true,
-              thumbVisibility: true,
+        extendBodyBehindAppBar: true,
+        backgroundColor: lighterBackgroundColor,
+        appBar: homeAppBar,
+        key: myGlobals.scaffoldKey,
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: Scrollbar(
+            trackVisibility: true,
+            thumbVisibility: true,
+            controller: scrollController,
+            child: SmoothScroll(
+              scrollSpeed: 90,
+              scrollAnimationLength: 150,
+              curve: Curves.decelerate,
               controller: scrollController,
-              child: SmoothScroll(
-                scrollSpeed: 90,
-                scrollAnimationLength: 150,
-                curve: Curves.decelerate,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: scrollController,
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: scrollController,
-                  child: Stack(children: [
+                child: Stack(
+                  children: [
                     Container(height: height),
                     //
                     // Background Video
@@ -308,12 +314,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-
+                    //
+                    // Background Color
+                    //
                     Positioned(
-                      top: 800,
+                      top: 700,
                       child: Container(
                         width: width,
-                        height: 500,
+                        height: 800,
                         color: backgroundColor,
                       ),
                     ),
@@ -337,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                     // Film Logo
                     //
                     SizedBox(
-                      width: 1360,
+                      width: width - 6,
                       height: 600,
                       child: Stack(
                         children: [
@@ -473,40 +481,39 @@ class _HomePageState extends State<HomePage> {
                                 // Classificação Indicativa
                                 //
                                 Container(
-                                    height: 32,
-                                    width: 400,
-                                    decoration: BoxDecoration(
-                                      color: backgroundColor.withValues(
-                                          alpha: 0.5),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 32,
-                                          width: 3,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            videoController.isPlaying(
-                                              enable:
-                                                  !videoController.isPlaying(),
-                                            );
-                                            _alreadyChanged.value =
-                                                !_alreadyChanged.value;
-                                          },
-                                          child: Image.asset(AppConsts
-                                                      .classifications[
-                                                  content.age] ??
-                                              'images/classifications/L.png'),
-                                        ),
-                                      ],
-                                    )),
+                                  height: 32,
+                                  width: 400,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        backgroundColor.withValues(alpha: 0.5),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 32,
+                                        width: 3,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          videoController.isPlaying(
+                                            enable:
+                                                !videoController.isPlaying(),
+                                          );
+                                          _alreadyChanged.value =
+                                              !_alreadyChanged.value;
+                                        },
+                                        child: Image.asset(AppConsts
+                                                .classifications[content.age] ??
+                                            'images/classifications/L.png'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -625,11 +632,13 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.white,
                       ),
                     ),
-                  ]),
+                  ],
                 ),
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

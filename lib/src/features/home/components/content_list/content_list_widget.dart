@@ -234,10 +234,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             : 450.0;
 
     final listHeight = width < 600
-        ? 300.0
+        ? 400.0
         : width < 1200
-            ? 350.0
-            : 400.0;
+            ? 450.0
+            : 500.0;
 
     final viewport = (width - 100) / width;
 
@@ -272,21 +272,24 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                               builder: (BuildContext context, bool val,
                                   Widget? child) {
                                 return AnimatedOpacity(
+                                  duration: seeMoreDuration,
+                                  opacity: val ? 1 : 0,
+                                  //
+                                  child: AnimatedContainer(
+                                    margin: EdgeInsets.only(
+                                        top: 3,
+                                        left: val
+                                            ? textSize.width + 15
+                                            : textSize.width),
                                     duration: seeMoreDuration,
-                                    opacity: val ? 1 : 0,
-                                    //
-                                    child: AnimatedContainer(
-                                        margin: EdgeInsets.only(
-                                            top: 3,
-                                            left: val
-                                                ? textSize.width + 15
-                                                : textSize.width),
-                                        duration: seeMoreDuration,
-                                        child: Text(
-                                          'Ver tudo',
-                                          style: seeMoreStyle,
-                                        )));
-                              }),
+                                    child: Text(
+                                      'Ver tudo',
+                                      style: seeMoreStyle,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                       widget.disable
                           ? Container()
                           : ValueListenableBuilder(
