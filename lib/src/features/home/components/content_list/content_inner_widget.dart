@@ -84,7 +84,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
     double spacing = remainingWidth / (containerCount - 1);
 
     // Clamp spacing to our desired range
-    return spacing.clamp(5.0, 25.0);
+    return spacing.clamp(5.0, 7.0);
   }
 
   void widgetBuilder() {
@@ -116,7 +116,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
       widgets.add(
         Positioned(
           key: UniqueKey(),
-          left: adaptiveSpacing * i + 25,
+          left: adaptiveSpacing * i,
           child: ContentContainer(
               key: UniqueKey(),
               onHover: onHover,
@@ -225,10 +225,10 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
       widgetBuilder();
     }
 
-    Color test = Color.fromRGBO(widget.index * 50, widget.index * 50, 0, 1);
+    Color test = Color.fromRGBO(widget.index * 50, widget.index * 50, 0, 0);
 
     return Container(
-      width: currentScreenWidth.toDouble() + 500,
+      width: currentScreenWidth.toDouble(),
       height: 540,
       color: test,
       child: Stack(

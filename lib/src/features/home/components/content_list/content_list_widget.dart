@@ -239,7 +239,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             ? 350.0
             : 400.0;
 
-    final viewport = (width - 80) / width;
+    final viewport = (width - 100) / width;
 
     return MouseRegion(
       opaque: false,
