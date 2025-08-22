@@ -260,7 +260,7 @@ class _DetailPageState extends State<DetailPage> {
       },
     );
 
-    videoController.changeSize(width, height);
+    videoController.changeSize(width, width / (16 / 9));
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -275,302 +275,298 @@ class _DetailPageState extends State<DetailPage> {
           builder: (context, bool value, child) {
             //
             return Scrollbar(
-                trackVisibility: value,
-                thumbVisibility: value,
+              trackVisibility: value,
+              thumbVisibility: value,
+              controller: scrollController,
+              child: SmoothScroll(
+                scrollSpeed: 90,
+                scrollAnimationLength: 150,
+                curve: Curves.decelerate,
                 controller: scrollController,
-                child: SmoothScroll(
-                  scrollSpeed: 90,
-                  scrollAnimationLength: 150,
-                  curve: Curves.decelerate,
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: scrollController,
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: scrollController,
-                    child: Stack(
-                        alignment: AlignmentDirectional.topCenter,
-                        children: [
-                          //
-                          // Background
-                          //
-                          Container(
-                            width: width,
-                            height: height + 50,
-                            color: backgroundColor.withValues(alpha: 0.5),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 50),
-                            width: width - 500,
-                            height: height,
-                            color: backgroundColor,
-                          ),
-                          //
-                          // Video
-                          //
-                          Positioned(
-                            top: 70,
-                            left: 250,
-                            child: SizedBox(
-                              width: width - 500,
-                              height: 500,
-                              child: _isDisposed
-                                  ? Container(color: Colors.black)
-                                  : videoController.frame(),
+                  child: Stack(
+                    alignment: AlignmentDirectional.topCenter,
+                    children: [
+                      //
+                      // Background
+                      //
+                      Container(
+                        width: width,
+                        height: height + 50,
+                        color: backgroundColor.withValues(alpha: 0.5),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 50),
+                        width: width - (width < 1280 ? 200 : 500),
+                        height: height,
+                        color: backgroundColor,
+                      ),
+                      //
+                      // Video
+                      //
+                      Positioned(
+                        top: 50,
+                        left: (width < 1280 ? 100 : 250),
+                        child: SizedBox(
+                          width: width - (width < 1280 ? 200 : 500),
+                          height: 500,
+                          child: _isDisposed
+                              ? Container(color: Colors.black)
+                              : videoController.frame(),
+                        ),
+                      ),
+                      //
+                      // Video Gradient
+                      //
+                      Positioned(
+                        top: 350,
+                        left: (width < 1280 ? 100 : 250),
+                        child: Container(
+                          height: 400,
+                          width: width - (width < 1280 ? 200 : 500),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                backgroundColor.withAlpha(0),
+                                backgroundColor,
+                                backgroundColor,
+                              ],
                             ),
                           ),
-                          //
-                          // Video Gradient
-                          //
-                          Positioned(
-                              top: 350,
-                              left: 250,
-                              child: Container(
-                                height: 400,
-                                width: width - 500,
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    backgroundColor.withAlpha(0),
-                                    backgroundColor,
-                                    backgroundColor,
-                                  ],
-                                )),
-                              )),
-                          //
-                          // Logo
-                          //
-                          Positioned(
-                            top: 360,
-                            left: 300,
-                            child: Image.asset(
-                              widget.content!.logo,
-                              height: 100,
-                            ),
-                          ),
-                          //
-                          // Buttons
-                          //
-                          Positioned(
-                            top: 460,
-                            left: 300,
-                            child: HomeButton(
-                              textStyle: blackHeadline6,
-                              overlayColor: Colors.grey.shade300,
-                              buttonColor: Colors.white,
-                              icon: Icons.play_arrow,
-                              text: 'Assistir',
-                              onPressed: () {
-                                try {
-                                  if (!_isDisposed) {
-                                    videoController.setVolume(0);
-                                    Future.delayed(trailerDelay).then((value) {
-                                      try {
-                                        if (!_isDisposed) {
-                                          videoController.setVolume(0);
-                                          videoController.stop();
-                                        }
-                                      } catch (e) {
-                                        print(
-                                            'Error in delayed video stop: $e');
-                                      }
-                                    });
+                        ),
+                      ),
+                      //
+                      // Logo
+                      //
+                      Positioned(
+                        top: 360,
+                        left: (width < 1280 ? 150 : 300),
+                        child: Image.asset(
+                          widget.content!.logo,
+                          height: 100,
+                        ),
+                      ),
+                      //
+                      // Buttons
+                      //
+                      Positioned(
+                        top: 460,
+                        left: (width < 1280 ? 150 : 300),
+                        child: HomeButton(
+                          textStyle: blackHeadline6,
+                          overlayColor: Colors.grey.shade300,
+                          buttonColor: Colors.white,
+                          icon: Icons.play_arrow,
+                          text: 'Assistir',
+                          onPressed: () {
+                            try {
+                              if (!_isDisposed) {
+                                videoController.setVolume(0);
+                                Future.delayed(trailerDelay).then((value) {
+                                  try {
+                                    if (!_isDisposed) {
+                                      videoController.setVolume(0);
+                                      videoController.stop();
+                                    }
+                                  } catch (e) {
+                                    print('Error in delayed video stop: $e');
                                   }
-                                } catch (e) {
-                                  print('Error setting video volume: $e');
-                                }
-                                var playerNotifier =
-                                    Modular.get<PlayerNotifier>();
-                                playerNotifier.playerModel =
-                                    PlayerModel(widget.content!, 0);
-                                Modular.to.pushNamed(
-                                  '/video',
-                                );
-                              },
+                                });
+                              }
+                            } catch (e) {
+                              print('Error setting video volume: $e');
+                            }
+                            var playerNotifier = Modular.get<PlayerNotifier>();
+                            playerNotifier.playerModel =
+                                PlayerModel(widget.content!, 0);
+                            Modular.to.pushNamed(
+                              '/video',
+                            );
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        top: 390,
+                        left: (width < 1280 ? 195 : 345),
+                        child: ContentButton(
+                          onClick: () {
+                            added.value = !added.value;
+                          },
+                          text: ValueListenableBuilder(
+                            valueListenable: added,
+                            builder: (BuildContext context, bool value, child) {
+                              return Text(
+                                value
+                                    ? 'Remover da Minha lista'
+                                    : 'Adicionar à Minha lista',
+                                textAlign: TextAlign.center,
+                                style: headline.copyWith(color: Colors.black),
+                              );
+                            },
+                          ),
+                          icon: ValueListenableBuilder(
+                            valueListenable: added,
+                            builder: (BuildContext context, bool value, child) {
+                              return Icon(
+                                value ? Icons.done : Icons.add,
+                                size: 25,
+                                color: Colors.white,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 390,
+                        left: (width < 1280 ? 195 : 345),
+                        child: LikeButton(),
+                      ),
+                      if (!_isDisposed)
+                        Positioned(
+                          top: 457,
+                          right: (width < 1280 ? 150 : 300),
+                          child: VolumeButton(
+                            videoController: videoController,
+                            iconOn: Icons.volume_up,
+                            iconOff: Icons.volume_off,
+                            scale: 1.15,
+                          ),
+                        ),
+                      //
+                      // Close Button
+                      //
+                      Positioned(
+                        top: 70,
+                        left: width - (width < 1280 ? 160 : 310),
+                        child: GestureDetector(
+                          onTap: () {
+                            try {
+                              if (!_isDisposed) {
+                                videoController.stop();
+                              }
+                            } catch (e) {
+                              print('Error stopping video controller: $e');
+                            }
+                            _active.value = false;
+                            Modular.to.navigate('/home');
+                          },
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: _active.value
+                                      ? Colors.transparent
+                                      : Colors.white,
+                                  width: 1),
+                              shape: BoxShape.circle,
                             ),
+                            child: const Icon(Icons.close,
+                                size: 30, color: Colors.white),
                           ),
-                          Positioned(
-                            top: 390,
-                            left: 345,
-                            child: ContentButton(
-                                onClick: () {
-                                  added.value = !added.value;
-                                },
-                                text: ValueListenableBuilder(
-                                  valueListenable: added,
-                                  builder: (BuildContext context, bool value,
-                                      child) {
-                                    return Text(
-                                      value
-                                          ? 'Remover da Minha lista'
-                                          : 'Adicionar à Minha lista',
-                                      textAlign: TextAlign.center,
-                                      style: headline.copyWith(
-                                          color: Colors.black),
-                                    );
-                                  },
-                                ),
-                                icon: ValueListenableBuilder(
-                                  valueListenable: added,
-                                  builder: (BuildContext context, bool value,
-                                      child) {
-                                    return Icon(
-                                      value ? Icons.done : Icons.add,
-                                      size: 25,
-                                      color: Colors.white,
-                                    );
-                                  },
-                                )),
-                          ),
-                          const Positioned(
-                            top: 390,
-                            left: 345,
-                            child: LikeButton(),
-                          ),
-                          if (!_isDisposed)
-                            Positioned(
-                              top: 457,
-                              right: 300,
-                              child: VolumeButton(
-                                videoController: videoController,
-                                iconOn: Icons.volume_up,
-                                iconOff: Icons.volume_off,
-                                scale: 1.15,
-                              ),
-                            ),
-                          //
-                          // Close Button
-                          //
-                          Positioned(
-                            top: 70,
-                            left: width - 310,
-                            child: GestureDetector(
-                              onTap: () {
-                                try {
-                                  if (!_isDisposed) {
-                                    videoController.stop();
-                                  }
-                                } catch (e) {
-                                  print('Error stopping video controller: $e');
-                                }
-                                _active.value = false;
-                                Modular.to.navigate('/home');
-                              },
-                              child: Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: _active.value
-                                          ? Colors.transparent
-                                          : Colors.white,
-                                      width: 1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.close,
-                                    size: 30, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          //
-                          // Details
-                          //
-                          Positioned(
-                            top: 580,
-                            left: 300,
-                            width: width - 500,
-                            child: Row(
-                              children: [
-                                //
-                                // Details
-                                //
-                                SizedBox(
-                                  height: 300,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      //
-                                      // Details
-                                      //
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '${widget.content!.rating}% relevante',
-                                            style: headline.copyWith(
-                                                color: Colors.green),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            '2022',
-                                            style: headline,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          //
-                                          Image.asset(
-                                            AppConsts.classifications[
-                                                    widget.content!.age] ??
-                                                'assets/images/classifications/L.png',
-                                            width: 30,
-                                            height: 30,
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Text(
-                                            widget.content!.detail,
-                                            style: headline,
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Container(
-                                            height: 20,
-                                            width: 40,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 1,
-                                                ),
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(5)),
-                                                color: Colors.transparent),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 1),
-                                              child: Center(
-                                                child: Text(
-                                                  'HD',
-                                                  style: headline.copyWith(
-                                                      fontSize: 10),
-                                                ),
+                        ),
+                      ),
+                      //
+                      // Details
+                      //
+                      Positioned(
+                        top: 580,
+                        left: (width < 1280 ? 150 : 300),
+                        width: width - (width < 1280 ? 300 : 500),
+                        child: Row(
+                          children: [
+                            //
+                            // Details
+                            //
+                            Expanded(
+                              flex: 2,
+                              child: SizedBox(
+                                height: 300,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //
+                                    // Details
+                                    //
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        Text(
+                                          '${widget.content!.rating}% relevante',
+                                          style: headline.copyWith(
+                                              color: Colors.green),
+                                        ),
+                                        Text(
+                                          '2022',
+                                          style: headline,
+                                        ),
+                                        //
+                                        Image.asset(
+                                          AppConsts.classifications[
+                                                  widget.content!.age] ??
+                                              'assets/images/classifications/L.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        Text(
+                                          widget.content!.detail,
+                                          style: headline,
+                                        ),
+                                        Container(
+                                          height: 20,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                width: 1,
+                                              ),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(5)),
+                                              color: Colors.transparent),
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 1),
+                                            child: Center(
+                                              child: Text(
+                                                'HD',
+                                                style: headline.copyWith(
+                                                    fontSize: 10),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                      //
-                                      // Overview
-                                      //
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 30),
-                                        height: 100,
-                                        width: 480,
-                                        child: Text(
-                                          widget.content!.overview,
-                                          //overview,
-                                          style: headline2,
                                         ),
+                                      ],
+                                    ),
+                                    //
+                                    // Overview
+                                    //
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 30),
+                                      height: 100,
+                                      child: Text(
+                                        widget.content!.overview,
+                                        //overview,
+                                        style: headline2,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                //
-                                // Cast
-                                //
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                const Spacer(),
-                                SizedBox(
-                                  width: 300,
+                              ),
+                            ),
+                            //
+                            // Cast
+                            //
+                            if (width >= 1280) ...[
+                              const SizedBox(width: 20),
+                              Expanded(
+                                flex: 1,
+                                child: SizedBox(
                                   height: 300,
                                   child: Column(
                                     children: [
@@ -626,303 +622,302 @@ class _DetailPageState extends State<DetailPage> {
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          //
-                          // Episodes
-                          //
-                          Positioned(
-                            top: 750,
-                            left: 300,
-                            child: SizedBox(
-                              height: 100,
-                              width: width - 570,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Episodios',
-                                    style: headline5,
-                                  ),
-                                  const Spacer(),
-                                  Text(widget.content!.title, style: headline5),
-                                ],
                               ),
-                            ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      //
+                      // Episodes
+                      //
+                      Positioned(
+                        top: 750,
+                        left: (width < 1280 ? 150 : 300),
+                        child: SizedBox(
+                          height: 100,
+                          width: width - (width < 1280 ? 370 : 570),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Episodios',
+                                style: headline5,
+                              ),
+                              const Spacer(),
+                              Text(widget.content!.title, style: headline5),
+                            ],
                           ),
-                          //
-                          // Episodes Container
-                          //
-                          Positioned(
-                            top: 835,
-                            left: 280,
-                            child: Column(
+                        ),
+                      ),
+                      //
+                      // Episodes Container
+                      //
+                      Positioned(
+                        top: 835,
+                        left: (width < 1280 ? 130 : 280),
+                        child: Column(
+                          children: [
+                            for (int e = 0; e < episodes; e++)
+                              DetailContainer(
+                                key: UniqueKey(),
+                                content: widget.content!,
+                                index: e,
+                              ),
+                          ],
+                        ),
+                      ),
+                      //
+                      // Titulos Semelhantes
+                      //
+                      Positioned(
+                        top: 835 + 150.0 * episodes,
+                        left: (width < 1280 ? 150 : 300),
+                        child: similarTitles,
+                      ),
+                      //
+                      // About
+                      //
+                      ValueListenableBuilder(
+                        valueListenable: _expanded,
+                        builder: (context, bool value, child) {
+                          return Positioned(
+                            top:
+                                1900 + 150.0 * episodes + 400 * (value ? 3 : 0),
+                            child: Stack(
                               children: [
-                                for (int e = 0; e < episodes; e++)
-                                  DetailContainer(
-                                    key: UniqueKey(),
-                                    content: widget.content!,
-                                    index: e,
+                                //
+                                // Background
+                                //
+                                Container(
+                                    width: width - (width < 1280 ? 300 : 500),
+                                    height: 1000,
+                                    color: Colors.transparent),
+                                Container(
+                                  width: width - (width < 1280 ? 300 : 500),
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: backgroundColor,
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          backgroundColor.withAlpha(0),
+                                          backgroundColor
+                                        ]),
                                   ),
-                              ],
-                            ),
-                          ),
-                          //
-                          // Titulos Semelhantes
-                          //
-                          Positioned(
-                            top: 835 + 150.0 * episodes,
-                            left: 300,
-                            child: similarTitles,
-                          ),
-                          //
-                          // About
-                          //
-                          ValueListenableBuilder(
-                            valueListenable: _expanded,
-                            builder: (context, bool value, child) {
-                              return Positioned(
-                                top: 1900 +
-                                    150.0 * episodes +
-                                    400 * (value ? 3 : 0),
-                                child: Stack(
-                                  children: [
-                                    //
-                                    // Background
-                                    //
-                                    Container(
-                                        width: width - 500,
-                                        height: 1000,
-                                        color: Colors.transparent),
-                                    Container(
-                                      width: width - 500,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              backgroundColor.withAlpha(0),
-                                              backgroundColor
-                                            ]),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 50,
-                                      child: Container(
-                                          width: width - 500,
-                                          height: 1000,
-                                          color: backgroundColor),
-                                    ),
-                                    Positioned(
-                                      top: 50,
-                                      left: 25 * width / 1360,
-                                      child: Container(
-                                        width: width - 550,
-                                        height: 2,
-                                        color: Colors.grey.shade800,
-                                      ),
-                                    ),
-                                    //
-                                    // Expand Button
-                                    //
-                                    Positioned(
-                                      top: 30,
-                                      left: 20,
-                                      child: Container(
-                                        width: width - 500,
-                                        height: 40,
-                                        alignment: Alignment.topCenter,
-                                        child: HoverWidget(
-                                          useNotification: false,
-                                          delayOut: Duration.zero,
-                                          fadeDuration: Duration.zero,
-                                          maxWidth: 40,
-                                          maxHeight: 40,
-                                          rightPadding: 40,
-                                          detectChildArea: false,
-                                          onExit: () {
-                                            _hover.value = false;
-                                          },
-                                          onHover: () {
-                                            _hover.value = true;
-                                          },
-                                          icon: ValueListenableBuilder(
-                                            valueListenable: _hover,
-                                            builder:
-                                                (context, bool value, child) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  _expanded.value =
-                                                      !_expanded.value;
-                                                  if (!_expanded.value) {
-                                                    scrollController.jumpTo(
-                                                        startHeight / 2);
-                                                  }
-                                                  if (mounted) {
-                                                    setState(() {
-                                                      height = startHeight +
-                                                          410 *
-                                                              (_expanded.value
-                                                                  ? 3
-                                                                  : 0) +
-                                                          150.0 * episodes;
-                                                    });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 1),
-                                                      shape: BoxShape.circle,
-                                                      color: value
-                                                          ? Colors.grey.shade700
-                                                              .withValues(
-                                                                  alpha: 0.1)
-                                                          : Colors.grey.shade900
-                                                              .withValues(
-                                                                  alpha: 0.1)),
-                                                  child: const Icon(
-                                                      Icons.expand_more_rounded,
-                                                      color: Colors.white),
-                                                ),
-                                              );
+                                ),
+                                Positioned(
+                                  top: 50,
+                                  child: Container(
+                                      width: width - (width < 1280 ? 300 : 500),
+                                      height: 1000,
+                                      color: backgroundColor),
+                                ),
+                                Positioned(
+                                  top: 50,
+                                  left: 25,
+                                  child: Container(
+                                    width: width - -(width < 1280 ? 350 : 550),
+                                    height: 2,
+                                    color: Colors.grey.shade800,
+                                  ),
+                                ),
+                                //
+                                // Expand Button
+                                //
+                                Positioned(
+                                  top: 30,
+                                  left: 20,
+                                  child: Container(
+                                    width: width - (width < 1280 ? 300 : 500),
+                                    height: 40,
+                                    alignment: Alignment.topCenter,
+                                    child: HoverWidget(
+                                      useNotification: false,
+                                      delayOut: Duration.zero,
+                                      fadeDuration: Duration.zero,
+                                      maxWidth: 40,
+                                      maxHeight: 40,
+                                      rightPadding: 40,
+                                      detectChildArea: false,
+                                      onExit: () {
+                                        _hover.value = false;
+                                      },
+                                      onHover: () {
+                                        _hover.value = true;
+                                      },
+                                      icon: ValueListenableBuilder(
+                                        valueListenable: _hover,
+                                        builder: (context, bool value, child) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              _expanded.value =
+                                                  !_expanded.value;
+                                              if (!_expanded.value) {
+                                                scrollController
+                                                    .jumpTo(startHeight / 2);
+                                              }
+                                              if (mounted) {
+                                                setState(() {
+                                                  height = startHeight +
+                                                      410 *
+                                                          (_expanded.value
+                                                              ? 3
+                                                              : 0) +
+                                                      150.0 * episodes;
+                                                });
+                                              }
                                             },
-                                          ),
+                                            child: Container(
+                                              height: 40,
+                                              width: 40,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 1),
+                                                  shape: BoxShape.circle,
+                                                  color: value
+                                                      ? Colors.grey.shade700
+                                                          .withValues(
+                                                              alpha: 0.1)
+                                                      : Colors.grey.shade900
+                                                          .withValues(
+                                                              alpha: 0.1)),
+                                              child: const Icon(
+                                                  Icons.expand_more_rounded,
+                                                  color: Colors.white),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                //
+                                // About
+                                //
+                                Positioned(
+                                  top: 100,
+                                  left: 20,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        width: 750,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Sobre ',
+                                              style: headline5.copyWith(
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ),
+                                            Text(
+                                              widget.content!.title,
+                                              style: headline5.copyWith(
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    //
-                                    // About
-                                    //
-                                    Positioned(
-                                      top: 100,
-                                      left: 20,
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 750,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Sobre ',
-                                                  style: headline5.copyWith(
-                                                    fontWeight: FontWeight.w100,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  widget.content!.title,
-                                                  style: headline5.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 30,
-                                          ),
-                                          SizedBox(
-                                            width: 750,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Criação: ',
-                                                  style: headline3,
-                                                ),
-                                                castWidgets[0]
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          //
-                                          // Elenco
-                                          //
-                                          SizedBox(
-                                            width: 750,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Elenco: ',
-                                                  style: headline3,
-                                                ),
-                                                for (int k =
-                                                        castWidgets.length - 1;
-                                                    k > 0;
-                                                    k--)
-                                                  castWidgets[k],
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          //
-                                          // Generos
-                                          //
-                                          SizedBox(
-                                            width: 750,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Generos: ',
-                                                  style: headline3,
-                                                ),
-                                                for (int j = 0;
-                                                    j < genreWidgets.length;
-                                                    j++)
-                                                  genreWidgets[j],
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          SizedBox(
-                                            width: 750,
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Classificação etária:  ',
-                                                  style: headline3,
-                                                ),
-                                                Image.asset(
-                                                  AppConsts.classifications[
-                                                          widget
-                                                              .content!.age] ??
-                                                      'assets/images/classifications/L.png',
-                                                  width: 30,
-                                                  height: 30,
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                                      const SizedBox(
+                                        height: 30,
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(
+                                        width: 750,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Criação: ',
+                                              style: headline3,
+                                            ),
+                                            castWidgets[0]
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      //
+                                      // Elenco
+                                      //
+                                      SizedBox(
+                                        width: 750,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Elenco: ',
+                                              style: headline3,
+                                            ),
+                                            for (int k = castWidgets.length - 1;
+                                                k > 0;
+                                                k--)
+                                              castWidgets[k],
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      //
+                                      // Generos
+                                      //
+                                      SizedBox(
+                                        width: 750,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Generos: ',
+                                              style: headline3,
+                                            ),
+                                            for (int j = 0;
+                                                j < genreWidgets.length;
+                                                j++)
+                                              genreWidgets[j],
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      SizedBox(
+                                        width: 750,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Classificação etária:  ',
+                                              style: headline3,
+                                            ),
+                                            Image.asset(
+                                              AppConsts.classifications[
+                                                      widget.content!.age] ??
+                                                  'assets/images/classifications/L.png',
+                                              width: 30,
+                                              height: 30,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-
-                          Positioned(
-                            left: width - 13,
-                            child: Container(
-                              width: 15,
-                              height: height + 50,
-                              color: value ? Colors.white : Colors.transparent,
+                              ],
                             ),
-                          ),
-                        ]),
+                          );
+                        },
+                      ),
+
+                      Positioned(
+                        left: width - 13,
+                        child: Container(
+                          width: 15,
+                          height: height + 50,
+                          color: value ? Colors.white : Colors.transparent,
+                        ),
+                      ),
+                    ],
                   ),
-                ));
+                ),
+              ),
+            );
           },
         ),
       ),

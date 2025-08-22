@@ -8,7 +8,7 @@ class TopButton extends StatefulWidget {
   final double height;
   const TopButton(
       {super.key,
-      this.height = 50,
+      this.height = 45,
       required this.selectedStyle,
       required this.unselectedStyle,
       required this.name,
