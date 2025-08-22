@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/api/content_controller.dart';
+import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
+import 'package:netflix/models/content_model.dart';
 import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
@@ -63,9 +65,19 @@ class AppModule extends Module {
     );
     r.child(
       '/home/detail',
-      child: (context) => DetailPage(
-        content: r.args.data,
-      ),
+      child: (context) {
+        // Handle the case where r.args.data might be an ImmutableMap
+        ContentModel? content;
+        if (r.args.data is ContentModel) {
+          content = r.args.data as ContentModel;
+        } else if (r.args.data is Map<String, dynamic>) {
+          content = ContentModel.fromMap(r.args.data as Map<String, dynamic>);
+        } else {
+          // Fallback to placeholder content
+          content = ContentModel.fromJson(AppConsts.placeholderJson);
+        }
+        return DetailPage(content: content);
+      },
       transition: TransitionType.custom,
       customTransition: CustomTransition(
           opaque: false,

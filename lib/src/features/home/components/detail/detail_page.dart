@@ -51,11 +51,11 @@ class _DetailPageState extends State<DetailPage> {
 
   final double startHeight = 2150.0;
   double height = 2000.0;
-  final double containerWidth = 1000;
   final VideoInterface videoController = GetImpl().getImpl(id: 2);
+  bool _isDisposed = false;
 
   void callback() {
-    if (mounted) {
+    if (mounted && !_isDisposed) {
       setState(() {});
     }
   }
@@ -74,33 +74,55 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
 
     contentController.addListener(() {
-      if (!contentController.loading) {
-        if (mounted) {
-          setState(() {});
-        }
+      if (!contentController.loading && mounted && !_isDisposed) {
+        setState(() {});
       }
     });
-    videoController.init(widget.content!.trailer,
-        w: 1280, h: 720, callback: callback);
-    videoController.defineThumbnail(
-        widget.content!.poster, widget.content!.isOnline);
+
+    // Initialize video controller with proper error handling
+    try {
+      videoController.init(widget.content!.trailer,
+          w: 1280, h: 720, callback: callback);
+      videoController.defineThumbnail(
+          widget.content!.poster, widget.content!.isOnline);
+    } catch (e) {
+      print('Error initializing video controller: $e');
+    }
+
     _active.value = false;
     Future.delayed(transitionDuration).then(
       (value) {
-        _active.value = true;
+        if (mounted && !_isDisposed) {
+          _active.value = true;
+        }
       },
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(trailerDelay).then((value) {
-        if (mounted) {
-          setState(() {
-            videoController.enableFrame(true);
-            videoController.play();
-            videoController.setVolume(0);
-          });
+        if (mounted && !_isDisposed) {
+          try {
+            setState(() {
+              videoController.enableFrame(true);
+              videoController.play();
+              videoController.setVolume(0);
+            });
+          } catch (e) {
+            print('Error playing video: $e');
+          }
         }
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    try {
+      videoController.stop();
+    } catch (e) {
+      print('Error disposing video controller: $e');
+    }
+    super.dispose();
   }
 
   @override
@@ -222,11 +244,8 @@ class _DetailPageState extends State<DetailPage> {
                               if (3 * o + c < contents.length)
                                 Positioned(
                                   left: c * 236 + c * 20,
-                                  child: Transform.scale(
-                                    scale: width / 1360,
-                                    child: DetailContent(
-                                      content: contents[3 * o + c],
-                                    ),
+                                  child: DetailContent(
+                                    content: contents[3 * o + c],
                                   ),
                                 ),
                           ].reversed.toList(),
@@ -240,6 +259,8 @@ class _DetailPageState extends State<DetailPage> {
         );
       },
     );
+
+    videoController.changeSize(width, height);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -291,7 +312,9 @@ class _DetailPageState extends State<DetailPage> {
                             child: SizedBox(
                               width: width - 500,
                               height: 500,
-                              child: videoController.frame(),
+                              child: _isDisposed
+                                  ? Container(color: Colors.black)
+                                  : videoController.frame(),
                             ),
                           ),
                           //
@@ -318,12 +341,13 @@ class _DetailPageState extends State<DetailPage> {
                           // Logo
                           //
                           Positioned(
-                              top: 360,
-                              left: 300,
-                              child: Image.asset(
-                                widget.content!.logo,
-                                height: 100,
-                              )),
+                            top: 360,
+                            left: 300,
+                            child: Image.asset(
+                              widget.content!.logo,
+                              height: 100,
+                            ),
+                          ),
                           //
                           // Buttons
                           //
@@ -337,11 +361,24 @@ class _DetailPageState extends State<DetailPage> {
                               icon: Icons.play_arrow,
                               text: 'Assistir',
                               onPressed: () {
-                                videoController.setVolume(0);
-                                Future.delayed(trailerDelay).then((value) {
-                                  videoController.setVolume(0);
-                                  videoController.stop();
-                                });
+                                try {
+                                  if (!_isDisposed) {
+                                    videoController.setVolume(0);
+                                    Future.delayed(trailerDelay).then((value) {
+                                      try {
+                                        if (!_isDisposed) {
+                                          videoController.setVolume(0);
+                                          videoController.stop();
+                                        }
+                                      } catch (e) {
+                                        print(
+                                            'Error in delayed video stop: $e');
+                                      }
+                                    });
+                                  }
+                                } catch (e) {
+                                  print('Error setting video volume: $e');
+                                }
                                 var playerNotifier =
                                     Modular.get<PlayerNotifier>();
                                 playerNotifier.playerModel =
@@ -390,16 +427,17 @@ class _DetailPageState extends State<DetailPage> {
                             left: 345,
                             child: LikeButton(),
                           ),
-                          Positioned(
-                            top: 457,
-                            right: 300,
-                            child: VolumeButton(
-                              videoController: videoController,
-                              iconOn: Icons.volume_up,
-                              iconOff: Icons.volume_off,
-                              scale: 1.15,
+                          if (!_isDisposed)
+                            Positioned(
+                              top: 457,
+                              right: 300,
+                              child: VolumeButton(
+                                videoController: videoController,
+                                iconOn: Icons.volume_up,
+                                iconOff: Icons.volume_off,
+                                scale: 1.15,
+                              ),
                             ),
-                          ),
                           //
                           // Close Button
                           //
@@ -408,7 +446,13 @@ class _DetailPageState extends State<DetailPage> {
                             left: width - 310,
                             child: GestureDetector(
                               onTap: () {
-                                videoController.stop();
+                                try {
+                                  if (!_isDisposed) {
+                                    videoController.stop();
+                                  }
+                                } catch (e) {
+                                  print('Error stopping video controller: $e');
+                                }
                                 _active.value = false;
                                 Modular.to.navigate('/home');
                               },
@@ -611,17 +655,14 @@ class _DetailPageState extends State<DetailPage> {
                           //
                           Positioned(
                             top: 835,
-                            left: 280 * width / 1360,
+                            left: 280,
                             child: Column(
                               children: [
                                 for (int e = 0; e < episodes; e++)
-                                  Transform.scale(
-                                    scale: width / 1360,
-                                    child: DetailContainer(
-                                      key: UniqueKey(),
-                                      content: widget.content!,
-                                      index: e,
-                                    ),
+                                  DetailContainer(
+                                    key: UniqueKey(),
+                                    content: widget.content!,
+                                    index: e,
                                   ),
                               ],
                             ),
@@ -631,7 +672,7 @@ class _DetailPageState extends State<DetailPage> {
                           //
                           Positioned(
                             top: 835 + 150.0 * episodes,
-                            left: 300 * width / 1360,
+                            left: 300,
                             child: similarTitles,
                           ),
                           //
@@ -675,12 +716,14 @@ class _DetailPageState extends State<DetailPage> {
                                           color: backgroundColor),
                                     ),
                                     Positioned(
-                                        top: 50,
-                                        left: 25 * width / 1360,
-                                        child: Container(
-                                            width: width - 550,
-                                            height: 2,
-                                            color: Colors.grey.shade800)),
+                                      top: 50,
+                                      left: 25 * width / 1360,
+                                      child: Container(
+                                        width: width - 550,
+                                        height: 2,
+                                        color: Colors.grey.shade800,
+                                      ),
+                                    ),
                                     //
                                     // Expand Button
                                     //
