@@ -9,9 +9,9 @@ class ContainerUtils {
   static const double containerPadding = 5.0; // Padding between containers
 
   static double calculateContainerWidth(
-      double screenWidth, int containerCount) {
+      double screenWidth, int containerCount, double horizontalPadding) {
     // Use full screen width since we'll center the containers manually
-    double availableWidth = screenWidth - 100;
+    double availableWidth = screenWidth - horizontalPadding;
     double totalPadding = containerPadding * containerCount;
     double calculatedWidth = (availableWidth - totalPadding) / containerCount;
 
@@ -32,6 +32,7 @@ class ContentInnerWidget extends StatefulWidget {
   final void Function(bool value)? onHover;
   final void Function(bool value) onPlay;
   final int contentCount; // This becomes the base/default count
+  final double horizontalPadding; // horizontal padding for the content
   const ContentInnerWidget(
       {super.key,
       this.index = 0,
@@ -39,6 +40,7 @@ class ContentInnerWidget extends StatefulWidget {
       this.onDetail,
       required this.onPlay,
       this.contentCount = 5,
+      this.horizontalPadding = 100.0,
       required this.id,
       required this.contents});
 
@@ -67,7 +69,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
 
   // Calculate how many containers can fit with proper spacing (5-25px)
   int calculateAdaptiveContentCount(double screenWidth) {
-    double availableWidth = screenWidth - 100;
+    double availableWidth = screenWidth - widget.horizontalPadding;
     double scaledContainerWidth = getScaledContainerWidth(screenWidth);
 
     // Try different container counts and see what fits with good spacing
@@ -97,7 +99,7 @@ class _ContentInnerWidgetState extends State<ContentInnerWidget> {
 
     // Calculate container width and spacing using the utility function
     double containerWidth = ContainerUtils.calculateContainerWidth(
-        screenWidth.toDouble(), adaptiveContentCount);
+        screenWidth.toDouble(), adaptiveContentCount, widget.horizontalPadding);
     double spacing = ContainerUtils.calculateSpacing();
 
     for (int i = adaptiveContentCount - 1; i >= 0; i--) {

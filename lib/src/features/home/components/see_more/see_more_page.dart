@@ -72,6 +72,8 @@ class _SeeMorePageState extends State<SeeMorePage> {
             title: widget.title ?? 'Em Alta',
             contentCount: 4,
             listCount: 1,
+            horizontalPadding:
+                spacing + 10, // Use 200px padding for see_more_page
             anchor: getAnchorFromValue(i),
             onHover: () {
               onHover(i);
@@ -151,83 +153,86 @@ class _SeeMorePageState extends State<SeeMorePage> {
           builder: (context, bool value, child) {
             //
             return Scrollbar(
-                trackVisibility: value,
-                thumbVisibility: value,
+              trackVisibility: value,
+              thumbVisibility: value,
+              controller: scrollController,
+              child: SmoothScroll(
+                scrollSpeed: 90,
+                scrollAnimationLength: 150,
+                curve: Curves.decelerate,
                 controller: scrollController,
-                child: SmoothScroll(
-                  scrollSpeed: 90,
-                  scrollAnimationLength: 150,
-                  curve: Curves.decelerate,
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: scrollController,
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: scrollController,
-                    child: Stack(
-                        alignment: AlignmentDirectional.topCenter,
-                        children: [
-                          Container(
-                            width: width,
-                            height: height,
-                            color: backgroundColor.withValues(alpha: 0.5),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(top: 50),
-                              width: width - 200,
-                              height: height,
-                              color: backgroundColor,
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 100),
-                                child: Text(
-                                  title,
-                                  style: headline3,
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
-                          Positioned(
-                            top: 150,
-                            child: SizedBox(
-                              width: width,
-                              height: height,
-                              child: Stack(
-                                children: widgets,
-                              ),
+                  child: Stack(
+                    alignment: AlignmentDirectional.topCenter,
+                    children: [
+                      Container(
+                        width: width,
+                        height: height,
+                        color: backgroundColor.withValues(alpha: 0.5),
+                      ),
+                      Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          width: width - 200,
+                          height: height,
+                          color: backgroundColor,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 100),
+                            child: Text(
+                              title,
+                              style: headline3,
+                              textAlign: TextAlign.center,
                             ),
+                          )),
+                      Positioned(
+                        left: 60,
+                        top: 150,
+                        child: SizedBox(
+                          width: width,
+                          height: height,
+                          child: Stack(
+                            children: widgets,
                           ),
-                          Positioned(
-                            top: 70,
-                            left: width - 190,
-                            child: GestureDetector(
-                              onTap: () {
-                                _active.value = false;
-                                Modular.to.navigate('/home');
-                              },
-                              child: Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: _active.value
-                                          ? Colors.transparent
-                                          : Colors.white,
-                                      width: 1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.close,
-                                    size: 40, color: Colors.white),
-                              ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 70,
+                        left: width - 190,
+                        child: GestureDetector(
+                          onTap: () {
+                            _active.value = false;
+                            Modular.to.navigate('/home');
+                          },
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: _active.value
+                                      ? Colors.transparent
+                                      : Colors.white,
+                                  width: 1),
+                              shape: BoxShape.circle,
                             ),
+                            child: const Icon(Icons.close,
+                                size: 40, color: Colors.white),
                           ),
-                          Positioned(
-                            left: width - 13,
-                            child: Container(
-                              width: 15,
-                              height: height,
-                              color: value ? Colors.white : Colors.transparent,
-                            ),
-                          ),
-                        ]),
+                        ),
+                      ),
+                      Positioned(
+                        left: width - 13,
+                        child: Container(
+                          width: 15,
+                          height: height,
+                          color: value ? Colors.white : Colors.transparent,
+                        ),
+                      ),
+                    ],
                   ),
-                ));
+                ),
+              ),
+            );
           },
         ),
       ),

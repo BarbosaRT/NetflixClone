@@ -18,6 +18,7 @@ class ContentListWidget extends StatefulWidget {
   final int initialPage;
   final int contentCount; // how many content_container
   final int listCount; // how many inner_widgets
+  final double horizontalPadding; // horizontal padding for the content
   final void Function() onHover;
   final void Function(bool value)? onPlay;
   final void Function(String content)? onSeeMore;
@@ -34,6 +35,7 @@ class ContentListWidget extends StatefulWidget {
     this.contentCount = 5,
     this.listCount = 4,
     this.initialPage = 0,
+    this.horizontalPadding = 100.0,
     this.onPlay,
   });
 
@@ -115,7 +117,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     }
 
     // Widgets itself :)
-    for (int i = 0; i <= widget.listCount; i++) {
+    for (int i = 0; i < widget.listCount; i++) {
       widgetList.add(
         StreamBuilder<List<ContentModel>>(
             stream: contentController
@@ -131,6 +133,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                 index: i,
                 contents: contents,
                 contentCount: widget.contentCount,
+                horizontalPadding: widget.horizontalPadding,
                 onPlay: (bool value) {
                   if (widget.onPlay != null) {
                     widget.onPlay!(value);
@@ -148,7 +151,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             }),
       );
     }
-    widgetList = widgetList.sublist(0, 4);
+    // Safely take up to 4 elements, but don't exceed the list size
+    widgetList = widgetList.sublist(0, widgetList.length > 4 ? 4 : widgetList.length);
   }
 
   void onWidgetChanging(bool value) {
@@ -171,7 +175,10 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     //contentController.getContent(widget.title, 0);
 
     widgetBuilder(); // Usar versão sem MediaQuery
-    controller.jumpToPage(widget.listCount);
+    // Safely jump to page, ensuring we don't exceed the available pages
+    final maxPage = widgetList.isNotEmpty ? widgetList.length - 1 : 0;
+    final targetPage = widget.listCount > maxPage ? maxPage : widget.listCount;
+    controller.jumpToPage(targetPage);
     Future.delayed(duration).then(
       (value) {
         moveForward();

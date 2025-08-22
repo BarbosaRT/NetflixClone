@@ -134,6 +134,7 @@ class ListContentsState extends State<ListContents> {
               index: j,
               title: titles[i],
               anchor: getAnchorFromValue(i),
+              horizontalPadding: 100.0, // Use 100px padding for home page
               onHover: () {
                 onHover(j);
               },
