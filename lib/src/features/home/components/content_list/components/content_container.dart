@@ -464,37 +464,35 @@ class _ContentContainerState extends State<ContentContainer> {
                       width: width * factor,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Expanded(
-                          child: Row(
-                            children: [
-                              for (int i = 0;
-                                  i <= widget.content.tags.length - 2;
-                                  i++)
-                                Row(
-                                  children: [
-                                    Text(
-                                      widget.content.tags[i],
-                                      style: headline,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    const Icon(
-                                      Icons.circle,
-                                      size: 5,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 5),
-                                  ],
-                                ),
-                              //
-                              //
-                              Text(
-                                widget.content
-                                    .tags[widget.content.tags.length - 1],
-                                style: headline,
+                        child: Row(
+                          children: [
+                            for (int i = 0;
+                                i <= widget.content.tags.length - 2;
+                                i++)
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.content.tags[i],
+                                    style: headline,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Icon(
+                                    Icons.circle,
+                                    size: 5,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 5),
+                                ],
                               ),
-                              const SizedBox(width: 5),
-                            ],
-                          ),
+                            //
+                            //
+                            Text(
+                              widget
+                                  .content.tags[widget.content.tags.length - 1],
+                              style: headline,
+                            ),
+                            const SizedBox(width: 5),
+                          ],
                         ),
                       ),
                     ),
