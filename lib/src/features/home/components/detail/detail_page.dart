@@ -211,11 +211,42 @@ class _DetailPageState extends State<DetailPage> {
     Widget similarTitles = ValueListenableBuilder(
       valueListenable: _expanded,
       builder: (context, bool value, child) {
+        // Responsive calculations
+        final availableWidth = width - (width < 1280 ? 300 : 600);
+        final minContainerWidth = width < 600
+            ? 180.0
+            : width < 1200
+                ? 200.0
+                : 220.0;
+        final spacing = width < 600 ? 15.0 : 20.0;
+
+        // Calculate optimal number of items per row (2-4)
+        int itemsPerRow = 2;
+        for (int items = 4; items >= 2; items--) {
+          final totalSpacing = (items - 1) * spacing;
+          final requiredWidth = items * minContainerWidth + totalSpacing;
+          if (requiredWidth <= availableWidth) {
+            itemsPerRow = items;
+            break;
+          }
+        }
+
+        // Calculate container width to fill available space
+        final totalSpacing = (itemsPerRow - 1) * spacing;
+        final containerWidth = (availableWidth - totalSpacing) / itemsPerRow;
+        final totalRowWidth = availableWidth;
+        // Calculate container height proportionally to maintain aspect ratio
+        final containerHeight =
+            containerWidth * 1.5 + 20; // Aspect ratio + padding
+
+        // Responsive title width
+        final titleWidth = width < 600 ? 400.0 : 750.0;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 750,
+              width: titleWidth,
               child: Text('Titulos Semelhantes ', style: headline5),
             ),
             const SizedBox(
@@ -233,24 +264,38 @@ class _DetailPageState extends State<DetailPage> {
                 return Column(
                   children: [
                     for (int o = 0;
-                        o < (value ? 6 : 3) && 3 * o < contents.length;
+                        o < (value ? 6 : 3) &&
+                            itemsPerRow * o < contents.length;
                         o++)
                       SizedBox(
-                        width: 1000,
-                        height: 380,
+                        width: totalRowWidth,
+                        height: containerHeight,
                         child: Stack(
                           children: [
-                            for (int c = 0; c < 3; c++)
-                              if (3 * o + c < contents.length)
+                            for (int c = 0; c < itemsPerRow; c++)
+                              if (itemsPerRow * o + c < contents.length)
                                 Positioned(
-                                  left: c * 236 + c * 20,
-                                  child: DetailContent(
-                                    content: contents[3 * o + c],
+                                  left: c * (containerWidth + spacing),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: spacing),
+                                    child: DetailContent(
+                                      content: contents[itemsPerRow * o + c],
+                                      containerWidth: containerWidth,
+                                    ),
                                   ),
                                 ),
                           ].reversed.toList(),
                         ),
                       ),
+                    // Add padding below the containers
+                    SizedBox(
+                      height: width < 600
+                          ? 20.0
+                          : width < 1200
+                              ? 30.0
+                              : 40.0,
+                    ),
                   ],
                 );
               },
@@ -681,7 +726,7 @@ class _DetailPageState extends State<DetailPage> {
                         builder: (context, bool value, child) {
                           return Positioned(
                             top:
-                                1900 + 150.0 * episodes + 400 * (value ? 3 : 0),
+                                1900 + 110.0 * episodes + 400 * (value ? 3 : 0),
                             child: Stack(
                               children: [
                                 //
@@ -689,7 +734,7 @@ class _DetailPageState extends State<DetailPage> {
                                 //
                                 Container(
                                     width: width - (width < 1280 ? 300 : 500),
-                                    height: 1000,
+                                    height: 1020,
                                     color: Colors.transparent),
                                 Container(
                                   width: width - (width < 1280 ? 300 : 500),
@@ -819,7 +864,7 @@ class _DetailPageState extends State<DetailPage> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 30,
+                                        height: 20,
                                       ),
                                       SizedBox(
                                         width: 750,
@@ -895,6 +940,9 @@ class _DetailPageState extends State<DetailPage> {
                                             )
                                           ],
                                         ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
                                     ],
                                   ),

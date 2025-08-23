@@ -350,8 +350,9 @@ class _ContentContainerState extends State<ContentContainer> {
                                         ? 'Remover da lista'
                                         : 'Adicionar à lista',
                                     textAlign: TextAlign.center,
-                                    style:
-                                        headline6.copyWith(color: Colors.black),
+                                    style: headline6.copyWith(
+                                      color: Colors.black,
+                                    ),
                                   );
                                 },
                               ),

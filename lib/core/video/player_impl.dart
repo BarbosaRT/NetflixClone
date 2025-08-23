@@ -35,7 +35,7 @@ class PlayerImpl implements VideoInterface {
               height: _height,
               child: Image(image: image, fit: BoxFit.cover));
     }
-    
+
     dynamic image =
         _isOnline ? NetworkImage(_thumbnail) : AssetImage(_thumbnail);
     if (_isInitialized && _enableFrame && _controller != null) {
@@ -61,7 +61,7 @@ class PlayerImpl implements VideoInterface {
       void Function(Duration position)? positionStream,
       bool? isOnline}) {
     if (_isDisposed) return;
-    
+
     if (isOnline != null) {
       _isOnline = isOnline;
     }
@@ -76,7 +76,7 @@ class PlayerImpl implements VideoInterface {
       {void Function()? callback,
       void Function(Duration position)? positionStream}) {
     if (_isDisposed) return;
-    
+
     Future.delayed(const Duration(seconds: 1));
     if (_isOnline) {
       _controller = VideoPlayerController.networkUrl(Uri(path: id))
@@ -99,12 +99,12 @@ class PlayerImpl implements VideoInterface {
           }
         });
     }
-    
+
     if (_controller != null) {
       _controller!.addListener(
         () {
           if (_isDisposed || _controller == null) return;
-          
+
           positionStream?.call(_controller!.value.position);
           if (_controller!.value.position == _controller!.value.duration) {
             enableFrame(false);
