@@ -37,6 +37,7 @@ dependencies:
   carousel_slider: ^5.0.0
   flutter_layout_grid: ^2.0.1  
   desktop_window: ^0.4.0
+  flutter_fullscreen: ^1.2.0
   http: ^1.5.0
 
 dev_dependencies:

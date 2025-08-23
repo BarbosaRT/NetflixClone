@@ -4,6 +4,7 @@ import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/core/app_consts.dart';
 import 'package:netflix/core/colors/color_controller.dart';
@@ -36,7 +37,8 @@ class PlayerPage extends StatefulWidget {
   State<PlayerPage> createState() => _PlayerPageState();
 }
 
-class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
+class _PlayerPageState extends State<PlayerPage>
+    with TickerProviderStateMixin, FullScreenListener {
   final ValueNotifier<bool> positionChanged = ValueNotifier(false);
   final ValueNotifier<bool> volumeChanged = ValueNotifier(false);
   Duration _position = const Duration(seconds: 1);
@@ -56,6 +58,7 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
   final ValueNotifier<bool> _volumeHover = ValueNotifier(false);
   final ValueNotifier<bool> _fullHover = ValueNotifier(false);
   bool hover = true;
+  bool isFullScreen = false;
   Timer timer = Timer(_hoverOff, () {});
   Timer ageTimer = Timer(_hoverOff, () {});
   VideoInterface videoController =
@@ -145,6 +148,10 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     var playerNotifier = Modular.get<PlayerNotifier>();
     PlayerModel playerModel = playerNotifier.playerModel;
 
+    // Add fullscreen listener
+    FullScreen.addListener(this);
+    isFullScreen = FullScreen.isFullScreen;
+
     _nextController = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
@@ -176,10 +183,18 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    FullScreen.removeListener(this);
     _controller.dispose();
     _nextController.dispose();
     super.dispose();
     videoController.dispose();
+  }
+
+  @override
+  void onFullScreenChanged(bool enabled, SystemUiMode? systemUiMode) {
+    setState(() {
+      isFullScreen = enabled;
+    });
   }
 
   void ageTimerReset() {
@@ -497,12 +512,14 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
     final loadedPage = KeyboardListener(
       autofocus: true,
       focusNode: _focusNode,
-      onKeyEvent: (value) {
+      onKeyEvent: (value) async {
         if (value is KeyDownEvent) {
           if (value.logicalKey == LogicalKeyboardKey.space) {
             videoController.isPlaying()
                 ? videoController.pause()
                 : videoController.play();
+          } else if (value.logicalKey == LogicalKeyboardKey.f11) {
+            FullScreen.setFullScreen(!isFullScreen);
           }
         }
       },
@@ -884,11 +901,11 @@ class _PlayerPageState extends State<PlayerPage> with TickerProviderStateMixin {
                 : buttonCreator(
                     listenable: _fullHover,
                     icon: GestureDetector(
-                      onTap: () async {
-                        await DesktopWindow.toggleFullScreen();
+                      onTap: () {
+                        FullScreen.setFullScreen(!isFullScreen);
                       },
-                      child: const Icon(
-                        Icons.fullscreen,
+                      child: Icon(
+                        isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
                         color: Colors.white,
                         size: 50,
                       ),

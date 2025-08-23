@@ -208,10 +208,12 @@ class _LoginPageState extends State<LoginPage> {
                                             loginController.login();
                                             await Future.delayed(
                                                     const Duration(seconds: 2))
-                                                .then((value) =>
-                                                    Navigator.of(context)
-                                                        .pushReplacementNamed(
-                                                            '/profile'));
+                                                .then(
+                                              (value) => Navigator.of(context)
+                                                  .pushReplacementNamed(
+                                                '/profile',
+                                              ),
+                                            );
                                           }
                                         },
                                         style: ButtonStyle(

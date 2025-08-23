@@ -17,7 +17,7 @@ class ProfileController extends ChangeNotifier {
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_6.png',
-      name: 'Amog us',
+      name: 'Capybara',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_3.png',

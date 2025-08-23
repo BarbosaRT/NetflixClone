@@ -177,6 +177,7 @@ class PlayerImpl implements VideoInterface {
       _controller!.dispose();
       _controller = null;
     } catch (e) {
+      // ignore: avoid_print
       print('Error disposing video controller: $e');
     }
   }

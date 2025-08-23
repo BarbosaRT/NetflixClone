@@ -288,14 +288,16 @@ class _ContentContainerState extends State<ContentContainer> {
                     margin: EdgeInsets.only(top: hover ? 50 : 0),
                     width: hover ? width * factor - usedRightPadding : width,
                     height: infoHeight,
-                    decoration: infoContainer
-                        .copyWith(color: backgroundColor, boxShadow: [
-                      BoxShadow(
-                        color: backgroundColor,
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                      )
-                    ]),
+                    decoration: infoContainer.copyWith(
+                      color: backgroundColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: backgroundColor,
+                          spreadRadius: 1,
+                          blurRadius: 6,
+                        )
+                      ],
+                    ),
                   ),
                   //
                   // Icons
@@ -508,7 +510,6 @@ class _ContentContainerState extends State<ContentContainer> {
           AnimatedPositioned(
             duration: duration,
             curve: curve,
-            left: hover ? 60 : 0,
             child: MouseRegion(
               opaque: false,
               onEnter: (event) {

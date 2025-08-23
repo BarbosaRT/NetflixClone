@@ -152,7 +152,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
       );
     }
     // Safely take up to 4 elements, but don't exceed the list size
-    widgetList = widgetList.sublist(0, widgetList.length > 4 ? 4 : widgetList.length);
+    widgetList =
+        widgetList.sublist(0, widgetList.length > 4 ? 4 : widgetList.length);
   }
 
   void onWidgetChanging(bool value) {
@@ -284,7 +285,7 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                   //
                                   child: AnimatedContainer(
                                     margin: EdgeInsets.only(
-                                        top: 3,
+                                        top: 4,
                                         left: val
                                             ? textSize.width + 15
                                             : textSize.width),
@@ -314,15 +315,27 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                         Widget? child) {
                                       return Opacity(
                                         opacity: value ? 1 : 0,
-                                        child: const Icon(
-                                            CupertinoIcons.forward,
-                                            color: material.Colors.blue,
-                                            size: 20),
+                                        child: SizedBox(
+                                          width: 30,
+                                          height: 28,
+                                          child: Column(
+                                            children: [
+                                              const Spacer(),
+                                              const Icon(
+                                                CupertinoIcons.forward,
+                                                color: material.Colors.blue,
+                                                size: 20,
+                                              ),
+                                              const Spacer(),
+                                            ],
+                                          ),
+                                        ),
                                       );
                                     },
                                   ),
                                 );
-                              })
+                              },
+                            )
                     ],
                   ),
                 ),
@@ -352,7 +365,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                                 ),
                               )
                             : Container();
-                      }),
+                      },
+                    ),
               //
               // List
               //
@@ -364,14 +378,17 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                     items: widgetList,
                     carouselController: controller,
                     options: carousel.CarouselOptions(
-                        initialPage: contentController.getPage(widget.index),
-                        viewportFraction: viewport,
-                        onPageChanged: (index, reason) {
-                          contentController.setPage(widget.index, index);
-                          setState(() {
+                      initialPage: contentController.getPage(widget.index),
+                      viewportFraction: viewport,
+                      onPageChanged: (index, reason) {
+                        contentController.setPage(widget.index, index);
+                        setState(
+                          () {
                             currentIndex = index;
-                          });
-                        }),
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -386,50 +403,53 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                         return Positioned(
                           top: 145,
                           child: SizedBox(
-                              width: width,
-                              height: 140,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 145,
-                                    width: 50,
-                                    color: leftActive
-                                        ? material.Colors.black
-                                            .withValues(alpha: 0.3)
-                                        : backgroundColor,
-                                    child: leftActive && val
-                                        ? material.IconButton(
-                                            onPressed: () {
-                                              moveBackward();
-                                            },
-                                            icon: const Icon(
-                                                material.Icons.arrow_back_ios,
-                                                color: material.Colors.white),
-                                          )
-                                        : Container(),
-                                  ),
-                                  const Spacer(),
-                                  Container(
-                                    height: 145,
-                                    width: 50,
-                                    color: material.Colors.black
-                                        .withValues(alpha: 0.3),
-                                    child: val
-                                        ? material.IconButton(
-                                            onPressed: () {
-                                              moveForward();
-                                            },
-                                            icon: const Icon(
-                                                material
-                                                    .Icons.arrow_forward_ios,
-                                                color: material.Colors.white),
-                                          )
-                                        : Container(),
-                                  ),
-                                ],
-                              )),
+                            width: width,
+                            height: 140,
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 145,
+                                  width: 50,
+                                  color: leftActive
+                                      ? material.Colors.black
+                                          .withValues(alpha: 0.3)
+                                      : backgroundColor,
+                                  child: leftActive && val
+                                      ? material.IconButton(
+                                          onPressed: () {
+                                            moveBackward();
+                                          },
+                                          icon: const Icon(
+                                            material.Icons.arrow_back_ios,
+                                            color: material.Colors.white,
+                                          ),
+                                        )
+                                      : Container(),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  height: 145,
+                                  width: 50,
+                                  color: material.Colors.black
+                                      .withValues(alpha: 0.3),
+                                  child: val
+                                      ? material.IconButton(
+                                          onPressed: () {
+                                            moveForward();
+                                          },
+                                          icon: const Icon(
+                                            material.Icons.arrow_forward_ios,
+                                            color: material.Colors.white,
+                                          ),
+                                        )
+                                      : Container(),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
-                      }),
+                      },
+                    ),
               //
               // MouseRegion of the text
               //
