@@ -105,6 +105,16 @@ class _PlayerPageState extends State<PlayerPage>
   void positionStream(Duration position) {
     positionChanged.value = !positionChanged.value;
     _position = position;
+
+    var playerNotifier = Modular.get<PlayerNotifier>();
+    PlayerModel playerModel = playerNotifier.playerModel;
+    final episode = playerModel.episode;
+    final episodes = playerModel.content.episodes!;
+    final episodeContent =
+        ContentModel.fromMap(episodes[episodes.keys.toList()[episode]]);
+    final creditsTime = episodeContent.creditsTime ??
+        30; // Default to 30 seconds if not specified
+
     if (position >=
             Duration(
                 milliseconds:
@@ -126,8 +136,10 @@ class _PlayerPageState extends State<PlayerPage>
 
     if (!finishDetected &&
         position >=
-            Duration(seconds: videoController.getDuration().inSeconds - 30) &&
-        videoController.getDuration().inSeconds > 30) {
+            Duration(
+                seconds:
+                    videoController.getDuration().inSeconds - creditsTime) &&
+        videoController.getDuration().inSeconds > creditsTime) {
       finishDetected = true;
 
       _nextController = AnimationController(

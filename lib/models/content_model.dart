@@ -16,6 +16,7 @@ class ContentModel {
   bool hasDetailPage;
   List<dynamic>? cast;
   Map<dynamic, dynamic>? episodes;
+  final int? creditsTime;
 
   ContentModel({
     this.hasDetailPage = false,
@@ -33,6 +34,7 @@ class ContentModel {
     required this.backdrop,
     required this.title,
     required this.overview,
+    this.creditsTime,
   });
 
   factory ContentModel.fromJson(String str) =>
@@ -55,5 +57,6 @@ class ContentModel {
       age: json['age'] ?? 0,
       tags: json['tags'] ?? ["Violentos", "Realistas", "Suspense"],
       isOnline: json["isOnline"] ?? false,
-      onlyOnNetflix: json['onlyOnNetflix'] ?? false);
+      onlyOnNetflix: json['onlyOnNetflix'] ?? false,
+      creditsTime: json["creditsTime"]);
 }

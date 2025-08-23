@@ -51,7 +51,8 @@
                     "age": 0,
                     "detail": "17min",
                     "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Tired of being picked on by Frankie the squirrel and his band of puny forest creatures, JC the bunny finally decides to fight back."
+                    "overview": "Tired of being picked on by Frankie the squirrel and his band of puny forest creatures, JC the bunny finally decides to fight back.",
+                    "creditsTime": 140
                 },
                 "Sintel": {
                     "title": "Sintel",
@@ -67,7 +68,8 @@
                     "age": 0,
                     "detail": "10min",
                     "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Sintel tells the story of a friendship between a girl named Sintel, a baby dragon and the desperate lengths she will go to when that friendship is taken from her."
+                    "overview": "Sintel tells the story of a friendship between a girl named Sintel, a baby dragon and the desperate lengths she will go to when that friendship is taken from her.",
+                    "creditsTime": 120
                 },
                 "Elephants": {
                     "title": "Elephants",
@@ -83,7 +85,8 @@
                     "age": 0,
                     "detail": "22min",
                     "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Elephants Dream tells the story of Emo and Proog, two people with different visions of the surreal world in which they live."
+                    "overview": "Elephants Dream tells the story of Emo and Proog, two people with different visions of the surreal world in which they live.",
+                    "creditsTime": 80
                 }
             }
         },
