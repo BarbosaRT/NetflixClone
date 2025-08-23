@@ -21,7 +21,7 @@
             "backdrop": "assets/data/backdrops/blender.webp",
             "poster": "assets/data/backdrops/blender.webp",
             "rating": 96,
-            "trailer": "assets/data/videos/sintel.mp4",
+            "trailer": "assets/data/videos/bigbunny.mp4",
             "tags": [
                 "Irreverentes",
                 "Realistas",
@@ -69,7 +69,7 @@
                     "detail": "10min",
                     "logo": "assets/data/logos/breaking_bad_logo.png",
                     "overview": "Sintel tells the story of a friendship between a girl named Sintel, a baby dragon and the desperate lengths she will go to when that friendship is taken from her.",
-                    "creditsTime": 120
+                    "creditsTime": 140
                 },
                 "Elephants": {
                     "title": "Elephants",

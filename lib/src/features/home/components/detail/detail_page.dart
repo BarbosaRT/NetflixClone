@@ -25,9 +25,12 @@ DetailGlobals detailGlobals = DetailGlobals();
 
 class DetailGlobals {
   late GlobalKey _scaffoldKey;
+  VideoInterface? videoController;
+
   DetailGlobals() {
     _scaffoldKey = GlobalKey();
   }
+
   GlobalKey get scaffoldKey => _scaffoldKey;
 }
 
@@ -87,6 +90,8 @@ class _DetailPageState extends State<DetailPage> {
           w: 1280, h: 720, callback: callback);
       videoController.defineThumbnail(
           widget.content!.poster, widget.content!.isOnline);
+      // Set the video controller reference in DetailGlobals
+      detailGlobals.videoController = videoController;
     } catch (e) {
       print('Error initializing video controller: $e');
     }
@@ -430,6 +435,7 @@ class _DetailPageState extends State<DetailPage> {
                             var playerNotifier = Modular.get<PlayerNotifier>();
                             playerNotifier.playerModel =
                                 PlayerModel(widget.content!, 0);
+                            videoController.pause();
                             Modular.to.pushNamed(
                               '/video',
                             );

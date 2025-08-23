@@ -43,7 +43,7 @@ class _PlayerPageState extends State<PlayerPage>
   final ValueNotifier<bool> volumeChanged = ValueNotifier(false);
   Duration _position = const Duration(seconds: 1);
   static const Duration _hoverOff = Duration(seconds: 4);
-  static const Duration _delay = Duration(seconds: 1);
+  static const Duration _delay = Duration(seconds: 2);
   static const Duration _ageDelay = Duration(seconds: 5);
   static const Duration _hover = Duration(milliseconds: 100);
   static const Duration _ageAnimation = Duration(milliseconds: 200);
@@ -115,12 +115,17 @@ class _PlayerPageState extends State<PlayerPage>
     final creditsTime = episodeContent.creditsTime ??
         30; // Default to 30 seconds if not specified
 
-    if (position >=
+    if (!finished &&
+        position >=
             Duration(
                 milliseconds:
                     videoController.getDuration().inMilliseconds - 500) &&
         videoController.getDuration().inSeconds > 10) {
-      videoController.pause();
+      // Stop and dispose existing controller before creating new one
+      if (_nextController.isAnimating) {
+        _nextController.stop();
+      }
+      _nextController.dispose();
       _nextController = AnimationController(
         duration: const Duration(seconds: 5),
         vsync: this,
@@ -142,6 +147,11 @@ class _PlayerPageState extends State<PlayerPage>
         videoController.getDuration().inSeconds > creditsTime) {
       finishDetected = true;
 
+      // Stop and dispose existing controller before creating new one
+      if (_nextController.isAnimating) {
+        _nextController.stop();
+      }
+      _nextController.dispose();
       _nextController = AnimationController(
         duration: const Duration(seconds: 5),
         vsync: this,
@@ -167,7 +177,7 @@ class _PlayerPageState extends State<PlayerPage>
     _nextController = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
-    )..repeat(reverse: false);
+    );
 
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
@@ -175,8 +185,7 @@ class _PlayerPageState extends State<PlayerPage>
     )..repeat(reverse: false);
     loaded = false;
     finishDetected = false;
-    VideoInterface videoController =
-        GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
+    videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.init(playerModel.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
     videoController.defineThumbnail(
@@ -195,11 +204,29 @@ class _PlayerPageState extends State<PlayerPage>
 
   @override
   void dispose() {
-    FullScreen.removeListener(this);
+    // Cancel timers first
+    timer.cancel();
+    ageTimer.cancel();
+
+    // Dispose animation controllers safely
+    if (_controller.isAnimating) {
+      _controller.stop();
+    }
     _controller.dispose();
+
+    if (_nextController.isAnimating) {
+      _nextController.stop();
+    }
     _nextController.dispose();
-    super.dispose();
+
+    // Dispose video controller
     videoController.dispose();
+
+    // Remove listeners
+    FullScreen.removeListener(this);
+
+    // Call super.dispose() last
+    super.dispose();
   }
 
   @override
@@ -299,11 +326,11 @@ class _PlayerPageState extends State<PlayerPage>
           videoController.defineThumbnail(
               playerModel.content.poster, playerModel.content.isOnline);
           videoController.enableFrame(true);
-          Future.delayed(const Duration(milliseconds: 100)).then((value) {
+          Future.delayed(const Duration(milliseconds: 300)).then((value) {
             videoController.play();
             videoController.setVolume(0);
           });
-          Future.delayed(const Duration(milliseconds: 200)).then(
+          Future.delayed(const Duration(milliseconds: 600)).then(
             (value) {
               videoController.setVolume(1);
               if (mounted) {

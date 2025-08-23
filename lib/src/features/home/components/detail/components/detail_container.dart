@@ -5,6 +5,7 @@ import 'package:netflix/models/content_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
 import 'package:netflix/src/features/player/player_page.dart';
+import 'package:netflix/src/features/home/components/detail/detail_page.dart';
 
 class DetailContainer extends StatefulWidget {
   final ContentModel content;
@@ -108,6 +109,15 @@ class _DetailContainerState extends State<DetailContainer> {
                             child: IconButton(
                               padding: EdgeInsets.zero,
                               onPressed: () {
+                                // Pause the detail page video controller
+                                try {
+                                  if (detailGlobals.videoController != null) {
+                                    detailGlobals.videoController!.pause();
+                                  }
+                                } catch (e) {
+                                  print('Error pausing detail page video: $e');
+                                }
+
                                 var playerNotifier =
                                     Modular.get<PlayerNotifier>();
                                 playerNotifier.playerModel =
