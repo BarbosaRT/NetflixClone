@@ -43,7 +43,7 @@ class _PlayerPageState extends State<PlayerPage>
   final ValueNotifier<bool> volumeChanged = ValueNotifier(false);
   Duration _position = const Duration(seconds: 1);
   static const Duration _hoverOff = Duration(seconds: 4);
-  static const Duration _delay = Duration(seconds: 4);
+  static const Duration _delay = Duration(seconds: 1);
   static const Duration _ageDelay = Duration(seconds: 5);
   static const Duration _hover = Duration(milliseconds: 100);
   static const Duration _ageAnimation = Duration(milliseconds: 200);
@@ -287,9 +287,11 @@ class _PlayerPageState extends State<PlayerPage>
           videoController.defineThumbnail(
               playerModel.content.poster, playerModel.content.isOnline);
           videoController.enableFrame(true);
-          videoController.play();
-          videoController.setVolume(0);
-          Future.delayed(const Duration(milliseconds: 500)).then(
+          Future.delayed(const Duration(milliseconds: 100)).then((value) {
+            videoController.play();
+            videoController.setVolume(0);
+          });
+          Future.delayed(const Duration(milliseconds: 200)).then(
             (value) {
               videoController.setVolume(1);
               if (mounted) {
