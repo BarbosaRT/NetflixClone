@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+.settings.json
 migrate_working_dir/
 api.dart
 

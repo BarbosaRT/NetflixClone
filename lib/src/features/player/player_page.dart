@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,13 +49,17 @@ class _PlayerPageState extends State<PlayerPage>
   static const Duration _ageDuration = Duration(seconds: 3);
 
   final FocusNode _focusNode = FocusNode();
-  final FocusNode _focusNode2 = FocusNode();
+  //final FocusNode _focusNode2 = FocusNode();
 
   final ValueNotifier<bool> _playHover = ValueNotifier(false);
   final ValueNotifier<bool> _rewindHover = ValueNotifier(false);
   final ValueNotifier<bool> _forwardHover = ValueNotifier(false);
   final ValueNotifier<bool> _volumeHover = ValueNotifier(false);
   final ValueNotifier<bool> _fullHover = ValueNotifier(false);
+
+  // Indicadores visuais para atalhos de teclado
+  final ValueNotifier<String> _keyboardAction = ValueNotifier('');
+  Timer _keyboardActionTimer = Timer(Duration.zero, () {});
   bool hover = true;
   bool isFullScreen = false;
   Timer timer = Timer(_hoverOff, () {});
@@ -220,6 +223,7 @@ class _PlayerPageState extends State<PlayerPage>
     // Cancel timers first
     timer.cancel();
     ageTimer.cancel();
+    _keyboardActionTimer.cancel();
 
     // Dispose animation controllers safely
     if (_controller.isAnimating) {
@@ -270,6 +274,14 @@ class _PlayerPageState extends State<PlayerPage>
     });
   }
 
+  void showKeyboardAction(String action) {
+    _keyboardAction.value = action;
+    _keyboardActionTimer.cancel();
+    _keyboardActionTimer = Timer(const Duration(seconds: 2), () {
+      _keyboardAction.value = '';
+    });
+  }
+
   Widget buttonCreator(
       {required ValueNotifier<bool> listenable,
       required Widget icon,
@@ -277,33 +289,34 @@ class _PlayerPageState extends State<PlayerPage>
       double? addBottom}) {
     final double a = addBottom ?? 0.0;
     return ValueListenableBuilder(
-        valueListenable: listenable,
-        builder: (context, bool value, child) {
-          return AnimatedPositioned(
-            duration: _hover,
-            bottom: (value ? 14 : 10) + a,
-            left: left.toDouble(),
-            child: HoverWidget(
-              useNotification: false,
-              delayOut: Duration.zero,
-              fadeDuration: Duration.zero,
-              type: HoverType.top,
-              rightPadding: 50,
-              maxWidth: 50,
-              maxHeight: 50,
-              distance: 0,
-              detectChildArea: false,
-              onHover: () {
-                listenable.value = true;
-              },
-              onExit: () {
-                listenable.value = false;
-              },
-              icon: AnimatedScale(
-                  scale: value ? 1.4 : 1, duration: _hover, child: icon),
-            ),
-          );
-        });
+      valueListenable: listenable,
+      builder: (context, bool value, child) {
+        return AnimatedPositioned(
+          duration: _hover,
+          bottom: (value ? 14 : 10) + a,
+          left: left.toDouble(),
+          child: HoverWidget(
+            useNotification: false,
+            delayOut: Duration.zero,
+            fadeDuration: Duration.zero,
+            type: HoverType.top,
+            rightPadding: 50,
+            maxWidth: 50,
+            maxHeight: 50,
+            distance: 0,
+            detectChildArea: false,
+            onHover: () {
+              listenable.value = true;
+            },
+            onExit: () {
+              listenable.value = false;
+            },
+            icon: AnimatedScale(
+                scale: value ? 1.4 : 1, duration: _hover, child: icon),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -607,8 +620,52 @@ class _PlayerPageState extends State<PlayerPage>
             videoController.isPlaying()
                 ? videoController.pause()
                 : videoController.play();
+            showKeyboardAction(
+                videoController.isPlaying() ? 'Pausado' : 'Reproduzindo');
           } else if (value.logicalKey == LogicalKeyboardKey.f11 && !kIsWeb) {
             FullScreen.setFullScreen(!isFullScreen);
+          } else if (value.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            // Retroceder 10 segundos
+            final pos = videoController.getPosition().inSeconds;
+            videoController.seek(Duration(seconds: pos > 10 ? pos - 10 : 0));
+            showKeyboardAction('⏪ -10s');
+          } else if (value.logicalKey == LogicalKeyboardKey.arrowRight) {
+            // Avançar 10 segundos
+            final pos = videoController.getPosition().inSeconds;
+            final duration = videoController.getDuration().inSeconds;
+            videoController.seek(
+                Duration(seconds: pos + 10 < duration ? pos + 10 : duration));
+            showKeyboardAction('⏩ +10s');
+          } else if (value.logicalKey == LogicalKeyboardKey.arrowUp) {
+            // Aumentar volume
+            final currentVolume = videoController.getVolume();
+            final newVolume = (currentVolume + 0.1).clamp(0.0, 1.0);
+            videoController.setVolume(newVolume);
+            volumeChanged.value = !volumeChanged.value;
+            showKeyboardAction('🔊 ${(newVolume * 100).round()}%');
+          } else if (value.logicalKey == LogicalKeyboardKey.arrowDown) {
+            // Diminuir volume
+            final currentVolume = videoController.getVolume();
+            final newVolume = (currentVolume - 0.1).clamp(0.0, 1.0);
+            videoController.setVolume(newVolume);
+            volumeChanged.value = !volumeChanged.value;
+            showKeyboardAction('🔉 ${(newVolume * 100).round()}%');
+          } else if (value.logicalKey == LogicalKeyboardKey.keyM) {
+            // Mute/Unmute
+            final currentVolume = videoController.getVolume();
+            if (currentVolume > 0) {
+              videoController.setVolume(0);
+              showKeyboardAction('🔇 Mudo');
+            } else {
+              videoController.setVolume(1);
+              showKeyboardAction('🔊 Som ativado');
+            }
+            volumeChanged.value = !volumeChanged.value;
+          } else if (value.logicalKey == LogicalKeyboardKey.keyF) {
+            // Toggle fullscreen
+            FullScreen.setFullScreen(!isFullScreen);
+            showKeyboardAction(
+                isFullScreen ? 'Sair da tela cheia' : 'Tela cheia');
           }
         }
       },
@@ -817,8 +874,11 @@ class _PlayerPageState extends State<PlayerPage>
                           color: Colors.white, size: 40),
                       onPressed: () {
                         final pos = videoController.getPosition().inSeconds;
-                        videoController.seek(
-                            Duration(seconds: pos - 12 < 10 ? pos + 10 : 0));
+                        final duration =
+                            videoController.getDuration().inSeconds;
+                        videoController.seek(Duration(
+                            seconds:
+                                pos + 10 < duration ? pos + 10 : duration));
                       },
                     ),
                     left: 160,
@@ -1025,7 +1085,45 @@ class _PlayerPageState extends State<PlayerPage>
                     left: (size.width - 85).toInt(),
                   ),
             //
-            // Hover Detection
+            // Keyboard Action Indicator
+            //
+            ValueListenableBuilder<String>(
+              valueListenable: _keyboardAction,
+              builder: (context, action, child) {
+                if (action.isEmpty) return Container();
+                return Positioned(
+                  top: size.height / 2 - 50,
+                  child: SizedBox(
+                    width: size.width,
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            action,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            //
+            // Hover Detection & Center Tap Control
             //
             MouseRegion(
               opaque: false,
@@ -1248,17 +1346,7 @@ class _PlayerPageState extends State<PlayerPage>
     currentPage = loaded ? loadedPage : loadingPage;
     currentPage = almostFinished ? almostFinishedPage : currentPage;
     currentPage = finished ? finishPage : currentPage;
-    return KeyboardListener(
-        autofocus: true,
-        focusNode: _focusNode2,
-        onKeyEvent: (value) async {
-          if (value is KeyDownEvent && !kIsWeb) {
-            if (value.logicalKey == LogicalKeyboardKey.f11) {
-              await DesktopWindow.toggleFullScreen();
-            }
-          }
-        },
-        child: Scaffold(backgroundColor: backgroundColor, body: currentPage));
+    return Scaffold(backgroundColor: backgroundColor, body: currentPage);
   }
 }
 
