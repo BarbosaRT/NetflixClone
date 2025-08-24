@@ -261,6 +261,7 @@ class _HomePageState extends State<HomePage> {
           child: Scrollbar(
             trackVisibility: true,
             thumbVisibility: true,
+            interactive: true,
             controller: scrollController,
             child: SmoothScroll(
               scrollSpeed: 90,
@@ -282,7 +283,11 @@ class _HomePageState extends State<HomePage> {
                         return SingleChildScrollView(
                           child: Stack(
                             children: [
-                              videoController.frame(),
+                              SizedBox(
+                                width: width,
+                                height: screenHeight,
+                                child: videoController.frame(),
+                              ),
                               Container(
                                 height: height,
                                 width: width,

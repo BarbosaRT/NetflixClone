@@ -195,6 +195,9 @@ class _PlayerPageState extends State<PlayerPage>
     loaded = false;
     finishDetected = false;
     finishControllerStarted = false;
+
+    // Dispose the old controller before creating a new one
+    videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.init(playerModel.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
@@ -576,7 +579,7 @@ class _PlayerPageState extends State<PlayerPage>
             videoController.isPlaying()
                 ? videoController.pause()
                 : videoController.play();
-          } else if (value.logicalKey == LogicalKeyboardKey.f11) {
+          } else if (value.logicalKey == LogicalKeyboardKey.f11 && !kIsWeb) {
             FullScreen.setFullScreen(!isFullScreen);
           }
         }
@@ -594,6 +597,28 @@ class _PlayerPageState extends State<PlayerPage>
               height: size.height,
               child: videoController.frame(),
             ),
+            //
+            // Video Gradient
+            //
+            hover
+                ? Container()
+                : Positioned(
+                    top: size.height - 90,
+                    child: Container(
+                      height: 90,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            backgroundColor.withAlpha(0),
+                            backgroundColor.withAlpha(100),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
             //
             // Classificão Indicativa
             //

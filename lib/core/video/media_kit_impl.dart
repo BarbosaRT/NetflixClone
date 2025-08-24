@@ -84,6 +84,8 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void load(String id, {void Function()? callback}) {
+    // Clear previous media and add new one
+    medias.clear();
     medias.add(Media(id));
     _player.open(Playlist(medias), play: false);
   }
@@ -106,10 +108,19 @@ class PlayerImpl implements VideoInterface {
   @override
   void stop() {
     _player.stop();
+    // Reset internal state
+    _position = Duration.zero;
+    _isPlaying = false;
+    _enableFrame = false;
   }
 
   @override
   void dispose() {
+    // Stop playback first
+    stop();
+    // Clear media list
+    medias.clear();
+    // Dispose the player
     _player.dispose();
   }
 
@@ -160,6 +171,44 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Widget slider(EdgeInsets padding) {
-    throw UnimplementedError();
+    return Padding(
+      padding: padding,
+      child: StreamBuilder<Duration>(
+        stream: _player.stream.position,
+        builder: (context, snapshot) {
+          // Use the internal _position that's already being tracked
+          final position = _position;
+          final duration =
+              _duration.inSeconds > 0 ? _duration : const Duration(seconds: 1);
+
+          // Only show slider if we have valid duration data
+          if (_duration.inSeconds <= 0) {
+            return const SizedBox.shrink();
+          }
+
+          return SliderTheme(
+            data: const SliderThemeData(
+              overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7),
+            ),
+            child: Slider(
+              thumbColor: Colors.red,
+              activeColor: Colors.red,
+              inactiveColor: Colors.grey,
+              value: position.inSeconds
+                  .toDouble()
+                  .clamp(0.0, duration.inSeconds.toDouble()),
+              onChanged: (newValue) {
+                final newPosition = Duration(seconds: newValue.toInt());
+                _player.seek(newPosition);
+              },
+              min: 0,
+              max: duration.inSeconds.toDouble(),
+              divisions: duration.inSeconds > 0 ? duration.inSeconds : null,
+            ),
+          );
+        },
+      ),
+    );
   }
 }
