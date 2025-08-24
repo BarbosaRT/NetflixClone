@@ -176,8 +176,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
+    double screenHeight = width / (16 / 9);
     videoController.changeSize(width, screenHeight);
 
     final colorController = Modular.get<ColorController>();

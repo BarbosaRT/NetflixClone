@@ -506,13 +506,13 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                   child: MouseRegion(
                       opaque: false,
                       onEnter: (event) {
-                        if (canDetectList) {
+                        if (canDetectList && mounted) {
                           widget.onHover();
                           _listSelected.value = true;
                         }
                       },
                       onHover: (event) {
-                        if (canDetectList && !_listSelected.value) {
+                        if (canDetectList && !_listSelected.value && mounted) {
                           widget.onHover();
                           _listSelected.value = true;
                         }
@@ -522,7 +522,9 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                           Future.delayed(const Duration(milliseconds: 200))
                               .then(
                             (value) {
-                              _listSelected.value = false;
+                              if (mounted) {
+                                _listSelected.value = false;
+                              }
                             },
                           );
                         }

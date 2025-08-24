@@ -84,10 +84,18 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void load(String id, {void Function()? callback}) {
-    // Clear previous media and add new one
-    medias.clear();
-    medias.add(Media(id));
-    _player.open(Playlist(medias), play: false);
+    try {
+      // Clear previous media and add new one
+      medias.clear();
+      if (id.isNotEmpty) {
+        medias.add(Media(id));
+        _player.open(Playlist(medias), play: false);
+      }
+    } catch (e) {
+      print('Error loading media: $e');
+      // Reset to safe state
+      medias.clear();
+    }
   }
 
   @override
@@ -116,12 +124,16 @@ class PlayerImpl implements VideoInterface {
 
   @override
   void dispose() {
-    // Stop playback first
-    stop();
-    // Clear media list
-    medias.clear();
-    // Dispose the player
-    _player.dispose();
+    try {
+      // Stop playback first
+      stop();
+      // Clear media list
+      medias.clear();
+      // Dispose the player
+      _player.dispose();
+    } catch (e) {
+      print('Error disposing player: $e');
+    }
   }
 
   @override
@@ -153,6 +165,10 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Duration getPosition() {
+    // Return safe position if no media is loaded
+    if (medias.isEmpty) {
+      return Duration.zero;
+    }
     if (_position.inSeconds > 0 && _position < getDuration()) {
       return _position;
     }
@@ -161,7 +177,11 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Duration getDuration() {
-    return _duration;
+    // Return safe duration if no media is loaded
+    if (medias.isEmpty) {
+      return const Duration(seconds: 1);
+    }
+    return _duration.inSeconds > 0 ? _duration : const Duration(seconds: 1);
   }
 
   @override
