@@ -146,8 +146,8 @@ class _PlayerPageState extends State<PlayerPage>
     if (!finishDetected &&
         position >=
             Duration(
-                seconds:
-                    videoController.getDuration().inSeconds - creditsTime) &&
+              seconds: videoController.getDuration().inSeconds - creditsTime,
+            ) &&
         videoController.getDuration().inSeconds > creditsTime) {
       finishDetected = true;
 
@@ -164,7 +164,11 @@ class _PlayerPageState extends State<PlayerPage>
         setState(() {
           almostFinished = true;
           hover = false;
-          videoController.play();
+        });
+        Future.delayed(const Duration(milliseconds: 50)).then((value) {
+          if (!videoController.isPlaying()) {
+            videoController.play();
+          }
         });
       }
     }
