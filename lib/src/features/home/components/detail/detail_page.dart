@@ -314,6 +314,9 @@ class _DetailPageState extends State<DetailPage> {
 
     videoController.changeSize(width, width / (16 / 9));
 
+    final videoWidth = width - (width < 1280 ? 200 : 500);
+    final videoHeight = videoWidth / (16 / 9);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
@@ -351,7 +354,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 50),
-                        width: width - (width < 1280 ? 200 : 500),
+                        width: videoWidth,
                         height: height,
                         color: backgroundColor,
                       ),
@@ -362,8 +365,8 @@ class _DetailPageState extends State<DetailPage> {
                         top: 50,
                         left: (width < 1280 ? 100 : 250),
                         child: SizedBox(
-                          width: width - (width < 1280 ? 200 : 500),
-                          height: 500,
+                          width: videoWidth - 1,
+                          height: videoHeight,
                           child: _isDisposed
                               ? Container(color: Colors.black)
                               : videoController.frame(),
@@ -377,7 +380,7 @@ class _DetailPageState extends State<DetailPage> {
                         left: (width < 1280 ? 100 : 250),
                         child: Container(
                           height: 400,
-                          width: width - (width < 1280 ? 200 : 500),
+                          width: videoWidth,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -389,6 +392,18 @@ class _DetailPageState extends State<DetailPage> {
                               ],
                             ),
                           ),
+                        ),
+                      ),
+                      //
+                      // Video Cover
+                      //
+                      Positioned(
+                        top: 650,
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          width: videoWidth,
+                          height: 500,
+                          color: backgroundColor,
                         ),
                       ),
                       //
@@ -688,7 +703,7 @@ class _DetailPageState extends State<DetailPage> {
                         left: (width < 1280 ? 150 : 300),
                         child: SizedBox(
                           height: 100,
-                          width: width - (width < 1280 ? 370 : 570),
+                          width: width - (width < 1280 ? 400 : 600),
                           child: Row(
                             children: [
                               Text(

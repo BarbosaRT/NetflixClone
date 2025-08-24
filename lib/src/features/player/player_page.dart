@@ -96,6 +96,7 @@ class _PlayerPageState extends State<PlayerPage>
   bool finishDetected = false;
 
   bool finished = false;
+  bool finishControllerStarted = false;
   void callback() {
     if (mounted) {
       setState(() {});
@@ -116,11 +117,14 @@ class _PlayerPageState extends State<PlayerPage>
         30; // Default to 30 seconds if not specified
 
     if (!finished &&
+        !finishControllerStarted &&
         position >=
             Duration(
                 milliseconds:
                     videoController.getDuration().inMilliseconds - 500) &&
         videoController.getDuration().inSeconds > 10) {
+      finishControllerStarted = true;
+
       // Stop and dispose existing controller before creating new one
       if (_nextController.isAnimating) {
         _nextController.stop();
@@ -160,6 +164,7 @@ class _PlayerPageState extends State<PlayerPage>
         setState(() {
           almostFinished = true;
           hover = false;
+          videoController.play();
         });
       }
     }
@@ -185,6 +190,7 @@ class _PlayerPageState extends State<PlayerPage>
     )..repeat(reverse: false);
     loaded = false;
     finishDetected = false;
+    finishControllerStarted = false;
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.init(playerModel.content.trailer,
         w: 1280, h: 720, callback: callback, positionStream: positionStream);
@@ -483,54 +489,61 @@ class _PlayerPageState extends State<PlayerPage>
                         Modular.to.popAndPushNamed('/video');
                       },
                     )
-                  : SizedBox(
-                      width: 212,
-                      height: 40,
-                      child: Stack(
-                        children: [
-                          AnimatedBuilder(
-                            animation: nextAnimation,
-                            builder: (context, child) {
-                              if (nextAnimation.value >= 0.99) {
-                                videoController.stop();
-                                var playerNotifier =
-                                    Modular.get<PlayerNotifier>();
-                                playerNotifier.playerModel =
-                                    PlayerModel(content, nextEpisode);
-                                Modular.to.popAndPushNamed('/video');
-                              }
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: LinearProgressIndicator(
-                                  backgroundColor: Colors.grey.shade300
-                                      .withValues(alpha: 0.7),
-                                  color: Colors.white,
-                                  minHeight: 40,
-                                  value: nextAnimation.value,
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: SizedBox(
+                        width: 212,
+                        height: 40,
+                        child: Stack(
+                          children: [
+                            AnimatedBuilder(
+                              animation: nextAnimation,
+                              builder: (context, child) {
+                                if (nextAnimation.value >= 0.99) {
+                                  // Use post-frame callback to avoid setState during build
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    videoController.stop();
+                                    var playerNotifier =
+                                        Modular.get<PlayerNotifier>();
+                                    playerNotifier.playerModel =
+                                        PlayerModel(content, nextEpisode);
+                                    Modular.to.popAndPushNamed('/video');
+                                  });
+                                }
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: LinearProgressIndicator(
+                                    backgroundColor: Colors.grey.shade300
+                                        .withValues(alpha: 0.7),
+                                    color: Colors.white,
+                                    minHeight: 40,
+                                    value: nextAnimation.value,
+                                  ),
+                                );
+                              },
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 5,
                                 ),
-                              );
-                            },
-                          ),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(
-                                Icons.play_arrow,
-                                color: Colors.black,
-                                size: 40,
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                'Próximo Episodio',
-                                style: blackHeadline6,
-                              )
-                            ],
-                          )
-                        ],
+                                const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.black,
+                                  size: 40,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  'Próximo Episodio',
+                                  style: blackHeadline6,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
             ),
@@ -1059,23 +1072,25 @@ class _PlayerPageState extends State<PlayerPage>
             ),
           ),
           Positioned(
-              top: 10,
-              left: 10,
-              child: //arrowBack
-                  IconButton(
-                icon:
-                    const Icon(Icons.arrow_back, color: Colors.white, size: 40),
-                onPressed: () {
-                  if (mounted) {
-                    setState(() {
+            top: 10,
+            left: 10,
+            child: //arrowBack
+                IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white, size: 40),
+              onPressed: () {
+                if (mounted) {
+                  setState(
+                    () {
                       hover = !hover;
-                    });
-                  }
+                    },
+                  );
+                }
 
-                  Modular.to.pushReplacementNamed('/home');
-                  videoController.stop();
-                },
-              )),
+                Modular.to.pushReplacementNamed('/home');
+                videoController.stop();
+              },
+            ),
+          ),
           MouseRegion(
             opaque: false,
             onHover: (event) {
@@ -1118,12 +1133,16 @@ class _PlayerPageState extends State<PlayerPage>
                             animation: nextAnimation,
                             builder: (context, child) {
                               if (nextAnimation.value >= 0.99) {
-                                videoController.stop();
-                                var playerNotifier =
-                                    Modular.get<PlayerNotifier>();
-                                playerNotifier.playerModel =
-                                    PlayerModel(content, nextEpisode);
-                                Modular.to.popAndPushNamed('/video');
+                                // Use post-frame callback to avoid setState during build
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  videoController.stop();
+                                  var playerNotifier =
+                                      Modular.get<PlayerNotifier>();
+                                  playerNotifier.playerModel =
+                                      PlayerModel(content, nextEpisode);
+                                  Modular.to.popAndPushNamed('/video');
+                                });
                               }
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
@@ -1137,24 +1156,27 @@ class _PlayerPageState extends State<PlayerPage>
                               );
                             },
                           ),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(
-                                Icons.play_arrow,
-                                color: Colors.black,
-                                size: 40,
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                'Próximo Episodio',
-                                style: blackHeadline6,
-                              )
-                            ],
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.black,
+                                  size: 40,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  'Próximo Episodio',
+                                  style: blackHeadline6,
+                                )
+                              ],
+                            ),
                           )
                         ],
                       ),

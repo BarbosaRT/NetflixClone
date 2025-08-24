@@ -19,7 +19,7 @@ class ContentController extends ChangeNotifier {
       <String, List<ContentModel>>{};
 
   bool loading = true;
-  bool useOnline = true;
+  bool useOnline = false;
   int tvPage = 1;
   int moviePage = 1;
   http.Client client = http.Client();
