@@ -85,6 +85,8 @@ class PlayerImpl implements VideoInterface {
   @override
   void load(String id, {void Function()? callback}) {
     try {
+      // Stop current playback first
+      _player.stop();
       // Clear previous media and add new one
       medias.clear();
       if (id.isNotEmpty) {
@@ -95,6 +97,8 @@ class PlayerImpl implements VideoInterface {
       print('Error loading media: $e');
       // Reset to safe state
       medias.clear();
+      _position = Duration.zero;
+      _duration = const Duration(seconds: 1);
     }
   }
 
@@ -126,9 +130,14 @@ class PlayerImpl implements VideoInterface {
   void dispose() {
     try {
       // Stop playback first
-      stop();
-      // Clear media list
+      _player.stop();
+      // Clear media list safely
       medias.clear();
+      // Reset state
+      _position = Duration.zero;
+      _duration = const Duration(seconds: 1);
+      _isPlaying = false;
+      _enableFrame = false;
       // Dispose the player
       _player.dispose();
     } catch (e) {
@@ -165,23 +174,31 @@ class PlayerImpl implements VideoInterface {
 
   @override
   Duration getPosition() {
-    // Return safe position if no media is loaded
-    if (medias.isEmpty) {
+    // Return safe position if no media is loaded or player is disposed
+    try {
+      if (medias.isEmpty || _player.state.playlist.medias.isEmpty) {
+        return Duration.zero;
+      }
+      if (_position.inSeconds > 0 && _position < getDuration()) {
+        return _position;
+      }
+      return Duration.zero;
+    } catch (e) {
       return Duration.zero;
     }
-    if (_position.inSeconds > 0 && _position < getDuration()) {
-      return _position;
-    }
-    return Duration.zero;
   }
 
   @override
   Duration getDuration() {
-    // Return safe duration if no media is loaded
-    if (medias.isEmpty) {
+    // Return safe duration if no media is loaded or player is disposed
+    try {
+      if (medias.isEmpty || _player.state.playlist.medias.isEmpty) {
+        return const Duration(seconds: 1);
+      }
+      return _duration.inSeconds > 0 ? _duration : const Duration(seconds: 1);
+    } catch (e) {
       return const Duration(seconds: 1);
     }
-    return _duration.inSeconds > 0 ? _duration : const Duration(seconds: 1);
   }
 
   @override

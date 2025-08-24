@@ -315,11 +315,33 @@ class _PlayerPageState extends State<PlayerPage>
 
     final episode = playerModel.episode;
     final episodes = playerModel.content.episodes!;
-    final episodeContent =
-        ContentModel.fromMap(episodes[episodes.keys.toList()[episode]]);
+
+    // Safety check for episode index
+    final episodeKeys = episodes.keys.toList();
+    if (episode >= episodeKeys.length) {
+      // Return a safe widget or handle the error appropriately
+      return const Scaffold(
+        body: Center(
+          child: Text('Episode not found'),
+        ),
+      );
+    }
+
+    final episodeContent = ContentModel.fromMap(episodes[episodeKeys[episode]]);
     final nextEpisode = episode < episodes.length - 1 ? episode + 1 : 0;
+
+    // Safety check for next episode index
+    if (nextEpisode >= episodeKeys.length) {
+      // Handle case where next episode doesn't exist
+      return const Scaffold(
+        body: Center(
+          child: Text('Next episode not found'),
+        ),
+      );
+    }
+
     final nextContent =
-        ContentModel.fromMap(episodes[episodes.keys.toList()[nextEpisode]]);
+        ContentModel.fromMap(episodes[episodeKeys[nextEpisode]]);
 
     final nextAnimation = Tween<double>(
       begin: 0.0,
@@ -387,8 +409,14 @@ class _PlayerPageState extends State<PlayerPage>
     final arrowBack = IconButton(
       icon: const Icon(Icons.arrow_back, color: Colors.white, size: 40),
       onPressed: () {
+        // Stop and dispose video controller before navigation
+        try {
+          videoController.stop();
+          videoController.dispose();
+        } catch (e) {
+          print('Error stopping video on navigation: $e');
+        }
         Modular.to.pushReplacementNamed('/home');
-        videoController.stop();
       },
     );
 

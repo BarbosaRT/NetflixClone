@@ -152,7 +152,7 @@ class _ContentContainerState extends State<ContentContainer> {
   }
 
   void onClick() {
-    if (widget.content.hasDetailPage || widget.content.episodes != {}) {
+    if (widget.content.hasDetailPage && widget.content.episodes != {}) {
       if (widget.onDetail != null) {
         widget.onDetail!(widget.content);
       }
