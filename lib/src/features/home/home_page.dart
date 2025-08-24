@@ -63,6 +63,7 @@ class _HomePageState extends State<HomePage> {
 
   final ValueNotifier<bool> _alreadyChanged = ValueNotifier(false);
   bool played = false;
+  bool isInAnotherPage = false;
   Timer playTimer = Timer(delay, () {});
   HomePages currentPage = HomePages.inicio;
 
@@ -73,15 +74,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   void init(ContentController contentController) async {
+    // Cancel any existing timer first
+    playTimer.cancel();
+    played = false;
+    isInAnotherPage = false; // Reset the flag when initializing
+
     content = await contentController.getHomeContent(getId(), 0);
     videoController.pause();
     videoController.dispose();
     videoController = GetImpl().getImpl(id: myGlobals.random.nextInt(69420));
     videoController.defineThumbnail(content.backdrop, content.isOnline);
     videoController.init(content.trailer, callback: callback);
-    playTimer = Timer(delay, play);
 
-    if (mounted) {
+    // Create new timer only if widget is still mounted and not in another page
+    if (mounted && !isInAnotherPage) {
+      playTimer = Timer(delay, play);
       setState(() {
         videoController.enableFrame(false);
       });
@@ -89,11 +96,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void play() {
-    if (played) {
+    if (played || isInAnotherPage) {
       return;
     }
     played = true;
-    if (mounted) {
+    if (mounted && !isInAnotherPage) {
       setState(() {
         videoController.enableFrame(true);
         videoController.play();
@@ -101,14 +108,43 @@ class _HomePageState extends State<HomePage> {
       });
       Future.delayed(const Duration(seconds: 1)).then(
         (value) {
-          videoController.setVolume(1);
+          if (mounted && !isInAnotherPage) {
+            videoController.setVolume(1);
+          }
         },
       );
     }
   }
 
+  void stopVideo() {
+    playTimer.cancel();
+    played = false;
+    isInAnotherPage = true;
+
+    // Set volume to zero immediately for extra safety
+    videoController.setVolume(0);
+    videoController.pause();
+    videoController.isPlaying(enable: false);
+    videoController.enableFrame(false);
+
+    if (mounted) {
+      setState(() {
+        videoController.enableFrame(false);
+      });
+    }
+
+    Future.delayed(const Duration(seconds: 1)).then((_) {
+      if (mounted) {
+        videoController.setVolume(0);
+        videoController.pause();
+        videoController.isPlaying(enable: false);
+      }
+    });
+  }
+
   @override
   void initState() {
+    isInAnotherPage = false; // Initialize the flag
     videoController.init(content.trailer, callback: callback);
     videoController.defineThumbnail(content.backdrop, content.isOnline);
 
@@ -137,8 +173,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    // Cancel the play timer to prevent video from starting after navigation
+    playTimer.cancel();
+
+    // Stop and dispose video controller
+    videoController.pause();
+    videoController.stop();
     videoController.dispose();
+
     super.dispose();
+  }
+
+  void _checkIfBackOnHomePage() {
+    // If we're in another page but the widget is being built,
+    // it means we've navigated back to home
+    if (isInAnotherPage && mounted) {
+      isInAnotherPage = false;
+      // Restart the video timer if we're back on home and haven't played yet
+      playTimer.cancel();
+      playTimer = Timer(Duration(seconds: 2), play);
+    }
   }
 
   Widget createIcon(Path path, Color color) {
@@ -167,6 +221,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onChangePage(HomePages page) {
+    // Stop current video completely when changing pages
+    stopVideo();
+
     final contentController = Modular.get<ContentController>();
     currentPage = page;
     init(contentController);
@@ -238,6 +295,9 @@ class _HomePageState extends State<HomePage> {
     if (overview.length > overviewStringLength) {
       overview = '${overview.substring(0, overviewStringLength)}...';
     }
+
+    // Check if we're back on home page and reset the flag
+    _checkIfBackOnHomePage();
 
     return KeyboardListener(
       autofocus: true,
@@ -421,7 +481,9 @@ class _HomePageState extends State<HomePage> {
                                     text: 'Assistir',
                                     onPressed: () {
                                       setState(() {
+                                        isInAnotherPage = false;
                                         videoController.enableFrame(true);
+                                        videoController.setVolume(1);
                                         videoController.isPlaying()
                                             ? videoController.pause()
                                             : videoController.play();
@@ -596,25 +658,18 @@ class _HomePageState extends State<HomePage> {
                       child: ListContents(
                         key: _listKey,
                         onDetail: (ContentModel content) {
+                          // Stop video completely before navigation
+                          stopVideo();
+
                           Modular.to
                               .pushNamed('/home/detail', arguments: content);
-                          Future.delayed(const Duration(seconds: 1))
-                              .then((value) {
-                            playTimer.cancel();
-                            videoController.isPlaying(
-                              enable: false,
-                            );
-                            videoController.pause();
-                          });
                         },
                         onSeeMore: (String content) {
-                          playTimer.cancel();
+                          // Stop video completely before navigation
+                          stopVideo();
+
                           Modular.to
                               .pushNamed('/home/seeMore', arguments: content);
-                          videoController.isPlaying(
-                            enable: false,
-                          );
-                          videoController.pause();
                         },
                         onPlay: (bool value) {
                           if (!played) {
@@ -624,6 +679,9 @@ class _HomePageState extends State<HomePage> {
                             videoController.pause();
                           } else {
                             videoController.play();
+                            setState(() {
+                              videoController.enableFrame(true);
+                            });
                           }
                         },
                       ),

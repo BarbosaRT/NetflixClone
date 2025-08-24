@@ -834,12 +834,10 @@ class _PlayerPageState extends State<PlayerPage>
                           size: 40),
                       onPressed: () {
                         if (mounted) {
-                          setState(() {
-                            videoController.enableFrame(true);
-                            videoController.isPlaying()
-                                ? videoController.pause()
-                                : videoController.play();
-                          });
+                          videoController.enableFrame(true);
+                          videoController.isPlaying()
+                              ? videoController.pause()
+                              : videoController.play();
                         }
                       },
                     ),
