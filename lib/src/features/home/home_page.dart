@@ -328,7 +328,11 @@ class _HomePageState extends State<HomePage> {
               curve: Curves.decelerate,
               controller: scrollController,
               child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
+                physics: kIsWeb ||
+                        defaultTargetPlatform == TargetPlatform.android ||
+                        defaultTargetPlatform == TargetPlatform.iOS
+                    ? const ClampingScrollPhysics()
+                    : const NeverScrollableScrollPhysics(),
                 controller: scrollController,
                 child: Stack(
                   children: [
