@@ -1,14 +1,15 @@
 import os
 import random
+import yt_dlp
 import time
 from PIL import Image
 import requests
 import json
-import pytube
 import unidecode
+import pytube
 
 API_KEY = 'PLACE_YOUR_API_KEY_HERE'
-DELAY = 0.0
+DELAY = 0.01
 POSTER = 'assets/data/posters/breaking_bad_poster.jpg'
 TRAILER = 'assets/data/trailers/breaking_bad_trailer.mp4'
 GENRES = ["Suspense No Ar",
@@ -19,7 +20,7 @@ GENRES = ["Suspense No Ar",
           "Adrenalina Pura",
           "Impacto visual",
           "Espirituosos", ]
-LOGO = Image.open('./logo.png').convert('RGBA')
+LOGO = Image.open('./icon.png').convert('RGBA')
 LINK = 'https://www.youtube.com/watch?v=SPqNBE2xTUI'
 
 
@@ -82,50 +83,55 @@ def save_image(p: str, title: str, logo: bool = False):
 
 
 def save_trailer(title: str, link: str):
-    trailer = treat_str('_'.join(str(title).split(
-        ' ')[0:1])) + str(random.randint(0, 69420)) + '_trailer.mp4'
-    if os.path.exists(f'./trailers/{trailer}'):
-        return f'assets/data/trailers/{trailer}'
-    yt = pytube.YouTube(link if link != '' else LINK)
-    stream_id = 22
-    print(f'SAVING TRAILER - {title}')
+    trailer_name = treat_str('_'.join(str(title).split(' ')[0:1])) + str(random.randint(0, 69420)) + '_trailer.mp4'
+    output_path = f'./trailers/{trailer_name}'
+
+    # If already downloaded
+    if os.path.exists(output_path):
+        return f'assets/data/trailers/{trailer_name}'
+
+    # Helper function to actually download with yt-dlp
+    def download_with_ytdlp(url):
+        ydl_opts = {
+            'format': 'mp4[height<=480]/mp4[height<=720]/best[ext=mp4]',
+            'outtmpl': output_path,
+            'quiet': True,
+            'noplaylist': True
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+
     try:
-        if link == '':
-            raise Exception()
-        for stream in yt.streams.filter(file_extension='mp4', progressive=True):
-            stream_id = stream.itag
-            if stream.resolution == '480p':
-                break
-        stream = yt.streams.get_by_itag(stream_id)
-        stream.download(
-            output_path='./trailers/',
-            filename=trailer)
-        trailer = f'assets/data/trailers/{trailer}'
-    except Exception:
-        stream_id = 22
-        s = pytube.Search(f'{treat_str(title)} trailer dublado')
-        yt = s.results[0]
-        print('TRAILER NOT FOUND, TRYING SEARCH')
-        print(f'RESULT FOUND - {yt.title}: {yt.watch_url}')
+        if link == '' or link is None:
+            raise Exception("No TMDB trailer link provided")
+
+        print(f"Downloading trailer: {title} - {link}")
+        download_with_ytdlp(link)
+        return f'assets/data/trailers/{trailer_name}'
+
+    except Exception as e:
+        print(f"Trailer not found from TMDB: {e}")
+        print("Trying YouTube search with pytube...")
+
         try:
-            for stream in yt.streams.filter(file_extension='mp4', progressive=True):
-                stream_id = stream.itag
-                if stream.resolution == '480p':
-                    break
-            stream = yt.streams.get_by_itag(stream_id)
-            stream.download(
-                output_path='./trailers/',
-                filename=trailer)
-            trailer = f'assets/data/trailers/{trailer}'
-        except Exception:
-            print('TRAILER FAILED USING PLACEHOLDER')
-            trailer = TRAILER
-    return trailer
+            s = pytube.Search(f'{treat_str(title)} trailer dublado')
+            if not s.results:
+                print("No YouTube search results found, using placeholder")
+                return TRAILER
+
+            yt = s.results[0]
+            print(f'RESULT FOUND - {yt.title}: {yt.watch_url}')
+
+            download_with_ytdlp(yt.watch_url)
+            return f'assets/data/trailers/{trailer_name}'
+        except Exception as e2:
+            print(f"Search-based trailer download failed: {e2}")
+            return TRAILER
 
 
 def get_tv(page: int = 1):
     response = requests.get(
-        f'https://api.themoviedb.org/4/discover/tv?api_key={API_KEY}&language=pt-BR&page={page}&with_watch_providers=8&watch_region=BR')
+        f'https://api.themoviedb.org/3/discover/tv?api_key={API_KEY}&language=pt-BR&page={page}&with_watch_providers=8&watch_region=BR')
     time.sleep(DELAY)
     data = response.json().get('results')
     output = []
@@ -222,7 +228,7 @@ def get_tv(page: int = 1):
 
 def get_movie(page: int = 0):
     response = requests.get(
-        f'https://api.themoviedb.org/4/discover/movie?api_key={API_KEY}&language=pt-BR&page={page}&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc')
+        f'https://api.themoviedb.org/3/discover/movie?api_key={API_KEY}&language=pt-BR&page={page}&with_watch_providers=8&watch_region=BR&sort_by=vote_count.desc')
     time.sleep(DELAY)
     data = response.json().get('results')
     output = []
@@ -324,7 +330,7 @@ def main():
         with open('contents.json', 'r') as openfile:
             pages = json.load(openfile)
 
-    for i in range(34, 37):
+    for i in range(1, 22):
         random.seed(i)
         tv_shows = []
         if enable_tv_show:
