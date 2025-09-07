@@ -47,7 +47,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ListContentsState> _listKey = GlobalKey();
 
-  static const double height = 3250.0;
+  static const double height = 2450.0;
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
   static const delay = Duration(seconds: 10);
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    Future.delayed(const Duration(seconds: 1)).then((_) {
+    Future.delayed(const Duration(seconds: 2)).then((_) {
       if (mounted) {
         videoController.setVolume(0);
         videoController.pause();

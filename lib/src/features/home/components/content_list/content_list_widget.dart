@@ -172,26 +172,25 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     }
     leftActive = true;
 
-    //final contentController = Modular.get<ContentController>();
-    //contentController.getContent(widget.title, 0);
-
     widgetBuilder(); // Usar versão sem MediaQuery
     // Safely jump to page, ensuring we don't exceed the available pages
-    final maxPage = widgetList.isNotEmpty ? widgetList.length - 1 : 0;
-    final targetPage = widget.listCount > maxPage ? maxPage : widget.listCount;
-    controller.jumpToPage(targetPage);
-    Future.delayed(duration).then(
-      (value) {
-        moveForward();
-      },
-    );
+    //moveBackward();
+    //final maxPage = widgetList.isNotEmpty ? widgetList.length - 1 : 0;
+    //final targetPage = widget.listCount > maxPage ? maxPage : widget.listCount;
+    //controller.jumpToPage(targetPage);
+    //Future.delayed(Duration(milliseconds: duration.inMilliseconds - 200)).then(
+    //  (value) {
+    //    moveBackward();
+    //  },
+    //);
   }
 
   void moveForward() {
-    controller.nextPage(duration: duration, curve: curve);
+    //controller.nextPage(duration: duration, curve: curve);
     if (!leftActive) {
       activeLeft();
     }
+    //controller.nextPage(duration: duration, curve: curve);
   }
 
   @override

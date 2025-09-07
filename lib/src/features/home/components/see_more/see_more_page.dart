@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:netflix/core/api/content_controller.dart';
 import 'package:netflix/core/colors/color_controller.dart';
 import 'package:netflix/core/fonts/app_fonts.dart';
 import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
+import 'package:netflix/models/content_model.dart';
+import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
 import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
 
 SeeMoreGlobals seeMoreGlobals = SeeMoreGlobals();
@@ -26,14 +28,14 @@ class SeeMorePage extends StatefulWidget {
 
 class _SeeMorePageState extends State<SeeMorePage> {
   final scrollController = ScrollController(initialScrollOffset: 0);
-  static const listCount = 8;
+  static const listCount = 6;
   static const Duration duration = Duration(milliseconds: 300);
   static const transitionDuration = Duration(milliseconds: 300);
   final ValueNotifier<bool> _active = ValueNotifier(false);
-  final height = 1800.0;
+  final height = 1680.0;
   List<Widget> widgets = [];
   List<Widget> oldWidgets = [];
-  static const double spacing = 200.0;
+  static const double spacing = 220.0;
   int current = 0;
 
   @override
@@ -65,20 +67,34 @@ class _SeeMorePageState extends State<SeeMorePage> {
         Positioned(
           key: UniqueKey(),
           top: spacing * i,
-          child: ContentListWidget(
-            key: UniqueKey(),
-            disable: true,
-            index: i,
-            title: widget.title ?? 'Em Alta',
-            contentCount: 4,
-            listCount: 1,
-            horizontalPadding:
-                spacing + 10, // Use 200px padding for see_more_page
-            anchor: getAnchorFromValue(i),
-            onHover: () {
-              onHover(i);
+          child: Builder(
+            builder: (context) {
+              final contentController = Modular.get<ContentController>();
+              return StreamBuilder<List<ContentModel>>(
+                stream: contentController
+                    .getListContent(widget.title ?? 'Em Alta')
+                    .asBroadcastStream(),
+                builder: (context, snapshot) {
+                  final List<ContentModel> contents = snapshot.data ??
+                      contentController
+                          .returnContentList(widget.title ?? 'Em Alta');
+
+                  return ContentInnerWidget(
+                    key: UniqueKey(),
+                    id: widget.title ?? 'Em Alta',
+                    index: i,
+                    contents: contents,
+                    contentCount: 5,
+                    horizontalPadding: spacing,
+                    onPlay: (bool value) {},
+                    onHover: (bool _) {
+                      onHover(i);
+                    },
+                    onDetail: (ContentModel content) {},
+                  );
+                },
+              );
             },
-            initialPage: i,
           ),
         ),
       );
@@ -186,7 +202,7 @@ class _SeeMorePageState extends State<SeeMorePage> {
                             ),
                           )),
                       Positioned(
-                        left: 60,
+                        left: 114,
                         top: 150,
                         child: SizedBox(
                           width: width,
