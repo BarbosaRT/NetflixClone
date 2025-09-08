@@ -8,7 +8,7 @@ import 'package:netflix/src/features/home/home_page.dart';
 enum ContentListAnchor { top, middle, bottom }
 
 class ListContentController extends ChangeNotifier {
-  final List<int> _pages = List.generate(36, (index) => 1);
+  final List<int> _pages = List.generate(36, (index) => 0);
 
   void setPage(int index, int page) {
     _pages[index] = page;
@@ -131,7 +131,7 @@ class ListContentsState extends State<ListContents> {
             right: 0,
             child: ContentListWidget(
               key: UniqueKey(),
-              index: j,
+              index: i,
               title: titles[i],
               anchor: getAnchorFromValue(i),
               horizontalPadding: 100.0, // Use 100px padding for home page

@@ -107,48 +107,50 @@ class _ContentListWidgetState extends State<ContentListWidget> {
   }
 
   void widgetBuilder() {
+    //print("We");
     final contentController = Modular.get<ContentController>();
     widgetList = [];
-    if (!leftActive) {
-      widgetList.add(const SizedBox(
-        width: 10,
-        height: 100,
-      ));
-    }
+    // if (!leftActive) {
+    //   widgetList.add(const SizedBox(
+    //     width: 10,
+    //     height: 100,
+    //   ));
+    // }
 
     // Widgets itself :)
     for (int i = 0; i < widget.listCount; i++) {
       widgetList.add(
         StreamBuilder<List<ContentModel>>(
-            stream: contentController
-                .getListContent(widget.title)
-                .asBroadcastStream(),
-            builder: (context, snapshot) {
-              List<ContentModel> contents = snapshot.data ??
-                  contentController.returnContentList(widget.title);
+          stream: contentController
+              .getListContent(widget.title)
+              .asBroadcastStream(),
+          builder: (context, snapshot) {
+            List<ContentModel> contents = snapshot.data ??
+                contentController.returnContentList(widget.title);
 
-              return ContentInnerWidget(
-                key: UniqueKey(),
-                id: widget.title,
-                index: i,
-                contents: contents,
-                contentCount: widget.contentCount,
-                horizontalPadding: widget.horizontalPadding,
-                onPlay: (bool value) {
-                  if (widget.onPlay != null) {
-                    widget.onPlay!(value);
-                  }
-                },
-                onHover: (value) {
-                  onWidgetChanging(value);
-                },
-                onDetail: (ContentModel content) {
-                  if (widget.onDetail != null) {
-                    widget.onDetail!(content);
-                  }
-                },
-              );
-            }),
+            return ContentInnerWidget(
+              key: UniqueKey(),
+              id: widget.title,
+              index: i,
+              contents: contents,
+              contentCount: widget.contentCount,
+              horizontalPadding: widget.horizontalPadding,
+              onPlay: (bool value) {
+                if (widget.onPlay != null) {
+                  widget.onPlay!(value);
+                }
+              },
+              onHover: (value) {
+                onWidgetChanging(value);
+              },
+              onDetail: (ContentModel content) {
+                if (widget.onDetail != null) {
+                  widget.onDetail!(content);
+                }
+              },
+            );
+          },
+        ),
       );
     }
     // Safely take up to 4 elements, but don't exceed the list size
@@ -166,31 +168,20 @@ class _ContentListWidgetState extends State<ContentListWidget> {
     controller.previousPage(duration: duration, curve: curve);
   }
 
-  void activeLeft() async {
+  void activeLeft() {
     if (leftActive) {
       return;
     }
     leftActive = true;
-
+    //print("Active Left");
     widgetBuilder(); // Usar versão sem MediaQuery
-    // Safely jump to page, ensuring we don't exceed the available pages
-    //moveBackward();
-    //final maxPage = widgetList.isNotEmpty ? widgetList.length - 1 : 0;
-    //final targetPage = widget.listCount > maxPage ? maxPage : widget.listCount;
-    //controller.jumpToPage(targetPage);
-    //Future.delayed(Duration(milliseconds: duration.inMilliseconds - 200)).then(
-    //  (value) {
-    //    moveBackward();
-    //  },
-    //);
   }
 
   void moveForward() {
-    //controller.nextPage(duration: duration, curve: curve);
     if (!leftActive) {
       activeLeft();
-    }
-    //controller.nextPage(duration: duration, curve: curve);
+    } 
+    controller.nextPage(duration: duration, curve: curve);
   }
 
   @override
@@ -247,6 +238,8 @@ class _ContentListWidgetState extends State<ContentListWidget> {
             : 500.0;
 
     final viewport = (width - 100) / width;
+    // print(
+    //     "Widget ${widget.title} page: ${contentController.getPage(widget.index)}");
 
     return MouseRegion(
       opaque: false,
@@ -400,14 +393,14 @@ class _ContentListWidgetState extends State<ContentListWidget> {
                       valueListenable: _listSelected,
                       builder: (BuildContext context, bool val, Widget? child) {
                         return Positioned(
-                          top: 145,
+                          top: 140,
                           child: SizedBox(
                             width: width,
-                            height: 140,
+                            height: leftActive ? 140 : 180,
                             child: Row(
                               children: [
                                 Container(
-                                  height: 145,
+                                  height: leftActive ? 145 : 180,
                                   width: 50,
                                   color: leftActive
                                       ? material.Colors.black

@@ -50,3 +50,5 @@ app.*.map.json
 *.json
 *.mp4
 *.png
+# Local Netlify folder
+.netlify
