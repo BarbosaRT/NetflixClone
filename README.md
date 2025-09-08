@@ -3,7 +3,7 @@
 </h1>
 <p align="center">A Netflix Clone (as the name implies), made for learning purposes.</p>
 <p align="center">If you want to see my other "serious" project, check <a href=https://github.com/BarbosaRT/Bossa>bossa</a></p>
-
+<p align="center">Try the demo <a href=https://statuesque-starlight-ba54a6.netlify.app/>here</a></p>
 # 
 
 ![login](readme/Login.png)  
