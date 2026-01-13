@@ -106,7 +106,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Netflix',
+      title: 'Oldflix',
       theme: ThemeData(
         scrollbarTheme: ScrollbarThemeData(
             trackVisibility: WidgetStateProperty.resolveWith((states) => true)),

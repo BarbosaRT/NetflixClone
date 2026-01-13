@@ -1,9 +1,10 @@
 <h1 align="center">
   <img src="readme/icon.png" alt="Icon" height="350" width="600">
 </h1>
-<p align="center">A Netflix Clone (as the name implies), made for learning purposes.</p>
+<p align="center">A Netflix Clone (named Oldflix), made for learning purposes.</p>
 <p align="center">If you want to see my other "serious" project, check <a href=https://github.com/BarbosaRT/Bossa>bossa</a></p>
 <p align="center">Try the demo <a href=https://statuesque-starlight-ba54a6.netlify.app/>here</a></p>
+
 # 
 
 ![login](readme/Login.png)  
@@ -14,7 +15,7 @@
 
 # Requirements: 
 - python >= 3.6 
-- dart >= 3.7 
+- dart >= 3.30
 - [git](https://git-scm.com)
 
 ## Python (Only needed to make it function offline):  
@@ -30,8 +31,6 @@ Access the directory:
 ```
 cd NetflixClone
 ```
-You will need a TMDB api key, you can get one [here](https://developers.themoviedb.org/3/getting-started/introduction), after that replace the apiKey variable in lib/core/api/content_controller.dart and in lib/scripts/api.py
-
 Now install the dependencies:
 ```
 flutter pub get
@@ -41,7 +40,16 @@ And run:
 flutter run
 ```
 
+You can input anything in the login screen to enter.
+
+To get recent contents
+---
+
+You will need a TMDB api key, you can get one [here](https://developers.themoviedb.org/3/getting-started/introduction), after that replace the apiKey variable in lib/core/api/content_controller.dart and in lib/scripts/api.py
+
+Also you would need to adjust the page size in home_page.dart and list_contents.dart
+
 
 # Extras
 - Original smooth_scroll by [dezso15](https://gitlab.com/dezso15/smoothscrollweb)   
-- Data Sources: TMDB, uNoGs      
+- Data Sources: TMDB     

@@ -154,7 +154,7 @@ class _ProfileIconState extends State<ProfileIcon> {
                   showPicture: false,
                   width: ProfileIcon.width,
                   picture: null,
-                  text: 'Sair da Netflix',
+                  text: 'Sair da Oldflix',
                 ),
               )
             ],
