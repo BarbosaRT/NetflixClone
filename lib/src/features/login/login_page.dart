@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/src/features/login/components/custom_text_field.dart';
-import 'package:netflix/src/features/login/login_controller.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/core/smooth_scroll.dart';
+import 'package:oldflix/src/features/login/components/custom_text_field.dart';
+import 'package:oldflix/src/features/login/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

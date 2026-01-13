@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/app_consts.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/video/get_impl.dart';
-import 'package:netflix/core/video/video_interface.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
-import 'package:netflix/src/features/home/components/content_list/components/like_button.dart';
-import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
-import 'package:netflix/src/features/home/home_page.dart';
+import 'package:oldflix/core/app_consts.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/core/video/get_impl.dart';
+import 'package:oldflix/core/video/video_interface.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/content_list/components/content_button.dart';
+import 'package:oldflix/src/features/home/components/content_list/components/like_button.dart';
+import 'package:oldflix/src/features/home/components/content_list/content_inner_widget.dart';
+import 'package:oldflix/src/features/home/home_page.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 class ContentContainer extends StatefulWidget {

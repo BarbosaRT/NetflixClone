@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/models/content_model.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/models/content_model.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/player/player_page.dart';
-import 'package:netflix/src/features/home/components/detail/detail_page.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/player/player_page.dart';
+import 'package:oldflix/src/features/home/components/detail/detail_page.dart';
 
 class DetailContainer extends StatefulWidget {
   final ContentModel content;
@@ -154,7 +154,7 @@ class _DetailContainerState extends State<DetailContainer> {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              '22min',
+                              episodeContent.detail,
                               style: headline2,
                             )
                           ],

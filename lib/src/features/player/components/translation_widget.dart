@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/player/player_page.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/core/smooth_scroll.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/player/player_page.dart';
 
 class TranslationWidget extends StatefulWidget {
   const TranslationWidget({super.key});

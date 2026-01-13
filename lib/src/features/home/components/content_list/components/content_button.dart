@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
 
 class ContentButton extends StatefulWidget {
   final Widget icon;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
+import 'package:oldflix/src/features/profile/controllers/profile_controller.dart';
 
 class ProfileWidget extends StatefulWidget {
   final TextStyle selectedStyle;

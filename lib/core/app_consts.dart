@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/src/features/splash/components/icon_painter.dart';
+import 'package:oldflix/src/features/splash/components/icon_painter.dart';
 
 class AppConsts {
   static const String placeholderJson = """{
-            "title": "Breaking Bad",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/breaking_bad_poster.jpg",
+            "title": "Wuthering Heights",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/wuthering_heights_poster.png",
             "rating": 98,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Violentos",
+                "Romance",
                 "Realistas",
                 "Suspense"
             ],
-            "age": 18,
-            "detail": "5 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": "Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado com cancer ele se une com, Jesse Pinkman, um ex-aluno para produzir cristais de metafetamina e assegurar o futuro de sua familia."
-            }""";
+            "age": 0,
+            "detail": "1h 44min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "After her parents die, Cathy and Heathcliff grow up wild and free on the moors and despite the continued enmity between Hindley and Heathcliff they're happy -- until Cathy meets Edgar Linton, the son of a wealthy neighbor."
+        }""";
   static const Map<int, String> classifications = {
     0: 'assets/images/classifications/L.png',
     10: 'assets/images/classifications/10.png',

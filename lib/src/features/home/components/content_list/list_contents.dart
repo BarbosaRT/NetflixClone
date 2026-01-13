@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/api/content_controller.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/content_list/content_list_widget.dart';
-import 'package:netflix/src/features/home/home_page.dart';
+import 'package:oldflix/core/api/content_controller.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/content_list/content_list_widget.dart';
+import 'package:oldflix/src/features/home/home_page.dart';
 
 enum ContentListAnchor { top, middle, bottom }
 
@@ -46,39 +46,39 @@ class ListContentsState extends State<ListContents> {
     'Outsiders',
     'Em Alta',
     'Top 10 no Brasil',
-    'Só na Netflix',
-    'Séries de ação',
-    'Filmes para toda a familia',
-    'Assistir Novamente',
-    'Assistir Novamente',
-    'Assistir Novamente',
-    'Produções de Hollywood',
-    'Comédia',
-    'Populares na Netflix',
-    'Mundos épicos',
-    'Porque você viu Click',
-    'Porque você viu Breaking Bad',
-    'Dicas para você',
-    'Para maratonar',
-    'Futuro distopico',
-    'Elas dominam a tela',
-    'Principais escolhas para você',
-    'Filmes Empolgantes',
-    'Minha Lista',
-    'Novelas',
-    'Para assistir juntos: crianças mais velhas',
-    'Comédias teen',
-    'Recém adicionados',
-    'Séries sobre o crime',
-    'Filmes de ação',
-    'Produções Estrangeiras',
-    'Programas de ação',
-    'Dramas adolescentes',
-    'Lançamentos',
-    'Estrelas da semana',
-    'Ação e aventura',
+    // 'Só na Netflix',
+    // 'Séries de ação',
+    // 'Filmes para toda a familia',
+    // 'Assistir Novamente',
+    // 'Assistir Novamente',
+    // 'Assistir Novamente',
+    // 'Produções de Hollywood',
+    // 'Comédia',
+    // 'Populares na Netflix',
+    // 'Mundos épicos',
+    // 'Porque você viu Click',
+    // 'Porque você viu Breaking Bad',
+    // 'Dicas para você',
+    // 'Para maratonar',
+    // 'Futuro distopico',
+    // 'Elas dominam a tela',
+    // 'Principais escolhas para você',
+    // 'Filmes Empolgantes',
+    // 'Minha Lista',
+    // 'Novelas',
+    // 'Para assistir juntos: crianças mais velhas',
+    // 'Comédias teen',
+    // 'Recém adicionados',
+    // 'Séries sobre o crime',
+    // 'Filmes de ação',
+    // 'Produções Estrangeiras',
+    // 'Programas de ação',
+    // 'Dramas adolescentes',
+    // 'Lançamentos',
+    // 'Estrelas da semana',
+    // 'Ação e aventura',
   ];
-  static const totalListCount = 21;
+  static const totalListCount = 3;
   static const listSize = totalListCount ~/ 3;
 
   @override
@@ -93,6 +93,7 @@ class ListContentsState extends State<ListContents> {
     switch (index) {
       case 0:
         return ContentListAnchor.top;
+      // ignore: unreachable_switch_case
       case const (listSize - 1):
         return ContentListAnchor.bottom;
       default:

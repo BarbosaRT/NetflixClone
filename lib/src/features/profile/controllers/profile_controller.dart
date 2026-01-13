@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:netflix/src/features/profile/controllers/profile_model.dart';
+import 'package:oldflix/src/features/profile/controllers/profile_model.dart';
 
 class ProfileController extends ChangeNotifier {
   List<ProfileModel> _profiles = [];
@@ -17,15 +17,15 @@ class ProfileController extends ChangeNotifier {
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_6.png',
-      name: 'Capybara',
+      name: 'Capivara',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_3.png',
       name: 'Mamae',
     ));
     _profiles.add(ProfileModel(
-      icon: 'assets/images/profiles/image_1.jpeg',
-      name: 'Dog',
+      icon: 'assets/images/profiles/image_1.png',
+      name: 'Irmão',
     ));
     _profiles.add(ProfileModel(
       icon: 'assets/images/profiles/image_4.png',

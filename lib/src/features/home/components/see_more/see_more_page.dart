@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/api/content_controller.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/content_list/content_inner_widget.dart';
-import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
+import 'package:oldflix/core/api/content_controller.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/core/smooth_scroll.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/content_list/content_inner_widget.dart';
+import 'package:oldflix/src/features/home/components/content_list/list_contents.dart';
 
 SeeMoreGlobals seeMoreGlobals = SeeMoreGlobals();
 

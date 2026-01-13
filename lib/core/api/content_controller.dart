@@ -4,9 +4,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:netflix/core/app_consts.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
+import 'package:oldflix/core/app_consts.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/content_list/list_contents.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/api/content_controller.dart';
-import 'package:netflix/core/app_consts.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
-import 'package:netflix/src/features/home/components/detail/detail_page.dart';
-import 'package:netflix/src/features/home/components/see_more/see_more_page.dart';
-import 'package:netflix/src/features/home/home_page.dart';
-import 'package:netflix/src/features/login/login_controller.dart';
-import 'package:netflix/src/features/login/login_page.dart';
-import 'package:netflix/src/features/player/player_page.dart';
-import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
-import 'package:netflix/src/features/profile/profile_page.dart';
-import 'package:netflix/src/features/splash/splash_controller.dart';
-import 'package:netflix/src/features/splash/splash_page.dart';
+import 'package:oldflix/core/api/content_controller.dart';
+import 'package:oldflix/core/app_consts.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/appbar/home_appbar.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/home/components/content_list/list_contents.dart';
+import 'package:oldflix/src/features/home/components/detail/detail_page.dart';
+import 'package:oldflix/src/features/home/components/see_more/see_more_page.dart';
+import 'package:oldflix/src/features/home/home_page.dart';
+import 'package:oldflix/src/features/login/login_controller.dart';
+import 'package:oldflix/src/features/login/login_page.dart';
+import 'package:oldflix/src/features/player/player_page.dart';
+import 'package:oldflix/src/features/profile/controllers/profile_controller.dart';
+import 'package:oldflix/src/features/profile/profile_page.dart';
+import 'package:oldflix/src/features/splash/splash_controller.dart';
+import 'package:oldflix/src/features/splash/splash_page.dart';
 
 class AppModule extends Module {
   @override

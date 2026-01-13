@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/app_consts.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
+import 'package:oldflix/core/app_consts.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/home/components/content_list/components/content_button.dart';
 
 class DetailContent extends StatefulWidget {
   final ContentModel content;

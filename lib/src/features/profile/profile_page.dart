@@ -2,11 +2,11 @@ import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/profile/components/manager_button.dart';
-import 'package:netflix/src/features/profile/components/profile_widget.dart';
-import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/src/features/profile/components/manager_button.dart';
+import 'package:oldflix/src/features/profile/components/profile_widget.dart';
+import 'package:oldflix/src/features/profile/controllers/profile_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ProfilePage extends StatefulWidget {

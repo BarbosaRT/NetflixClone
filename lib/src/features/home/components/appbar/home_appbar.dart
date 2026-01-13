@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/home/components/appbar/profile_icon.dart';
-import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
-import 'package:netflix/src/features/home/home_page.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/home/components/appbar/profile_icon.dart';
+import 'package:oldflix/src/features/home/components/appbar/components/top_button.dart';
+import 'package:oldflix/src/features/home/home_page.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height;
@@ -201,45 +201,33 @@ class NotificationBar extends StatelessWidget {
   static final notifications = [
     {
       'title': 'Novidade',
-      'subtitle': 'Escola do Bem e do Mal',
+      'subtitle': "It's a Wonderful Life",
       'detail': 'há 2 dias',
-      'image': 'assets/images/notifications/escola_poster.jpg'
+      'image': 'assets/images/notifications/its_a_wonderful_life_poster.jpg'
     },
     {
       'title': 'Assista Agora',
-      'subtitle': 'El Camino',
+      'subtitle': 'Limite',
       'detail': 'há 4 dias',
-      'image': 'assets/images/notifications/el_camino_poster.jpg'
+      'image': 'assets/images/notifications/limite_poster.jpg'
     },
     {
       'title': 'Novidade',
-      'subtitle': 'Cuphead Show',
+      'subtitle': 'Nosferatu',
       'detail': 'há 1 semana',
-      'image': 'assets/images/notifications/cuphead_poster.jpg'
+      'image': 'assets/images/notifications/nosferatu_poster.jpg'
     },
     {
       'title': 'Assista Agora',
       'subtitle': 'Temporada 3',
       'detail': 'há 2 semanas',
-      'image': 'assets/images/notifications/sintonia_poster.jpg'
+      'image': 'assets/images/notifications/star_is_born.jpg'
     },
     {
       'title': 'Novidade',
-      'subtitle': 'Justiceiras',
+      'subtitle': 'Night of the Living Dead',
       'detail': 'há 2 semanas',
-      'image': 'assets/images/notifications/justiceiras_poster.jpg'
-    },
-    {
-      'title': 'Assista Agora',
-      'subtitle': 'Temporada 5',
-      'detail': 'há 1 mês',
-      'image': 'assets/images/notifications/cobra_kai_poster.jpg'
-    },
-    {
-      'title': 'Novidade',
-      'subtitle': 'The Witcher',
-      'detail': 'há 2 meses',
-      'image': 'assets/images/notifications/the_witcher_poster.jpg'
+      'image': 'assets/images/notifications/night_of_the_living_dead_poster.jpg'
     },
   ];
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/core/video/video_interface.dart';
+import 'package:oldflix/core/video/video_interface.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeImpl implements VideoInterface {

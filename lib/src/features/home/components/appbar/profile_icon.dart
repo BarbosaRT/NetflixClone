@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/src/features/home/components/appbar/components/profile_button.dart';
-import 'package:netflix/src/features/home/components/appbar/hover_widget.dart';
-import 'package:netflix/src/features/login/login_controller.dart';
-import 'package:netflix/src/features/profile/controllers/profile_controller.dart';
+import 'package:oldflix/src/features/home/components/appbar/components/profile_button.dart';
+import 'package:oldflix/src/features/home/components/appbar/hover_widget.dart';
+import 'package:oldflix/src/features/login/login_controller.dart';
+import 'package:oldflix/src/features/profile/controllers/profile_controller.dart';
 
 class ProfileIcon extends StatefulWidget {
   const ProfileIcon({super.key});

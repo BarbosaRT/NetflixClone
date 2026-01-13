@@ -7,21 +7,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/api/content_controller.dart';
-import 'package:netflix/core/app_consts.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/core/smooth_scroll.dart';
-import 'package:netflix/core/video/get_impl.dart';
-import 'package:netflix/core/video/video_interface.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/appbar/components/profile_button.dart';
-import 'package:netflix/src/features/home/components/appbar/components/top_button.dart';
-import 'package:netflix/src/features/home/components/appbar/home_appbar.dart';
-import 'package:netflix/src/features/home/components/content_list/list_contents.dart';
-import 'package:netflix/src/features/home/components/home_button.dart';
-import 'package:netflix/src/features/login/login_controller.dart';
-import 'package:netflix/src/features/splash/components/icon_painter.dart';
+import 'package:oldflix/core/api/content_controller.dart';
+import 'package:oldflix/core/app_consts.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/core/smooth_scroll.dart';
+import 'package:oldflix/core/video/get_impl.dart';
+import 'package:oldflix/core/video/video_interface.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/appbar/components/profile_button.dart';
+import 'package:oldflix/src/features/home/components/appbar/components/top_button.dart';
+import 'package:oldflix/src/features/home/components/appbar/home_appbar.dart';
+import 'package:oldflix/src/features/home/components/content_list/list_contents.dart';
+import 'package:oldflix/src/features/home/components/home_button.dart';
+import 'package:oldflix/src/features/login/login_controller.dart';
+import 'package:oldflix/src/features/splash/components/icon_painter.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 MyGlobals myGlobals = MyGlobals();
@@ -47,7 +47,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ListContentsState> _listKey = GlobalKey();
 
-  static const double height = 2450.0;
+  //static const double height = 2450.0;
+  static const double height = 1100.0;
   static const textDuration = Duration(milliseconds: 900);
   static const fadeInDuration = Duration(milliseconds: 700);
   static const delay = Duration(seconds: 10);
@@ -109,7 +110,7 @@ class _HomePageState extends State<HomePage> {
       Future.delayed(const Duration(seconds: 1)).then(
         (value) {
           if (mounted && !isInAnotherPage) {
-            videoController.setVolume(1);
+            //videoController.setVolume(1);
           }
         },
       );
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
 
   void stopVideo() {
     playTimer.cancel();
-    played = false;
+    played = true;
     isInAnotherPage = true;
 
     // Set volume to zero immediately for extra safety
@@ -133,13 +134,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    Future.delayed(const Duration(seconds: 2)).then((_) {
-      if (mounted) {
-        videoController.setVolume(0);
-        videoController.pause();
-        videoController.isPlaying(enable: false);
-      }
-    });
+    
   }
 
   @override
@@ -421,7 +416,7 @@ class _HomePageState extends State<HomePage> {
                           // Logo
                           //
                           AnimatedPositioned(
-                            top: videoController.isPlaying() ? 300 : 160,
+                            top: videoController.isPlaying() ? 380 : 260,
                             left: 55,
                             duration: textDuration,
                             child: AnimatedContainer(
@@ -438,7 +433,7 @@ class _HomePageState extends State<HomePage> {
                           // Descrição
                           //
                           AnimatedPositioned(
-                            top: videoController.isPlaying() ? 480 : 410,
+                            top: videoController.isPlaying() ? 480 : 400,
                             left: 55,
                             duration: textDuration,
                             child: videoController.isPlaying()
@@ -487,7 +482,7 @@ class _HomePageState extends State<HomePage> {
                                       setState(() {
                                         isInAnotherPage = false;
                                         videoController.enableFrame(true);
-                                        videoController.setVolume(1);
+                                        //videoController.setVolume(1);
                                         videoController.isPlaying()
                                             ? videoController.pause()
                                             : videoController.play();
@@ -507,8 +502,11 @@ class _HomePageState extends State<HomePage> {
                                     padding: const EdgeInsets.only(
                                         left: 20, right: 25, top: 7, bottom: 7),
                                     text: 'Mais Informações',
+                                    onPressed: () {
+                                      stopVideo();
+                                    },
                                   ),
-                                ])),
+                                ],),),
                           ),
                           //
                           // Classificação Indicativa
@@ -648,7 +646,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           Text(
-                            '© 1997-2022 Netflix, Inc.  {89eaafce-69mm-45d6-9130-244974426922}',
+                            '© 2023-${DateTime.now().year} BarbosaRT.  {89eaafce-69mm-45d6-9130-244974426922}',
                             style: labelIntermedium,
                           ),
                         ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/core/fonts/app_fonts.dart';
-import 'package:netflix/src/features/home/components/content_list/components/content_button.dart';
-import 'package:netflix/src/features/splash/components/icon_painter.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/core/fonts/app_fonts.dart';
+import 'package:oldflix/src/features/home/components/content_list/components/content_button.dart';
+import 'package:oldflix/src/features/splash/components/icon_painter.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 import 'dart:math' as math;

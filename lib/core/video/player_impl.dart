@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/core/video/video_interface.dart';
+import 'package:oldflix/core/video/video_interface.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerImpl implements VideoInterface {

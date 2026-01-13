@@ -1,20 +1,20 @@
 {
     "Outsiders": {
-        "Breaking Bad": {
-            "title": "Breaking Bad",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/breaking_bad_poster.jpg",
+        "Wuthering Heights": {
+            "title": "Wuthering Heights",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/wuthering_heights_poster.jpg",
             "rating": 98,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Violentos",
+                "Romance",
                 "Realistas",
                 "Suspense"
             ],
-            "age": 18,
-            "detail": "5 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": "Quando Walter White, um professor de quimica no Novo Mexico, é diagnosticado com cancer ele se une com, Jesse Pinkman, um ex-aluno para produzir cristais de metafetamina e assegurar o futuro de sua familia."
+            "age": 0,
+            "detail": "1h 44min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Após a morte dos pais, Cathy e Heathcliff crescem livres nos pântanos e, apesar da inimizade de Hindley com Heathcliff, são felizes — até Cathy conhecer Edgar Linton, filho de um vizinho rico."
         },
         "Blender Studios": {
             "title": "Blender Studios",
@@ -35,7 +35,7 @@
             "age": 0,
             "detail": "1 temporada",
             "logo": "assets/data/logos/blender_logo.png",
-            "overview": "Blender Studio is the creative part of the Blender HQ. A dedicated team of artists and developers who challenge themselves with creative-technical targets to help Blender users and to drive Blender development forward. ",
+            "overview": "Blender Studio é o braço criativo da Blender HQ. Uma equipe dedicada de artistas e desenvolvedores que buscam metas técnico-criativas para ajudar usuários e impulsionar o desenvolvimento do Blender.",
             "episodes": {
                 "Big Bunny": {
                     "title": "Big Bunny",
@@ -50,8 +50,8 @@
                     ],
                     "age": 0,
                     "detail": "17min",
-                    "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Tired of being picked on by Frankie the squirrel and his band of puny forest creatures, JC the bunny finally decides to fight back.",
+                    "logo": "assets/data/logos/wuthering_heights_logo.png",
+                    "overview": "Cansado de ser provocado pelo esquilo Frankie e seu bando de criaturas insignificantes da floresta, o coelho JC finalmente decide revidar.",
                     "creditsTime": 140
                 },
                 "Sintel": {
@@ -67,8 +67,8 @@
                     ],
                     "age": 0,
                     "detail": "10min",
-                    "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Sintel tells the story of a friendship between a girl named Sintel, a baby dragon and the desperate lengths she will go to when that friendship is taken from her.",
+                    "logo": "assets/data/logos/wuthering_heights_logo.png",
+                    "overview": "Sintel conta a história da amizade entre uma garota chamada Sintel e um dragão bebê, e os limites desesperados que ela cruza quando essa amizade lhe é tirada.",
                     "creditsTime": 140
                 },
                 "Elephants": {
@@ -84,50 +84,66 @@
                     ],
                     "age": 0,
                     "detail": "22min",
-                    "logo": "assets/data/logos/breaking_bad_logo.png",
-                    "overview": "Elephants Dream tells the story of Emo and Proog, two people with different visions of the surreal world in which they live.",
+                    "logo": "assets/data/logos/wuthering_heights_logo.png",
+                    "overview": "Elephants Dream conta a história de Emo e Proog, duas pessoas com visões diferentes sobre o mundo surreal em que vivem.",
                     "creditsTime": 80
                 }
             }
         },
-        "La Casa De Papel": {
-            "title": "La Casa De Papel",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/la_casa_de_papel_poster.jpg",
+        "Star Is Born": {
+            "title": "Star Is Born",
+            "backdrop": "assets/data/backdrops/star_is_born_backdrop.jpg",
+            "poster": "assets/data/posters/star_is_born_poster.jpg",
             "rating": 94,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/star_is_born_trailer.mp4",
             "tags": [
                 "Suspense No Ar",
                 "Empolgante",
-                "Assalto"
+                "Romance"
             ],
             "age": 16,
             "detail": "5 Partes",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "logo": "assets/data/logos/star_is_born_logo.png",
+            "overview": "Esther Blodgett, uma jovem do campo com sonhos de cinema, é descoberta pelo astro decadente Norman Maine e renasce como Vicki Lester. Eles se casam, mas a fama dela cresce enquanto a dele rui."
         },
-        "Peaky Blinders": {
-            "title": "Peaky Blinders",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/peaky_blinders_poster.jpg",
+        "Nosferatu": {
+            "title": "Nosferatu",
+            "backdrop": "assets/data/backdrops/nosferatu_backdrop.jpg",
+            "poster": "assets/data/posters/nosferatu_poster.jpg",
             "rating": 98,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/nosferatu_trailer.mp4",
             "tags": [
-                "Policial Vintage",
+                "Terror",
                 "Obra de época",
-                "Violentos"
+                "Vampiros"
             ],
             "age": 18,
-            "detail": "6 Temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "detail": "1h29",
+            "logo": "assets/data/logos/nosferatu_logo.png",
+            "overview": "O misterioso Conde Orlok convoca um agente imobiliário felizmente casado ao seu castelo nas montanhas da Transilvânia para finalizar um acordo aterrorizante."
         },
-        "Stranger Things": {
-            "title": "Stranger Things",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/stranger_things_poster.jpg",
+        "Limite": {
+            "title": "Limite",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/limite_poster.jpg",
+            "rating": 93,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Explosivo",
+                "Esperto",
+                "Silencioso"
+            ],
+            "age": 14,
+            "detail": "9 episodios",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Três náufragos — um homem e duas mulheres — ficam à deriva no mar sem esperança de resgate, passando o tempo compartilhando as histórias que os levaram a esse destino desolador."
+        },
+        "Night Of The Living Dead": {
+            "title": "Night Of The Living Dead",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/night_of_the_living_dead_poster.jpg",
             "rating": 98,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
                 "Sinistros",
                 "Nostalgicos",
@@ -135,300 +151,333 @@
             ],
             "age": 16,
             "detail": "5 Temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um grupo heterogêneo se refugia em uma velha fazenda na Pensilvânia para se proteger de uma horda de ghouls devoradores de carne que assola o Nordeste."
         },
-        "Arcane": {
-            "title": "Arcane",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/arcane_poster.jpg",
-            "rating": 93,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
-            "tags": [
-                "Explosivo",
-                "Esperto",
-                "Fantasia"
-            ],
-            "age": 14,
-            "detail": "9 episodios",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
-        },
-        "Jojo's Bizzare Adventure": {
-            "title": "Jojo's Bizzare Adventure",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/jojos_bizzare_adventure_poster.jpg",
+        "Plan 9 From Outer Space": {
+            "title": "Plan 9 From Outer Space",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/plan_9_from_outer_space_poster.jpg",
             "rating": 95,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
                 "Empolgante",
-                "Anime De Fantasia",
-                "Vampiros"
+                "Ficção Científica",
+                "Suspense"
             ],
             "age": 18,
             "detail": "4 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Após um velho casal ser ressuscitado por forças alienígenas, discos voadores surgem sobre a América, e civis e soldados se unem para deter uma invasão extraterrestre."
         },
-        "Sandman": {
-            "title": "Sandman",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/sandman_poster.jpg",
+        "All Quiet On The Western Front":{
+            "title": "All Quiet On The Western Front",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/all_quiet_on_the_western_front_poster.jpg",
             "rating": 97,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
             "tags": [
-                "Sombrios",
-                "Fantasia",
-                "Bruxaria"
+                "Obra de época",
+                "Aventura",
+                "Ação"
             ],
-            "age": 18,
+            "age": 16,
             "detail": "11 episodios",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Quando jovens idealistas se juntam ao Exército Alemão na Grande Guerra, são enviados à Frente Ocidental, onde o patriotismo é destruído pelas duras realidades do combate."
         },
-        "The Flash": {
-            "title": "The Flash",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/the_flash_poster.jpg",
-            "rating": 95,
-            "trailer": "assets/data/trailers/breaking_bad_trailer.mp4",
+        "My Man Godfrey": {
+            "title": "My Man Godfrey",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/my_man_godfrey_poster.jpg",
+            "rating": 94,
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
             "tags": [
-                "Adrenalina Pura",
-                "Super-herói",
-                "Explosivo"
+                "Drama",
+                "Suspense",
+                "Comédia"
             ],
             "age": 12,
-            "detail": "7 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": ""
+            "detail": "1h34min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Uma socialite avoada contrata um andarilho como mordomo da família — mas há mais em Godfrey do que os olhos podem ver."
+        },
+        "It's a Wonderful Life": {
+            "title": "It's a Wonderful Life",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/its_a_wonderful_life_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Família",
+                "Romance",
+                "Fantasia"
+            ],
+            "age": 10,
+            "detail": "2h10min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um anjo é enviado do Céu para ajudar um empresário desesperado e frustrado a enxergar o valor de sua própria vida."
         }
     },
     "Em Alta": {
-        "Better Caul Saul": {
-            "title": "Better Caul Saul",
-            "backdrop": "assets/data/backdrops/better_call_saul_backdrop.jpg",
-            "poster": "assets/data/posters/better_call_saul_poster.jpg",
-            "rating": 99,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Excêntricos",
-                "Realistas",
-                "Drama"
-            ],
-            "age": 16,
-            "detail": "6 temporadas",
-            "logo": "assets/data/logos/better_call_saul_logo.png",
-            "overview": "Seis anos antes de Saul Goodman conhecer Walter White. Nós o conhecemos quando o homem que se tornará Saul Goodman é conhecido como Jimmy McGill antes de ser Saul Goodman, Jimmy era mais inocente, mas não era santo."
-        },
-        "The Witcher": {
-            "title": "The Witcher",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/the_witcher_poster.jpg",
-            "rating": 93,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Empolgante",
-                "Fantasia",
-                "Impacto visual"
-            ],
-            "age": 18,
-            "detail": "2 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
-        },
-        "(Des)encanto": {
-            "title": "(Des)encanto",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/desencanto_poster.png",
+        "Star Is Born": {
+            "title": "Star Is Born",
+            "backdrop": "assets/data/backdrops/star_is_born_backdrop.jpg",
+            "poster": "assets/data/posters/star_is_born_poster.jpg",
             "rating": 94,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Espirituosos",
-                "Irreverentes",
-                "Fantasia"
-            ],
-            "age": 14,
-            "detail": "4 partes",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
-        },
-        "Black Mirror": {
-            "title": "Black Mirror",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/black_mirror_poster.jpg",
-            "rating": 95,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Realidade Alternativa",
-                "Distopia",
-                "Cyberpunk"
-            ],
-            "age": 16,
-            "detail": "5 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
-        },
-        "Sintonia": {
-            "title": "Sintonia",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/sintonia_poster.jpg",
-            "rating": 97,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Intimista",
-                "Comoventes",
-                "Teen"
-            ],
-            "age": 16,
-            "detail": "3 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
-        },
-        "Round 6": {
-            "title": "Round 6",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/round_6_poster.jpg",
-            "rating": 96,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "trailer": "assets/data/trailers/star_is_born_trailer.mp4",
             "tags": [
                 "Suspense No Ar",
-                "Jogo Mortal",
-                "Coreano"
+                "Empolgante",
+                "Romance"
             ],
-            "age": 18,
-            "detail": "1 temporada",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "age": 16,
+            "detail": "5 Partes",
+            "logo": "assets/data/logos/star_is_born_logo.png",
+            "overview": "Esther Blodgett, uma jovem do campo com sonhos de cinema, é descoberta pelo astro decadente Norman Maine e renasce como Vicki Lester. Eles se casam, mas a fama dela cresce enquanto a dele rui."
         },
-        "Cuphead": {
-            "title": "Cuphead",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/cuphead_poster.jpg",
-            "rating": 90,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+        "It's a Wonderful Life": {
+            "title": "It's a Wonderful Life",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/its_a_wonderful_life_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Espirituosos",
-                "Irreverentes",
-                "Infantil"
+                "Família",
+                "Romance",
+                "Fantasia"
             ],
             "age": 10,
-            "detail": "2 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "2h10min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um anjo é enviado do Céu para ajudar um empresário desesperado e frustrado a enxergar o valor de sua própria vida."
+        },
+        "All Quiet On The Western Front":{
+            "title": "All Quiet On The Western Front",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/all_quiet_on_the_western_front_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
+            "tags": [
+                "Obra de época",
+                "Aventura",
+                "Ação"
+            ],
+            "age": 16,
+            "detail": "11 episodios",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Quando jovens idealistas se juntam ao Exército Alemão na Grande Guerra, são enviados à Frente Ocidental, onde o patriotismo é destruído pelas duras realidades do combate."
+        },
+        "Night Of The Living Dead": {
+            "title": "Night Of The Living Dead",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/night_of_the_living_dead_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Sinistros",
+                "Nostalgicos",
+                "Terror"
+            ],
+            "age": 16,
+            "detail": "5 Temporadas",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um grupo heterogêneo se refugia em uma velha fazenda na Pensilvânia para se proteger de uma horda de ghouls devoradores de carne que assola o Nordeste."
+        },
+        "Nosferatu": {
+            "title": "Nosferatu",
+            "backdrop": "assets/data/backdrops/nosferatu_backdrop.jpg",
+            "poster": "assets/data/posters/nosferatu_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/nosferatu_trailer.mp4",
+            "tags": [
+                "Terror",
+                "Obra de época",
+                "Vampiros"
+            ],
+            "age": 18,
+            "detail": "1h29",
+            "logo": "assets/data/logos/nosferatu_logo.png",
+            "overview": "O misterioso Conde Orlok convoca um agente imobiliário felizmente casado ao seu castelo nas montanhas da Transilvânia para finalizar um acordo aterrorizante."
+        },
+        
+        "My Man Godfrey": {
+            "title": "My Man Godfrey",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/my_man_godfrey_poster.jpg",
+            "rating": 94,
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
+            "tags": [
+                "Drama",
+                "Suspense",
+                "Comédia"
+            ],
+            "age": 12,
+            "detail": "1h34min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Uma socialite avoada contrata um andarilho como mordomo da família — mas há mais em Godfrey do que os olhos podem ver."
+        },
+        "Wuthering Heights": {
+            "title": "Wuthering Heights",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/wuthering_heights_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Romance",
+                "Realistas",
+                "Suspense"
+            ],
+            "age": 0,
+            "detail": "1h 44min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Após a morte dos pais, Cathy e Heathcliff crescem livres nos pântanos e, apesar da inimizade de Hindley com Heathcliff, são felizes — até Cathy conhecer Edgar Linton, filho de um vizinho rico."
         }
     },
     "Top 10 no Brasil": {
-        "El Camino": {
-            "title": "El Camino",
-            "backdrop": "assets/data/backdrops/el_camino_backdrop.jpg",
-            "poster": "assets/data/posters/el_camino_poster.jpg",
-            "rating": 92,
-            "trailer": "assets/data/trailers/el_camino_trailer.mp4",
+        "Nosferatu": {
+            "title": "Nosferatu",
+            "backdrop": "assets/data/backdrops/nosferatu_backdrop.jpg",
+            "poster": "assets/data/posters/nosferatu_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/nosferatu_trailer.mp4",
             "tags": [
-                "Crimes",
-                "Ação",
-                "Suspense"
-            ],
-            "age": 16,
-            "detail": "2h 2min",
-            "logo": "assets/data/logos/el_camino_logo.png",
-            "overview": "Após sua dramática fuga do cativeiro, Jesse precisa se reconciliar com o passado para que consiga criar algum tipo de futuro. Escrito e dirigido pelo criador de Breaking Bad, Vince Gilligan, estrelado por Aaron Paul."
-        },
-        "The Witcher": {
-            "title": "The Witcher",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/the_witcher_poster.jpg",
-            "rating": 93,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
-            "tags": [
-                "Empolgante",
-                "Fantasia",
-                "Impacto visual"
+                "Terror",
+                "Obra de época",
+                "Vampiros"
             ],
             "age": 18,
-            "detail": "2 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "1h29",
+            "logo": "assets/data/logos/nosferatu_logo.png",
+            "overview": "O misterioso Conde Orlok convoca um agente imobiliário felizmente casado ao seu castelo nas montanhas da Transilvânia para finalizar um acordo aterrorizante."
         },
-        "(Des)encanto": {
-            "title": "(Des)encanto",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/desencanto_poster.png",
-            "rating": 94,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+        "Limite": {
+            "title": "Limite",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/limite_poster.jpg",
+            "rating": 93,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Espirituosos",
-                "Irreverentes",
-                "Fantasia"
+                "Explosivo",
+                "Esperto",
+                "Silencioso"
             ],
             "age": 14,
-            "detail": "4 partes",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "9 episodios",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Três náufragos — um homem e duas mulheres — ficam à deriva no mar sem esperança de resgate, passando o tempo compartilhando as histórias que os levaram a esse destino desolador."
         },
-        "Black Mirror": {
-            "title": "Black Mirror",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/black_mirror_poster.jpg",
-            "rating": 95,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+        "Night Of The Living Dead": {
+            "title": "Night Of The Living Dead",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/night_of_the_living_dead_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Realidade Alternativa",
-                "Distopia",
-                "Cyberpunk"
+                "Sinistros",
+                "Nostalgicos",
+                "Terror"
             ],
             "age": 16,
-            "detail": "5 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "5 Temporadas",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um grupo heterogêneo se refugia em uma velha fazenda na Pensilvânia para se proteger de uma horda de ghouls devoradores de carne que assola o Nordeste."
         },
-        "Sintonia": {
-            "title": "Sintonia",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/sintonia_poster.jpg",
+        "All Quiet On The Western Front":{
+            "title": "All Quiet On The Western Front",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/all_quiet_on_the_western_front_poster.jpg",
             "rating": 97,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
             "tags": [
-                "Intimista",
-                "Comoventes",
-                "Teen"
+                "Obra de época",
+                "Aventura",
+                "Ação"
             ],
             "age": 16,
-            "detail": "3 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "11 episodios",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Quando jovens idealistas se juntam ao Exército Alemão na Grande Guerra, são enviados à Frente Ocidental, onde o patriotismo é destruído pelas duras realidades do combate."
         },
-        "Round 6": {
-            "title": "Round 6",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/round_6_poster.jpg",
-            "rating": 96,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+        "Plan 9 From Outer Space": {
+            "title": "Plan 9 From Outer Space",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/plan_9_from_outer_space_poster.jpg",
+            "rating": 95,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
             "tags": [
-                "Suspense No Ar",
-                "Jogo Mortal",
-                "Coreano"
+                "Empolgante",
+                "Ficção Científica",
+                "Suspense"
             ],
             "age": 18,
-            "detail": "1 temporada",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "4 temporadas",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Após um velho casal ser ressuscitado por forças alienígenas, discos voadores surgem sobre a América, e civis e soldados se unem para deter uma invasão extraterrestre."
         },
-        "Cuphead": {
-            "title": "Cuphead",
-            "backdrop": "assets/data/backdrops/breaking_bad_backdrop.jpg",
-            "poster": "assets/data/posters/cuphead_poster.jpg",
-            "rating": 90,
-            "trailer": "assets/data/trailers/better_call_saul_trailer.mp4",
+        "My Man Godfrey": {
+            "title": "My Man Godfrey",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/my_man_godfrey_poster.jpg",
+            "rating": 94,
+            "trailer": "assets/data/trailers/all_quiet_on_the_western_front_trailer.webm",
             "tags": [
-                "Espirituosos",
-                "Irreverentes",
-                "Infantil"
+                "Drama",
+                "Suspense",
+                "Comédia"
+            ],
+            "age": 12,
+            "detail": "1h34min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Uma socialite avoada contrata um andarilho como mordomo da família — mas há mais em Godfrey do que os olhos podem ver."
+        },
+        "It's a Wonderful Life": {
+            "title": "It's a Wonderful Life",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/its_a_wonderful_life_poster.jpg",
+            "rating": 97,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Família",
+                "Romance",
+                "Fantasia"
             ],
             "age": 10,
-            "detail": "2 temporadas",
-            "logo": "assets/data/logos/breaking_bad_logo.png",
-            "overview": " "
+            "detail": "2h10min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Um anjo é enviado do Céu para ajudar um empresário desesperado e frustrado a enxergar o valor de sua própria vida."
+        },        
+        "Wuthering Heights": {
+            "title": "Wuthering Heights",
+            "backdrop": "assets/data/backdrops/wuthering_heights_backdrop.jpg",
+            "poster": "assets/data/posters/wuthering_heights_poster.jpg",
+            "rating": 98,
+            "trailer": "assets/data/trailers/wuthering_heights_trailer.mp4",
+            "tags": [
+                "Romance",
+                "Realistas",
+                "Suspense"
+            ],
+            "age": 0,
+            "detail": "1h 44min",
+            "logo": "assets/data/logos/wuthering_heights_logo.png",
+            "overview": "Após a morte dos pais, Cathy e Heathcliff crescem livres nos pântanos e, apesar da inimizade de Hindley com Heathcliff, são felizes — até Cathy conhecer Edgar Linton, filho de um vizinho rico."
+        },
+        "Star Is Born": {
+            "title": "Star Is Born",
+            "backdrop": "assets/data/backdrops/star_is_born_backdrop.jpg",
+            "poster": "assets/data/posters/star_is_born_poster.jpg",
+            "rating": 94,
+            "trailer": "assets/data/trailers/star_is_born_trailer.mp4",
+            "tags": [
+                "Suspense No Ar",
+                "Empolgante",
+                "Romance"
+            ],
+            "age": 16,
+            "detail": "5 Partes",
+            "logo": "assets/data/logos/star_is_born_logo.png",
+            "overview": "Esther Blodgett, uma jovem do campo com sonhos de cinema, é descoberta pelo astro decadente Norman Maine e renasce como Vicki Lester. Eles se casam, mas a fama dela cresce enquanto a dele rui."
         }
     }
 }

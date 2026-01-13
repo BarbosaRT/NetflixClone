@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:netflix/core/colors/color_controller.dart';
-import 'package:netflix/src/features/login/login_controller.dart';
+import 'package:oldflix/core/colors/color_controller.dart';
+import 'package:oldflix/src/features/login/login_controller.dart';
 
 class CustomTextField extends StatefulWidget {
   final double textFieldWidth;

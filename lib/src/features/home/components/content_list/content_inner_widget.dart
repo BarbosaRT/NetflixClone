@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:netflix/models/content_model.dart';
-import 'package:netflix/src/features/home/components/content_list/components/content_container.dart';
+import 'package:oldflix/models/content_model.dart';
+import 'package:oldflix/src/features/home/components/content_list/components/content_container.dart';
 
 enum ContentContainerAnchor { left, center, right }
 
